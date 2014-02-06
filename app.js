@@ -11,7 +11,7 @@ var _ = require('underscore');
 var twitter = require('ntwitter');
 
 var config = require('./config');
-var twit = new twitter(config.creds);
+var logic = require('./logic')(config);
 
 var app = express();
 
@@ -34,7 +34,6 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 
 
-
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
@@ -53,14 +52,5 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-
-twit.stream('statuses/filter', {track:'#sstest'}, function(stream) {
-  stream.on('data', function (data) {
-    console.log(data);
-    _.each(sockets, function(s) {
-      //s.emit('test');
-    });
-  });
-});
 
 
