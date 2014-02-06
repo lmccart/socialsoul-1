@@ -7,6 +7,7 @@ var express = require('express');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
+var _ = require('underscore');
 var twitter = require('ntwitter');
 
 var config = require('./config');
@@ -40,8 +41,12 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 
 var io = require('socket.io').listen(server);
+var sockets = [];
 
 io.sockets.on('connection', function (socket) {
+  if (!_.contains(sockets, socket)) {
+    sockets.push(socket);
+  }
   socket.emit('message', { message: 'hello from the backend' });
   socket.on('send', function (data) {
     console.log(data);
@@ -52,5 +57,10 @@ io.sockets.on('connection', function (socket) {
 twit.stream('statuses/filter', {track:'#sstest'}, function(stream) {
   stream.on('data', function (data) {
     console.log(data);
+    _.each(sockets, function(s) {
+      //s.emit('test');
+    });
   });
 });
+
+
