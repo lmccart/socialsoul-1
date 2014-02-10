@@ -36,7 +36,7 @@ module.exports = function(config) {
     console.log('start with user '+controller.cur_user);
     //controller.next_user = null;
 
-    twit.getUserTimeline('screen_name='+controller.cur_user,
+    twit.getUserTimeline({screen_name:controller.cur_user},
       function(err, data) { 
         if (err) console.log(err); 
         for (var i=0; i<controller.sockets.length; i++) {

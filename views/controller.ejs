@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>controller</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
+    <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body id="controller">
+    <h1>controller</h1>
+
+    <div>
+    <input id="user" name="user" /><br>
+    <span id='set_user' class='button'>set user</span>
+	</div>
+
+	<div>
+    <span id='trigger' class='button'>start</span>
+    </div>
+
+
   </body>
 </html>

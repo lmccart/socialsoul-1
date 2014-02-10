@@ -33,9 +33,15 @@ app.get('/', function(req, res) {
   res.render('index', { title: 'Main' });
 });
 
-app.get('/trigger', function(req, res) {
-  res.render('controller', { title: 'Controller' });
-  controller.start();
+app.get('/controller', function(req, res) {
+  res.render('controller', {});
+  if (req.query.action === 'trigger') {
+    controller.start();
+  }
+  else if (req.query.action === 'set_user') {
+    console.log('user set to '+req.query.user);
+    controller.next_user = req.query.user;
+  }
 });
 
 

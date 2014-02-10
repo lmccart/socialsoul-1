@@ -22,13 +22,21 @@ window.onload = function() {
 
   socket.on('trigger', function (data) {
   	console.log('trigger '+data.user);
+    manager.reset();
     manager.init(data);
   });
 
 
-(function animloop(){
-  requestAnimFrame(animloop);
-  manager.update();
-})();
+  (function animloop(){
+    requestAnimFrame(animloop);
+    manager.update();
+  })();
+
+
+  // BA controller app
+  $('#trigger').click(function(e){
+    console.log('hi')
+    window.location = './controller?action=trigger';
+  });
 
 }

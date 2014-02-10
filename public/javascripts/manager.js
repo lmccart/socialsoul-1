@@ -23,6 +23,15 @@ var Manager = function() {
     module.started = true;
   };
 
+  module.reset = function() {
+    module.started = false;
+    module.last_start = 0;
+    module.cur_mode = module.modes.length-1;
+    for (var i=0; i<module.modes.length; i++) {
+      module.modes[i].exit();
+    }
+  }
+
   module.update = function() {
     if (module.started) {
       var t = new Date().getTime();

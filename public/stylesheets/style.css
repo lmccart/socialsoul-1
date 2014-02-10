@@ -1,11 +1,51 @@
 body {
-  background: #FF00FF;
+  background: #AA00FF;
   padding: 50px;
-  font: 50px Helvetica, Arial, sans-serif;
+  font: 25px Helvetica, Arial, sans-serif;
   color: white;
 }
 
 
 #test {
   position: absolute;
+}
+
+/*** CONTROLLER STUFF ***/
+
+#controller div {
+  margin-bottom: 30px;
+}
+
+.button {
+  background: #FF6E43;
+  color: white;
+  margin: 0 10px 10px 0;
+  padding: 10px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.button:hover, .button.selected {
+  background: white;
+  color: #FF6E43;
+  outline: 2px solid #FF6E43;
+  padding: 9px;
+  margin-bottom:12px;
+}
+
+
+input {
+  font: 25px Helvetica, Arial, sans-serif;
+  padding:0;
+  margin: 10px 0;
+  color:black;
+  border:0 !important;
+  display: inline-block;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  cursor:pointer;
 }
