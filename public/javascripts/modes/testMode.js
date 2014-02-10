@@ -8,9 +8,14 @@ var TestMode = function() {
 
   
   module.play = function() {
-  	console.log(module.data)
-    $('#test').html('welcome '+module.data);
-    $('#test').textillate({loop: true, minDisplayTime: 200000});
+    console.log(module.content);
+    //$('#test').html('welcome '+module.user);
+    for (var i=0; i<module.content.length; i++) {
+      console.log(module.content[i]);
+      $('#test').append('<div class="tweet">'+module.content[i].text+'</div>');
+    }
+    //$('#test').textillate({loop: true, minDisplayTime: 1000});
+    $('.tweet').textillate({minDisplayTime: 1000});
 
   };
 

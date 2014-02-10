@@ -6,7 +6,6 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-var _ = require('underscore');
 
 var config = require('./config');
 var controller = require('./controller')(config);
@@ -36,10 +35,7 @@ app.get('/', function(req, res) {
 
 app.get('/trigger', function(req, res) {
   res.render('controller', { title: 'Controller' });
-  for (var i=0; i<sockets.length; i++) {
-  	controller.start();
-  	sockets[i].emit('trigger', {'user':controller.cur_user}); // pend testing
-  }
+  controller.start();
 });
 
 
@@ -50,12 +46,9 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 
 var io = require('socket.io').listen(server);
-var sockets = [];
 
 io.sockets.on('connection', function (socket) {
-  if (!_.contains(sockets, socket)) {
-    sockets.push(socket);
-  }
+  controller.addSocket(socket);
   socket.emit('message', { message: 'hello from the backend' });
   socket.on('send', function (data) {
     console.log(data);

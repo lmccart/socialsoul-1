@@ -1,10 +1,11 @@
 body {
   background: #FF00FF;
   padding: 50px;
-  font: 100px "Impact", Helvetica, Arial, sans-serif;
+  font: 50px Helvetica, Arial, sans-serif;
   color: white;
 }
 
 
 #test {
+  position: absolute;
 }

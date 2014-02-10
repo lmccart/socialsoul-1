@@ -1,10 +1,12 @@
 
+var _ = require('underscore');
 var twitter = require('ntwitter');
 
 module.exports = function(config) {
-  var controller = {};
-  controller.next_user = 'laurmccarthy'; // pend temp testing
-  
+  var controller = {
+    sockets: [],
+    next_user: 'laurmccarthy' // pend temp for testing
+  };
 
   var twit = new twitter(config.creds);
 
@@ -14,6 +16,12 @@ module.exports = function(config) {
       console.log('next user set to '+controller.next_user);
     });
   });
+
+  controller.addSocket = function(s) {
+    if (!_.contains(controller.sockets, s)) {
+      controller.sockets.push(s);
+    }
+  };
 
   // manual override of next user, triggered by controller app
   controller.setNextUser = function(user) {
@@ -28,8 +36,16 @@ module.exports = function(config) {
     console.log('start with user '+controller.cur_user);
     //controller.next_user = null;
 
-    twit.getUserTimeline('screen_name=laurmccarthy',
-      function(data, err) { if (err) console.log(err); console.log(data); });
+    twit.getUserTimeline('screen_name='+controller.cur_user,
+      function(err, data) { 
+        if (err) console.log(err); 
+        for (var i=0; i<controller.sockets.length; i++) {
+          controller.sockets[i].emit('trigger', {
+            'user':controller.cur_user,
+            'content':data
+          }); 
+        }
+      });
   }    
 
   return controller;
