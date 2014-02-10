@@ -69,7 +69,7 @@ module.exports = function(config) {
     for (var i=0; i<controller.sockets.length; i++) {
       controller.sockets[i].emit('mentor', {
         'user':mentor,
-        'content':data
+        'content':null
       }); 
     }
   };
