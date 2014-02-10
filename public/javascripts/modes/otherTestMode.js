@@ -1,14 +1,6 @@
 
 
-define([
-  'jquery',
-  'libs/textillate',
-  'libs/three',
-  'libs/lettering'
-],
-
-function($, textillate, THREE) {
-
+var OtherTestMode = function() {
   console.log('load testmode ');
 
 
@@ -19,10 +11,10 @@ function($, textillate, THREE) {
     $('#test').textillate();
 
     init();
-
+    animate();
   }
 
-  var container, stats;
+  var container;
 
   var camera, scene, renderer;
 
@@ -34,8 +26,6 @@ function($, textillate, THREE) {
   var windowHalfX = window.innerWidth / 2;
   var windowHalfY = window.innerHeight / 2;
 
-  init();
-  animate();
 
   function init() {
 
@@ -65,11 +55,6 @@ function($, textillate, THREE) {
     renderer = new THREE.WebGLRenderer();
     container.appendChild( renderer.domElement );
 
-    stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '0px';
-    container.appendChild( stats.domElement );
-
     onWindowResize();
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -91,7 +76,6 @@ function($, textillate, THREE) {
     requestAnimationFrame( animate );
 
     render();
-    stats.update();
 
   }
 
@@ -104,4 +88,4 @@ function($, textillate, THREE) {
   }
 
   return module;
-});
+};

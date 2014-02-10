@@ -1,17 +1,14 @@
 
 
-define([
-  // put all the mode modules here!
-  'testMode',
-  'otherTestMode'
-],
-
-function() {
+var Manager = function() {
 
   console.log('load manager ');
 
   var module = {
-    modes: arguments // store passed in modes
+    modes: [
+      new TestMode(),
+      new OtherTestMode()
+    ]
   };
 
   module.init = function(data) {
@@ -28,4 +25,4 @@ function() {
   }
 
   return module;
-});
+};
