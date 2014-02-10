@@ -45,8 +45,34 @@ module.exports = function(config) {
             'content':data
           }); 
         }
+        // analyze tweets
+        controller.analyze(data);
       });
-  }    
+  };
+
+  controller.analyze = function(data) {
+    // analyze tweets
+    for (var i=0; i<data.length; i++) {
+
+    }
+    // pick related mentor
+
+    // send mentor
+    controller.sendMentor('name');
+
+    // archive new user
+  };
+
+  controller.sendMentor = function(mentor) {
+    console.log('sending mentor '+mentor);
+    //controller.next_user = null;
+    for (var i=0; i<controller.sockets.length; i++) {
+      controller.sockets[i].emit('mentor', {
+        'user':mentor,
+        'content':data
+      }); 
+    }
+  };
 
   return controller;
 };
