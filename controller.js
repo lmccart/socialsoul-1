@@ -3,6 +3,7 @@ var twitter = require('ntwitter');
 
 module.exports = function(config) {
   var controller = {};
+  controller.next_user = 'laurmccarthy'; // pend temp testing
   
 
   var twit = new twitter(config.creds);
@@ -26,6 +27,9 @@ module.exports = function(config) {
     controller.cur_user = controller.next_user;
     console.log('start with user '+controller.cur_user);
     //controller.next_user = null;
+
+    twit.getUserTimeline('screen_name=laurmccarthy',
+      function(data, err) { if (err) console.log(err); console.log(data); });
   }    
 
   return controller;
