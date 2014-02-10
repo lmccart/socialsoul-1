@@ -8,10 +8,9 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var _ = require('underscore');
-var twitter = require('ntwitter');
 
 var config = require('./config');
-var logic = require('./logic')(config);
+var controller = require('./controller')(config);
 
 var app = express();
 
