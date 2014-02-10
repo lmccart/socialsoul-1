@@ -4,7 +4,6 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var _ = require('underscore');
@@ -30,7 +29,19 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+
+app.get('/', function(req, res) {
+  res.render('index', { title: 'Main' });
+});
+
+app.get('/trigger', function(req, res) {
+  res.render('controller', { title: 'Controller' });
+  for (var i=0; i<sockets.length; i++) {
+  	controller.start();
+  	sockets[i].emit('trigger', {'user':controller.cur_user}); // pend testing
+  }
+});
+
 
 
 var server = http.createServer(app).listen(app.get('port'), function(){

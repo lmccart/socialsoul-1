@@ -24,7 +24,8 @@ module.exports = function(config) {
   // starts system with queued up next_user
   controller.start = function() {
     controller.cur_user = controller.next_user;
-    controller.next_user = null;
+    console.log('start with user '+controller.cur_user);
+    //controller.next_user = null;
   }    
 
   return controller;

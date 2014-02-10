@@ -7,11 +7,13 @@ var OtherTestMode = function() {
   var module = {};
   
   module.play = function(data) {
-    $('#test').html(module.data);
-    $('#test').textillate();
-
     init();
     animate();
+  }
+
+  module.exit = function() {
+    $('#container').empty();
+    // pend this is not sufficient cleanup
   }
 
   var container;
