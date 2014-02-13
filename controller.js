@@ -1,11 +1,13 @@
 
-var _ = require('underscore');
-var twitter = require('ntwitter');
+var _ = require('underscore')
+  , twitter = require('ntwitter');
+
 
 module.exports = function(config) {
   var controller = {
     sockets: [],
-    next_user: 'laurmccarthy' // pend temp for testing
+    next_user: 'laurmccarthy', // pend temp for testing
+    storage: require('./storage')()
   };
 
   var twit = new twitter(config.creds);
@@ -69,7 +71,7 @@ module.exports = function(config) {
     for (var i=0; i<controller.sockets.length; i++) {
       controller.sockets[i].emit('mentor', {
         'user':mentor,
-        'content':null
+        'content':null // pend for now
       }); 
     }
   };

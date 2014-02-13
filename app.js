@@ -44,6 +44,12 @@ app.get('/controller', function(req, res) {
   }
 });
 
+app.get('/storage', function(req, res){
+  controller.storage.all(function(error, entries){
+    res.render('storage', { entries: entries})
+  });
+});
+
 
 
 var server = http.createServer(app).listen(app.get('port'), function(){
