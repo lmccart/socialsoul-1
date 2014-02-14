@@ -12,9 +12,9 @@ module.exports = function(config) {
 
   //find all memories
   storage.all = function(callback) {
-    MongoClient.connect(format("mongodb://%s:%s/test?w=1", host, port), function(err, db) {
+    MongoClient.connect(format("mongodb://%s:%s/TED?w=1", host, port), function(err, db) {
 
-      var collection = db.collection('entries');
+      var collection = db.collection('people');
       collection.find().toArray(function(err, arr) {
         callback(err, arr);
       });

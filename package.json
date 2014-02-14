@@ -11,6 +11,8 @@
     "ntwitter": "~0.5.0",
     "socket.io": "~0.9.16",
     "underscore": "~1.5.2",
-    "mongodb": "~1.3.23"
+    "mongodb": "~1.3.23",
+    "request": "~2.33.0",
+    "beagle": "~0.1.1"
   }
 }

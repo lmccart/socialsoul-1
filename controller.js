@@ -1,6 +1,10 @@
 
 var _ = require('underscore')
-  , twitter = require('ntwitter');
+  , twitter = require('ntwitter')
+  , request = require('request')
+  , fs = require('fs')
+  , beagle = require('beagle')
+  , vine = require('./vidgrab');
 
 
 module.exports = function(config) {
@@ -47,6 +51,29 @@ module.exports = function(config) {
             'content':data
           }); 
         }
+
+        // download media
+        for (var i=0; i<data.length; i++) {
+          var media = data[i].entities.media;
+          if (media) {
+            for (var j=0; j<media.length; j++) {
+              controller.download(media[j].media_url, function(){console.log('downloaded ');});
+            }
+          }
+          var urls = data[i].entities.urls;
+          if (urls) {
+            for (var j=0; j<urls.length; j++) {
+              if (urls[j].expanded_url.indexOf('vine') !== -1) {
+                var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
+                vine.download(vine_id, {dir: './assets/'});
+              } else {
+                controller.scrape(urls[j].expanded_url, function(){console.log('scraped ');});
+              }
+            }
+          }
+          // console.log(data[i].entities.urls);
+          // console.log(data[i].entities.media);
+        }
         // analyze tweets
         controller.analyze(data);
       });
@@ -74,6 +101,23 @@ module.exports = function(config) {
         'content':null // pend for now
       }); 
     }
+  };
+
+
+  controller.scrape = function(uri, callback) {
+    beagle.scrape(uri, function(err, bone){
+      for (var i=0; i<bone.images.length; i++) {
+        controller.download(bone.images[i], function(){console.log('d');});
+      }
+    });
+  }
+
+  controller.download = function(uri, callback){
+    request.head(uri, function(err, res, body){
+      var time = new Date().getTime();
+      var filename = 'assets/'+time+'.png';
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
   };
 
   return controller;
