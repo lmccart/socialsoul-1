@@ -31,11 +31,11 @@ npm install
 
 ### endpoints
 
-* /controller -- BA controller page
+* ```/controller``` -- BA controller page
 
-* /controller?action=trigger -- start with current user
-* /controller?action=set_user&user=XXX -- set next user
-* /controller?action=build_db -- rebuild the cached mentor db / data
+* ```/controller?action=trigger``` -- start with current user
+* ```/controller?action=set_user&user=XXX``` -- set next user
+* ```/controller?action=build_db``` -- rebuild the cached mentor db / data
 
-* /storage -- view all in mongodb
+* ```/storage``` -- view all in mongodb
 
