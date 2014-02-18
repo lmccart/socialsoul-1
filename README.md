@@ -31,6 +31,9 @@ npm install
 
 ### endpoints
 
+* ```/screen/:id``` -- view for screen (int or "exit")
+* ```/``` -- view all 48 screens in iframes
+
 * ```/controller``` -- BA controller page
 
 * ```/controller?action=trigger``` -- start with current user

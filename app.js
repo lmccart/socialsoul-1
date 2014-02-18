@@ -30,7 +30,11 @@ if ('development' == app.get('env')) {
 
 
 app.get('/', function(req, res) {
-  res.render('index', { title: 'Main' });
+  res.render('index', { id: 'all' });
+});
+
+app.get('/screen/:id', function(req, res) {
+  res.render('screen', { id: req.params.id });
 });
 
 app.get('/controller', function(req, res) {

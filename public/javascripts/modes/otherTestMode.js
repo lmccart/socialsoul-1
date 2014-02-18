@@ -7,15 +7,15 @@ var OtherTestMode = function() {
   var module = {};
   
   module.play = function(data) {
-    init();
-    animate();
+    //init();
+    //animate();
   }
 
   module.exit = function() {
     $('#container').empty();
     // pend this is not sufficient cleanup
   }
-
+/*
   var container;
 
   var camera, scene, renderer;
@@ -88,6 +88,7 @@ var OtherTestMode = function() {
     renderer.render( scene, camera );
 
   }
-
+*/
   return module;
 };
+
