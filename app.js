@@ -42,6 +42,10 @@ app.get('/controller', function(req, res) {
     console.log('user set to '+req.query.user);
     controller.next_user = req.query.user;
   }
+  else if (req.query.action === 'build_db') {
+    console.log('building db');
+    controller.buildDb();
+  }
 });
 
 app.get('/storage', function(req, res){
@@ -49,6 +53,7 @@ app.get('/storage', function(req, res){
     res.render('storage', { entries: entries})
   });
 });
+
 
 
 

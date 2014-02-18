@@ -66,7 +66,7 @@ module.exports = function(config) {
       });
   };
 
-  controller.buildDB = function() {
+  controller.buildDb = function() {
 
     fs.remove('./assets/mentors/', function() {
       fs.readJson('./data/mentors.json', function(err, data) {
@@ -195,6 +195,5 @@ module.exports = function(config) {
     });
   }
 
-  controller.buildDB();
   return controller;
 };
