@@ -4,6 +4,8 @@ var _ = require('underscore')
   , request = require('request')
   , fs = require('fs')
   , beagle = require('beagle')
+  , natural = require("natural")
+  , similarity = require("./similarity")
   , vine = require('./vidgrab');
 
 
@@ -57,7 +59,7 @@ module.exports = function(config) {
           var media = data[i].entities.media;
           if (media) {
             for (var j=0; j<media.length; j++) {
-              controller.download(media[j].media_url, function(){console.log('downloaded ');});
+              download(media[j].media_url, function(){console.log('downloaded ');});
             }
           }
           var urls = data[i].entities.urls;
@@ -67,7 +69,7 @@ module.exports = function(config) {
                 var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
                 vine.download(vine_id, {dir: './assets/'});
               } else {
-                controller.scrape(urls[j].expanded_url, function(){console.log('scraped ');});
+                scrape(urls[j].expanded_url, function(){console.log('scraped ');});
               }
             }
           }
@@ -75,24 +77,68 @@ module.exports = function(config) {
           // console.log(data[i].entities.media);
         }
         // analyze tweets
-        controller.analyze(data);
+        data = concat_tweets(data);
+        findMentor(data);
       });
   };
 
-  controller.analyze = function(data) {
-    // analyze tweets
-    for (var i=0; i<data.length; i++) {
+  controller.buildDB = function() {
 
-    }
-    // pick related mentor
-
-    // send mentor
-    controller.sendMentor('name');
-
-    // archive new user
+    var mentors = ['hannahjayanti', 'algore', 'kcimc', 'laurmccarthy'];
+    mentors.forEach(function(mentor) {
+      console.log('building tweets for '+mentor);
+      twit.getUserTimeline({screen_name:mentor},
+        function(err, data) { 
+          if (err) console.log(err); 
+          data = concat_tweets(data);
+          // insert into db
+          console.log('inserting '+mentor);
+          controller.storage.insert({user: mentor, text: data});
+      });
+    });
   };
 
-  controller.sendMentor = function(mentor) {
+  function findMentor(text, save) {
+
+    // pick related mentor
+    var low = 0, lowKey = '';
+    var high = 0, highKey = '';
+
+    controller.storage.all(function(err, data) {
+      for (var i=0; i<data.length; i++) {
+        var rating = similarity.tokenCosineSimilarity(text, data[i].text);
+        console.log(data[i].user+' '+rating);
+        if(low == 0 || rating < low) {
+          low = rating;
+          lowKey = data[i].user;
+        }
+        if(high == 0 || rating > high) {
+          high = rating;
+          highKey = data[i].user;
+        }
+      }
+      console.log(highKey + " similarity " + high);
+      sendMentor(highKey);
+    });
+
+  }
+
+  function concat_tweets(data) {
+    var text = '';
+    for (var i=0; i<data.length; i++) {
+      text += data[i].text+' ';
+    }
+    text = normalize(text);
+    return text;
+  }
+
+  function normalize(text) {
+    natural.LancasterStemmer.attach();
+    // maybe need to remove urls too
+    return text.tokenizeAndStem();
+  }
+
+  function sendMentor(mentor) {
     console.log('sending mentor '+mentor);
     //controller.next_user = null;
     for (var i=0; i<controller.sockets.length; i++) {
@@ -101,24 +147,24 @@ module.exports = function(config) {
         'content':null // pend for now
       }); 
     }
-  };
+  }
 
-
-  controller.scrape = function(uri, callback) {
+  function scrape(uri, callback) {
     beagle.scrape(uri, function(err, bone){
       for (var i=0; i<bone.images.length; i++) {
-        controller.download(bone.images[i], function(){console.log('d');});
+        download(bone.images[i], function(){console.log('d');});
       }
     });
   }
 
-  controller.download = function(uri, callback){
+  function download(uri, callback){
     request.head(uri, function(err, res, body){
       var time = new Date().getTime();
       var filename = 'assets/'+time+'.png';
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
-  };
+  }
 
+  controller.buildDB();
   return controller;
 };
