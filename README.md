@@ -15,6 +15,14 @@ http://www.mongodb.org/
 
 ### setup
 
-1. cd app
-2. npm install
-3. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
+1. setup app
+```
+cd app
+npm install
+```
+2. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
+
+
+### to run
+1. start mongo ```mongod```
+2. start app ```node app.js```
