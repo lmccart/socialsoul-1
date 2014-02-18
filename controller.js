@@ -97,7 +97,6 @@ module.exports = function(config) {
   function downloadMedia(data, dir) {
     fs.mkdirs(dir, function (err) {
       if (err) console.error(err)
-      else console.log('pow!')
 
        // download media
       for (var i=0; i<data.length; i++) {
@@ -166,15 +165,18 @@ module.exports = function(config) {
     return text.tokenizeAndStem();
   }
 
-  function sendMentor(mentor) {
-    console.log('sending mentor '+mentor);
+  function sendMentor(name) {
+    console.log('sending mentor '+name);
     //controller.next_user = null;
-    for (var i=0; i<controller.sockets.length; i++) {
-      controller.sockets[i].emit('mentor', {
-        'user':mentor,
-        'content':null // pend for now
-      }); 
-    }
+
+    fs.readJson('./assets/mentors/'+name+'/timeline.json', function(err, data) {
+      for (var i=0; i<controller.sockets.length; i++) {
+        controller.sockets[i].emit('mentor', {
+          'user':name,
+          'content':data 
+        }); 
+      }
+    });
   }
 
   function scrape(uri, dir, callback) {
