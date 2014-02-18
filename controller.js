@@ -78,7 +78,7 @@ module.exports = function(config) {
         }
         // analyze tweets
         data = concat_tweets(data);
-        findMentor(data);
+        findMentor(controller.cur_user, data);
       });
   };
 
@@ -98,7 +98,7 @@ module.exports = function(config) {
     });
   };
 
-  function findMentor(text, save) {
+  function findMentor(user, text, save) {
 
     // pick related mentor
     var low = 0, lowKey = '';
@@ -106,15 +106,17 @@ module.exports = function(config) {
 
     controller.storage.all(function(err, data) {
       for (var i=0; i<data.length; i++) {
-        var rating = similarity.tokenCosineSimilarity(text, data[i].text);
-        console.log(data[i].user+' '+rating);
-        if(low == 0 || rating < low) {
-          low = rating;
-          lowKey = data[i].user;
-        }
-        if(high == 0 || rating > high) {
-          high = rating;
-          highKey = data[i].user;
+        if (data[i].user != user) {
+          var rating = similarity.tokenCosineSimilarity(text, data[i].text);
+          console.log(data[i].user+' '+rating);
+          if(low == 0 || rating < low) {
+            low = rating;
+            lowKey = data[i].user;
+          }
+          if(high == 0 || rating > high) {
+            high = rating;
+            highKey = data[i].user;
+          }
         }
       }
       console.log(highKey + " similarity " + high);
