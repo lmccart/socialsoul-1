@@ -7,7 +7,7 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 
-var config = require('./config');
+var config = require('./data/config');
 var controller = require('./controller')(config);
 
 var app = express();

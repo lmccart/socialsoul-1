@@ -9,7 +9,7 @@
   <body id="controller">
     <h1>storage</h1>
     <% for (var i=0; i<entries.length; i++) { %>
-      <span><%= entries[i].user %></span> ~ <span><%= entries[i].text %></span>
+      <span><%= entries[i].user %></span> ~ <span><%= entries[i].category %> ~ <span><%= entries[i].text.length %></span>
     <% } %>
   </body>
 </html>

@@ -84,18 +84,22 @@ module.exports = function(config) {
 
   controller.buildDB = function() {
 
-    var mentors = ['hannahjayanti', 'algore', 'kcimc', 'laurmccarthy'];
-    mentors.forEach(function(mentor) {
-      console.log('building tweets for '+mentor);
-      twit.getUserTimeline({screen_name:mentor},
-        function(err, data) { 
-          if (err) console.log(err); 
-          data = concat_tweets(data);
-          // insert into db
-          console.log('inserting '+mentor);
-          controller.storage.insert({user: mentor, text: data});
+    fs.readFile('./data/mentors.json', 'utf8', function(err, data) {
+      if (data) data = JSON.parse(data);
+      data.forEach(function(mentor) {
+        console.log('building tweets for '+mentor.user);
+        twit.getUserTimeline({screen_name:mentor.user},
+          function(err, data) { 
+            if (err) console.log(err); 
+            data = concat_tweets(data);
+            // insert into db
+            console.log('inserting '+mentor.user);
+            mentor.text = data;
+            controller.storage.insert(mentor);
+        });
       });
     });
+
   };
 
   function findMentor(user, text, save) {
