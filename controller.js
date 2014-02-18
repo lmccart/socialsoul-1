@@ -40,6 +40,9 @@ module.exports = function(config) {
   // go message received from controller app
   // starts system with queued up next_user
   controller.start = function() {
+
+    controller.reset();
+
     controller.cur_user = controller.next_user;
     console.log('start with user '+controller.cur_user);
     //controller.next_user = null;
@@ -80,6 +83,26 @@ module.exports = function(config) {
         data = concat_tweets(data);
         findMentor(controller.cur_user, data);
       });
+  };
+
+  controller.reset = function() {
+    // empty assets directory
+    var dirPath = 'assets/'
+    fs.readdir(dirPath, function(err, files) {
+      _.each(files, function(file) {
+        if (file !== '.gitkeep') {
+          var filePath = dirPath + file;
+          fs.stat(filePath, function(err, stats) {
+            if (err) console.log(JSON.stringify(err));
+            if (stats.isFile()) {
+              fs.unlink(filePath, function(err) {
+                if (err) console.log(JSON.stringify(err));
+              });
+            }
+          });
+        }
+      });
+    });
   };
 
   controller.buildDB = function() {
