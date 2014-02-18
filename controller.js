@@ -71,13 +71,18 @@ module.exports = function(config) {
     fs.remove('./assets/mentors/', function() {
       fs.readJson('./data/mentors.json', function(err, data) {
         data.forEach(function(mentor) {
+          var path = './assets/mentors/'+mentor.user+'/';
           console.log('building tweets for '+mentor.user);
           twit.getUserTimeline({screen_name:mentor.user},
             function(err, data) { 
               if (err) console.log(err); 
 
-              downloadMedia(data, './assets/mentors/'+mentor.user+'/');
+              // save json
+              fs.outputJson(path+'timeline.json', data, function(e){ if (e) console.log(e); });
+              // download media
+              downloadMedia(data, path);
 
+              // insert text in db
               data = concat_tweets(data);
               // insert into db
               console.log('inserting '+mentor.user);
