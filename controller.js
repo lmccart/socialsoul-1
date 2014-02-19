@@ -13,7 +13,9 @@ module.exports = function(config) {
   var controller = {
     sockets: [],
     next_user: 'laurmccarthy', // pend temp for testing
-    storage: require('./storage')()
+    storage: require('./storage')(),
+    start_time: 0,
+    run_time: 60*1000 // pend temp
   };
 
   var twit = new twitter(config.creds);
@@ -40,6 +42,8 @@ module.exports = function(config) {
   // go message received from controller app
   // starts system with queued up next_user
   controller.start = function() {
+
+    controller.start_time = new Date();
 
     if (controller.cur_user && controller.cur_user != controller.next_user) {
       fs.remove('./assets/'+controller.cur_user+'/');
@@ -92,6 +96,11 @@ module.exports = function(config) {
         });
       });
     });
+  };
+
+  controller.getRemaining = function() {
+    console.log(controller.run_time, (new Date() - controller.start_time));
+    return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
   function downloadMedia(data, dir) {

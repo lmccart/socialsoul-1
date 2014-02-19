@@ -37,7 +37,6 @@ app.get('/screen/:id', function(req, res) {
 });
 
 app.get('/controller', function(req, res) {
-  res.render('controller', {});
   if (req.query.action === 'trigger') {
     controller.start();
   }
@@ -49,6 +48,7 @@ app.get('/controller', function(req, res) {
     console.log('building db');
     controller.buildDb();
   }
+  res.render('controller', { remaining: controller.getRemaining() });
 });
 
 app.get('/storage', function(req, res){
