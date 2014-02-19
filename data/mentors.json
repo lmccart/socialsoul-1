@@ -1,1 +1,15 @@
-[{"user": "algore", "name": "Al Gore", "category" : "humanitarian"}]
+[
+	{"user": "algore", "name": "Al Gore", "category" : "humanitarian"},
+	{"user": "CancerAntiquity", "name": "Palaeo-oncology", "category" : "humanitarian"},
+	{"user": "LaurierWinS", "name": "Women in Science", "category" : "humanitarian"},
+	{"user": "shubzsharma", "name": "Shubhendu Sharma", "category" : "humanitarian"},
+	{"user": "UntitledTitles", "name": "sergei lupashin", "category" : "humanitarian"},
+	{"user": "Seethisway", "name": "jorge manes rubio", "category" : "humanitarian"},
+	{"user": "dsengeh", "name": "David Moinina Sengeh", "category" : "humanitarian"},
+	{"user": "drsteveboyes", "name": "Steve Boyes", "category" : "humanitarian"},
+	{"user": "AuntBertha", "name": "Aunt Bertha", "category" : "humanitarian"},
+	{"user": "borabot", "name": "Bora Yoon", "category" : "humanitarian"},
+	{"user": "AzizAbuSarah", "name": "Aziz Abu Sarah", "category" : "humanitarian"},
+	{"user": "will_potter", "name": "Will Potter", "category" : "humanitarian"},
+	{"user": "orbitingfrog", "name": "Robert Simpson", "category" : "humanitarian"}
+]

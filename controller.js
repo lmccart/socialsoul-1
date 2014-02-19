@@ -181,8 +181,10 @@ module.exports = function(config) {
 
   function scrape(uri, dir, callback) {
     beagle.scrape(uri, function(err, bone){
-      for (var i=0; i<bone.images.length; i++) {
-        download(bone.images[i], dir, function(){console.log('d');});
+      if (bone) {
+        for (var i=0; i<bone.images.length; i++) {
+          download(bone.images[i], dir, function(){console.log('d');});
+        }
       }
     });
   }
