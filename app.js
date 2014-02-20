@@ -3,12 +3,11 @@
  * Module dependencies.
  */
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
-
-var config = require('./data/config');
-var controller = require('./controller')(config);
+var express = require('express')
+  , http = require('http')
+  , path = require('path')
+  , config = require('./data/config')
+  , controller = require('./controller')(config)
 
 var app = express();
 

@@ -16,7 +16,8 @@ http://www.mongodb.org/
 ### setup
 
 1. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
-2. setup app
+2. install phantomjs `brew update && brew install phantomjs`
+3. setup app
 ```
 cd app
 npm install

@@ -63,7 +63,12 @@ module.exports = function(config) {
           }); 
         }
 
-        downloadMedia(data, './assets/'+controller.cur_user+'/');
+        // var all_files = [];
+        // var files = generateFileList(data);
+        // for (var i=0; i<files.length; i++) {
+        //   all_files.push({dir: './assets/'+controller.cur_user+'/', uri: files[i]});
+        // }
+        // downloadMedia(all_files);
 
         // analyze tweets
         data = concat_tweets(data);
