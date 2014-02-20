@@ -139,7 +139,7 @@ module.exports = function(config) {
       });
     }, function() {
       console.log('done with TWEETS')
-      cb0();
+      if (cb0) cb0();
     });
   }
 
