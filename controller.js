@@ -7,7 +7,7 @@ var _ = require('underscore')
   , beagle = require('beagle')
   , natural = require('natural')
   , similarity = require('./similarity')
-  , vine = require('./vidgrab');
+  , vine = require('./vinegrab');
 
 
 module.exports = function(config) {
@@ -63,12 +63,7 @@ module.exports = function(config) {
           }); 
         }
 
-        // var all_files = [];
-        // var files = generateFileList(data);
-        // for (var i=0; i<files.length; i++) {
-        //   all_files.push({dir: './assets/'+controller.cur_user+'/', uri: files[i]});
-        // }
-        // downloadMedia(all_files);
+        downloadMedia('./assets/'+controller.cur_user+'/', data);
 
         // analyze tweets
         data = concat_tweets(data);
@@ -81,8 +76,6 @@ module.exports = function(config) {
     fs.removeSync('./assets/mentors/')
     var data = fs.readJsonSync('./data/mentors.json');
 
-    var all_files = [];
-
     async.eachSeries(data, function(mentor, cb) {
 
       var dir = './assets/mentors/'+mentor.user+'/';
@@ -91,26 +84,20 @@ module.exports = function(config) {
         function(err, data) { 
           if (err) console.log(err); 
 
-          // save json
-          fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-          // download media
-          var files = generateFileList(data);
-          for (var i=0; i<files.length; i++) {
-            all_files.push({dir: dir, uri: files[i]});
-          }
-
           // insert text in db
-          data = concat_tweets(data);
-          // insert into db
           console.log('inserting '+mentor.user+' in db');
+          data = concat_tweets(data);
           mentor.text = data;
           controller.storage.insert(mentor);
 
-          cb(err);
+          // save json
+          fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+          // download media
+          downloadMedia(dir, data, function() { cb(err); });
+
       });
     }, function (err) {
-      //called when all done, or error occurs
-      downloadMedia(all_files, function() { console.log('totes done'); });
+      console.log('totes done');
     });
 
 
@@ -131,38 +118,46 @@ module.exports = function(config) {
           files.push(media[j].media_url);
         }
       }
-      // var urls = data[i].entities.urls;
-      // if (urls) {
-      //   for (var j=0; j<urls.length; j++) {
-      //     if (urls[j].expanded_url.indexOf('vine') !== -1) {
-      //       var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
-      //       //vine.download(vine_id, {dir: dir});
-      //     } else {
-      //       scrape(urls[j].expanded_url, dir, function(){console.log('scraped ');});
-      //     }
-      //   }
-      // }
+      var urls = data[i].entities.urls;
+      if (urls) {
+        for (var j=0; j<urls.length; j++) {
+          if (urls[j].expanded_url.indexOf('vine') !== -1) {
+            var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
+            files.push(urls[j].expanded_url);
+          } else {
+            //scrape(urls[j].expanded_url, dir, function(){console.log('scraped ');});
+          }
+        }
+      }  
     }
     return files;
   }
 
-  function downloadMedia(data, callback) {
+
+  function downloadMedia(dir, data, callback) {
+
+    var files = generateFileList(data);
 
     console.log('downloading media');
-    console.log(data);
+    console.log(dir, files);
 
-    async.eachSeries(data, function (d, cb) {
+    fs.mkdirpSync(dir);
 
-      fs.mkdirpSync(d.dir);
-      request.head(d.uri, function (err, res, body) {
-        var time = new Date().getTime();
-        var filename = d.dir+time+'.png';
-        request(d.uri).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-          cb(err);
+    async.eachSeries(files, function (d, cb) {
+
+      var filename = dir+d.substring(d.lastIndexOf('/')+1);
+      if (d.indexOf('vine') != -1) {
+        var vine_id = d.substring(d.lastIndexOf('/')+1);  
+        vine.download(vine_id, {dir: filename, success: cb});
+      } else {
+        request.head(d, function (err, res, body) {
+          request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+            cb(err);
+          });
         });
-      });
+      }
     }, function (err) {
-      callback();
+      if (callback) callback(err);
     });
   }
 
@@ -233,14 +228,6 @@ module.exports = function(config) {
     });
   }
 
-  function download(uri, dir, callback){
-    request.head({'uri':uri}, function(err, res, body){
-      if (err) console.log('error ', uri);
-      var time = new Date().getTime();
-      var filename = dir+time+'.png';
-      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-    });
-  }
 
   return controller;
 };
