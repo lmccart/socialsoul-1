@@ -16,8 +16,7 @@ http://www.mongodb.org/
 ### setup
 
 1. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
-2. install phantomjs `brew update && brew install phantomjs`
-3. setup app
+2. setup app
 ```
 cd app
 npm install
@@ -42,4 +41,18 @@ npm install
 * ```/controller?action=build_db``` -- rebuild the cached mentor db / data
 
 * ```/storage``` -- view all in mongodb
+
+
+### phantomjs preview
+
+
+1. install phantomjs `brew update && brew install phantomjs`
+2. set interval and duration in public/phantomjs/settings.json
+3. generate images
+```
+cd public/phantomjs
+phantomjs phantom.js
+```
+
+
 

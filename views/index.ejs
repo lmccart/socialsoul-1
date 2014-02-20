@@ -44,9 +44,24 @@
     </style>
 
     <script type='text/javascript'>
+
+      var step = 0;
+      var interval, duration;
+      var monitors = [[11,10,8,8,10,11],[9,6,5,4,7,9],[7,3,1,2,3,6],[4,2,0,0,1,5],[5,1,0,0,2,4],[6,3,2,1,3,7],[9,7,4,5,6,9],[11,10,8,8,10,11]];
+
+      function updateScreens() {
+        if (step*interval < duration) { // pend temp max iterations, this should be smarter
+          for(var y = 0; y < monitors.length; y++) {
+            for(var x = 0; x < monitors[y].length; x++) {
+              var id = monitors[y][x];
+              $('#img_'+y+'_'+x).attr('src', '../phantomjs/render/screen_'+id+'_'+step+'.png');
+            }
+          }
+          step++;
+        }
+      }
+
       window.onload = function() {
-        var step = 0;
-        var monitors = [[11,10,8,8,10,11],[9,6,5,4,7,9],[7,3,1,2,3,6],[4,2,0,0,1,5],[5,1,0,0,2,4],[6,3,2,1,3,7],[9,7,4,5,6,9],[11,10,8,8,10,11]];
 
         for(var y = 0; y < monitors.length; y++) {
           $('body').append('<div id="row_'+y+'" ></div>');
@@ -55,19 +70,12 @@
             $('#row_'+y).append('<div class="wrapper"><span class="label">'+id+'</span><img id="img_'+y+'_'+x+'" class="scaled-frame" src="../phantomjs/render/screen_'+id+'_0.png" /></div>');
           }
         }
-        setInterval(updateScreens, 1000);
 
-        function updateScreens() {
-          if (step < 10) { // pend temp max iterations, this should be smarter
-            for(var y = 0; y < monitors.length; y++) {
-              for(var x = 0; x < monitors[y].length; x++) {
-                var id = monitors[y][x];
-                $('#img_'+y+'_'+x).attr('src', '../phantomjs/render/screen_'+id+'_'+step+'.png');
-              }
-            }
-            step++;
-          }
-        }
+        $.getJSON('phantomjs/settings.json', function (json) {
+          interval = json.interval;
+          duration = json.duration;
+          setInterval(updateScreens, interval);
+         });        
       }
     </script>
   </head>
