@@ -86,14 +86,15 @@ module.exports = function(config) {
 
           // insert text in db
           console.log('inserting '+mentor.user+' in db');
-          data = concat_tweets(data);
-          mentor.text = data;
+          mentor.text = concat_tweets(data);
           controller.storage.insert(mentor);
 
           // save json
           fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
           // download media
-          downloadMedia(dir, data, function() { cb(err); });
+
+          fs.mkdirpSync(dir);
+          downloadMedia(dir, data, function() { cb(err);});
 
       });
     }, function (err) {
@@ -108,58 +109,66 @@ module.exports = function(config) {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  function generateFileList(data) {
-    var files = [];
+  function downloadMedia(dir, data, cb0) {
     // download media
-    for (var i=0; i<data.length; i++) {
-      var media = data[i].entities.media;
+    async.eachSeries(data, function(tweet, cb1) {
+      var entities = [];
+
+      var media = tweet.entities.media;
       if (media) {
         for (var j=0; j<media.length; j++) {
-          files.push(media[j].media_url);
+          entities.push({path:media[j].media_url, type:'img'});
         }
       }
-      var urls = data[i].entities.urls;
+      var urls = tweet.entities.urls;
       if (urls) {
         for (var j=0; j<urls.length; j++) {
-          if (urls[j].expanded_url.indexOf('vine') !== -1) {
-            var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
-            files.push(urls[j].expanded_url);
-          } else {
-            //scrape(urls[j].expanded_url, dir, function(){console.log('scraped ');});
-          }
+          entities.push({path:urls[j].expanded_url, type:'url' });
         }
-      }  
-    }
-    return files;
-  }
-
-
-  function downloadMedia(dir, data, callback) {
-
-    var files = generateFileList(data);
-
-    console.log('downloading media');
-    console.log(dir, files);
-
-    fs.mkdirpSync(dir);
-
-    async.eachSeries(files, function (d, cb) {
-
-      var filename = dir+d.substring(d.lastIndexOf('/')+1);
-      if (d.indexOf('vine') != -1) {
-        var vine_id = d.substring(d.lastIndexOf('/')+1);  
-        vine.download(vine_id, {dir: filename, success: cb});
-      } else {
-        request.head(d, function (err, res, body) {
-          request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-            cb(err);
-          });
-        });
       }
-    }, function (err) {
-      if (callback) callback(err);
+
+      async.eachSeries(entities, function(entity, cb2) {
+        if (entity.type === 'img' || entity.path.indexOf('vine') !== -1) {
+          downloadFile(dir, entity.path, function() { cb2(); });
+        } else {
+          scrape(entity.path, dir, function(){console.log('scraped '); cb2(); });
+        }
+      }, function(err) {
+        console.log('done with tweet');
+        cb1(err);
+      });
+    }, function() {
+      console.log('done with TWEETS')
+      cb0();
     });
   }
+
+
+  function downloadFile(dir, d, callback) {
+    var filename = dir+d.substring(d.lastIndexOf('/')+1);
+    if (d.indexOf('vine') != -1) {
+      var vine_id = d.substring(d.lastIndexOf('/')+1);  
+      vine.download(vine_id, {dir: filename, success: callback});
+    } else {
+      request.head(d, function (err, res, body) {
+        request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+          callback(err);
+        });
+      });
+    } 
+  }
+
+  function scrape(uri, dir, cb0) {
+    beagle.scrape(uri, function(err, bone){
+      if (err) console.log('b err', uri);
+      if (bone) {
+        async.eachSeries(bone.images, function(img, cb1) {
+          downloadFile(dir, img, function(){ cb1(); });
+        }, function() { cb0(); });
+      } else cb0();
+    });
+  }
+
 
   function findMentor(user, text, save) {
 
@@ -205,7 +214,7 @@ module.exports = function(config) {
 
   function sendMentor(name) {
     console.log('sending mentor '+name);
-    //controller.next_user = null;
+    //controller.next_user = null; // pend temp
 
     fs.readJson('./assets/mentors/'+name+'/timeline.json', function(err, data) {
       for (var i=0; i<controller.sockets.length; i++) {
@@ -216,18 +225,6 @@ module.exports = function(config) {
       }
     });
   }
-
-  function scrape(uri, dir, callback) {
-    beagle.scrape(uri, function(err, bone){
-      if (err) console.log('b err', uri);
-      if (bone) {
-        for (var i=0; i<bone.images.length; i++) {
-          download(bone.images[i], dir, function(){console.log('d');});
-        }
-      }
-    });
-  }
-
 
   return controller;
 };
