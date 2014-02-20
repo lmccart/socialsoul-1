@@ -3,6 +3,7 @@ var _ = require('underscore')
   , twitter = require('ntwitter')
   , request = require('request')
   , fs = require('fs-extra')
+  , async = require('async')
   , beagle = require('beagle')
   , natural = require('natural')
   , similarity = require('./similarity')
@@ -72,63 +73,91 @@ module.exports = function(config) {
 
   controller.buildDb = function() {
 
-    fs.remove('./assets/mentors/', function() {
-      fs.readJson('./data/mentors.json', function(err, data) {
-        data.forEach(function(mentor) {
-          var path = './assets/mentors/'+mentor.user+'/';
-          console.log('building tweets for '+mentor.user);
-          twit.getUserTimeline({screen_name:mentor.user},
-            function(err, data) { 
-              if (err) console.log(err); 
+    fs.removeSync('./assets/mentors/')
+    var data = fs.readJsonSync('./data/mentors.json');
 
-              // save json
-              fs.outputJson(path+'timeline.json', data, function(e){ if (e) console.log(e); });
-              // download media
-              downloadMedia(data, path);
+    var all_files = [];
 
-              // insert text in db
-              data = concat_tweets(data);
-              // insert into db
-              console.log('inserting '+mentor.user);
-              mentor.text = data;
-              controller.storage.insert(mentor);
-          });
-        });
+    async.eachSeries(data, function(mentor, cb) {
+
+      var dir = './assets/mentors/'+mentor.user+'/';
+      console.log('grabbing tweets for '+mentor.user);
+      twit.getUserTimeline({screen_name:mentor.user},
+        function(err, data) { 
+          if (err) console.log(err); 
+
+          // save json
+          fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+          // download media
+          var files = generateFileList(data);
+          for (var i=0; i<files.length; i++) {
+            all_files.push({dir: dir, uri: files[i]});
+          }
+
+          // insert text in db
+          data = concat_tweets(data);
+          // insert into db
+          console.log('inserting '+mentor.user+' in db');
+          mentor.text = data;
+          controller.storage.insert(mentor);
+
+          cb(err);
       });
+    }, function (err) {
+      //called when all done, or error occurs
+      downloadMedia(all_files, function() { console.log('totes done'); });
     });
+
+
+
   };
 
   controller.getRemaining = function() {
-    console.log(controller.run_time, (new Date() - controller.start_time));
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  function downloadMedia(data, dir) {
-    fs.mkdirs(dir, function (err) {
-      if (err) console.error(err)
-
-       // download media
-      for (var i=0; i<data.length; i++) {
-        var media = data[i].entities.media;
-        if (media) {
-          for (var j=0; j<media.length; j++) {
-            download(media[j].media_url, dir, function(){console.log('downloaded ');});
-          }
-        }
-        var urls = data[i].entities.urls;
-        if (urls) {
-          for (var j=0; j<urls.length; j++) {
-            if (urls[j].expanded_url.indexOf('vine') !== -1) {
-              var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
-              vine.download(vine_id, {dir: dir});
-            } else {
-              scrape(urls[j].expanded_url, dir, function(){console.log('scraped ');});
-            }
-          }
+  function generateFileList(data) {
+    var files = [];
+    // download media
+    for (var i=0; i<data.length; i++) {
+      var media = data[i].entities.media;
+      if (media) {
+        for (var j=0; j<media.length; j++) {
+          files.push(media[j].media_url);
         }
       }
-        // console.log(data[i].entities.urls);
-        // console.log(data[i].entities.media);
+      // var urls = data[i].entities.urls;
+      // if (urls) {
+      //   for (var j=0; j<urls.length; j++) {
+      //     if (urls[j].expanded_url.indexOf('vine') !== -1) {
+      //       var vine_id = urls[j].expanded_url.substring(urls[j].expanded_url.lastIndexOf('/')+1);
+      //       //vine.download(vine_id, {dir: dir});
+      //     } else {
+      //       scrape(urls[j].expanded_url, dir, function(){console.log('scraped ');});
+      //     }
+      //   }
+      // }
+    }
+    return files;
+  }
+
+  function downloadMedia(data, callback) {
+
+    console.log('downloading media');
+    console.log(data);
+
+    async.eachSeries(data, function (d, cb) {
+
+      fs.mkdirpSync(d.dir);
+      request.head(d.uri, function (err, res, body) {
+        var time = new Date().getTime();
+        var filename = d.dir+time+'.png';
+        request(d.uri).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+          cb(err);
+        });
+      });
+    }, function (err) {
+      callback();
     });
   }
 
@@ -190,6 +219,7 @@ module.exports = function(config) {
 
   function scrape(uri, dir, callback) {
     beagle.scrape(uri, function(err, bone){
+      if (err) console.log('b err', uri);
       if (bone) {
         for (var i=0; i<bone.images.length; i++) {
           download(bone.images[i], dir, function(){console.log('d');});
@@ -199,7 +229,8 @@ module.exports = function(config) {
   }
 
   function download(uri, dir, callback){
-    request.head(uri, function(err, res, body){
+    request.head({'uri':uri}, function(err, res, body){
+      if (err) console.log('error ', uri);
       var time = new Date().getTime();
       var filename = dir+time+'.png';
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
