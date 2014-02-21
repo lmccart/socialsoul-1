@@ -37,17 +37,16 @@ app.get('/screen/:id', function(req, res) {
 
 app.get('/controller', function(req, res) {
   if (req.query.action === 'trigger') {
-    controller.start();
+    controller.start(req.query.user);
   }
-  else if (req.query.action === 'set_user') {
-    console.log('user set to '+req.query.user);
-    controller.next_user = req.query.user;
+  else if (req.query.action === 'queue_user') {
+    controller.queueUser(req.query.user);
   }
   else if (req.query.action === 'build_db') {
     console.log('building db');
     controller.buildDb();
   }
-  res.render('controller', { remaining: controller.getRemaining() });
+  res.render('controller', { cur_user: controller.cur_user, users: controller.queued_users, remaining: controller.getRemaining() });
 });
 
 app.get('/storage', function(req, res){

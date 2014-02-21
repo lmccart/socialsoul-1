@@ -33,10 +33,4 @@ window.onload = function() {
   })();
 
 
-  // BA controller app
-  $('#trigger').click(function(e){
-    console.log('hi')
-    window.location = './controller?action=trigger';
-  });
-
 }

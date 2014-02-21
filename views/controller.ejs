@@ -9,15 +9,20 @@
   <body id="controller">
     <h1>controller</h1>
 
-    <div id="status"><%= Math.round(remaining/1000) %></div>
+    <div id="user_status">Currently playing with <span id="cur_user"><%= cur_user %></span></div>
+    <div id="time_status">Time remaining: <span id="cur_time"><%= Math.round(remaining/1000) %></span></div>
 
     <div>
-    <input id="user" name="user" /><br>
-    <span id='set_user' class='button'>set user</span>
+    <input id="user" name="user" /> 
+    <span id='queue_user' class='button'>queue user</span>
 	</div>
 
 	<div>
-    <span id='trigger' class='button'>start</span>
+    <ul>
+    <% for (var i=0; i<users.length; i++) { %>
+      <li><span id='<%= users[i] %>' class='button trigger'><%= users[i] %></span></li>
+    <% } %>
+    </ul>
   </div>
 
 

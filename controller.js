@@ -3,6 +3,7 @@ var _ = require('underscore')
   , twitter = require('ntwitter')
   , request = require('request')
   , fs = require('fs-extra')
+  , _ = require('underscore')
   , async = require('async')
   , beagle = require('beagle')
   , natural = require('natural')
@@ -13,7 +14,8 @@ var _ = require('underscore')
 module.exports = function(config) {
   var controller = {
     sockets: [],
-    next_user: 'laurmccarthy', // pend temp for testing
+    cur_user: null,
+    queued_users: ['laurmccarthy'], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
     run_time: 60*1000 // pend temp
@@ -23,8 +25,8 @@ module.exports = function(config) {
 
   twit.stream('statuses/filter', {track:'#sstest'}, function(stream) {
     stream.on('data', function (data) {
-      controller.next_user = data.user.screen_name;
-      console.log('next user set to '+controller.next_user);
+      controller.queued_users.push(data.user.screen_name);
+      console.log('queueing user '+data.user.screen_name);
     });
   });
 
@@ -35,39 +37,46 @@ module.exports = function(config) {
   };
 
   // manual override of next user, triggered by controller app
-  controller.setNextUser = function(user) {
-    controller.next_user = user;
-    console.log('next user set to '+controller.next_user);
+  controller.queueUser = function(user) {
+    if (_.indexOf(controller.queued_users, user) === -1) {
+      controller.queued_users.push(user);
+      console.log('queueing user '+user);
+    } else console.log('user '+user+' already in queue');
   };
 
   // go message received from controller app
   // starts system with queued up next_user
-  controller.start = function() {
+  controller.start = function(user) {
 
     controller.start_time = new Date();
 
-    if (controller.cur_user && controller.cur_user != controller.next_user) {
+    // remove and create new dir if necessary
+    if (controller.cur_user !== user) {
       fs.remove('./assets/'+controller.cur_user+'/');
+      fs.mkdirpSync('./assets/'+user+'/');
     }
-    controller.cur_user = controller.next_user;
-    console.log('start with user '+controller.cur_user);
-    //controller.next_user = null;
 
-    twit.getUserTimeline({screen_name:controller.cur_user},
+    console.log('start with user '+user);
+    controller.cur_user = user;
+    controller.queued_users = _.without(controller.queued_users, user); 
+
+    // grab timeline and media
+    twit.getUserTimeline({screen_name:user},
       function(err, data) { 
         if (err) console.log(err); 
+        // alert listeners to start
         for (var i=0; i<controller.sockets.length; i++) {
           controller.sockets[i].emit('trigger', {
-            'user':controller.cur_user,
+            'user':user,
             'content':data
           }); 
         }
 
-        downloadMedia('./assets/'+controller.cur_user+'/', data);
+        downloadMedia('./assets/'+user+'/', data);
 
         // analyze tweets
         data = concat_tweets(data);
-        findMentor(controller.cur_user, data);
+        findMentor(user, data);
       });
   };
 
