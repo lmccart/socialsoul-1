@@ -16,7 +16,7 @@ module.exports = function(config) {
     next_user: 'laurmccarthy', // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
-    run_time: 60*1000 // pend temp
+    run_time: 60*9000 // pend temp
   };
 
   var twit = new twitter(config.creds);
@@ -220,7 +220,7 @@ module.exports = function(config) {
       for (var i=0; i<controller.sockets.length; i++) {
         controller.sockets[i].emit('mentor', {
           'user':name,
-          'content':data 
+          'content':data
         }); 
       }
     });
