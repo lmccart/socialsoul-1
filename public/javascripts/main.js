@@ -12,7 +12,7 @@ window.requestAnimFrame = (function(){
 window.onload = function() {
   console.log('load');
   var manager = new Manager();
-  var socket = io.connect('http://localhost');
+  var socket = io.connect('http://localhost'); // change this for deployment
 
   socket.emit('send', { message: 'hello from frontend' });
 
@@ -26,6 +26,9 @@ window.onload = function() {
     manager.init(data);
   });
 
+  socket.on('reconnect', function() {
+    location.reload();
+  });
 
   (function animloop(){
     requestAnimFrame(animloop);
