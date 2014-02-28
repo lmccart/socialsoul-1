@@ -17,13 +17,14 @@ PFont font;
 void setup() {
   size(1024, 800);
   font = createFont("Helvetica", 16);
-  textFont(font, 512);
   textAlign(CENTER, CENTER);
 }
 
 void draw() {
   background(0);
   float totalWidth = screenCount[0] * (screenSize[0] + screenSpacing);
+  textFont(font, 512);
+  pushMatrix();
   scale(width / totalWidth);
   translate(screenSpacing / 2, screenSpacing / 2);
   for(int j = 0; j < screenCount[1]; j++) {
@@ -37,13 +38,15 @@ void draw() {
       popMatrix();      
     }
   }
-}
-
-void drawScreen(int screenId) {
-  noStroke();
-  float bg = (1000. * sin(millis() / 1000.) + screenId * 1000) % 255;
-  fill(bg);
-  rect(0, 0, screenSize[0], screenSize[1]);
-  fill(0);
-  text(str(screenId), screenSize[0] / 2, screenSize[1] / 2);
+  popMatrix();
+  
+  textFont(font, 32);
+  fill(200, 200, 0);
+  Stage stage = getStage();
+  translate(16, 0);
+  rect(0, 0, 16, 32 * stage.globalTime);
+  rect(32, 0, 16, 32 * stage.localTime);
+  rect(64, 0, 16, 32 * stage.globalState);
+  rect(96, 0, 16, 32 * stage.localState);
+  rect(128, 0, 16, 32 * stage.stage);
 }
