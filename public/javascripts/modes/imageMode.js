@@ -1,20 +1,25 @@
+var ImageMode = function() {
 
-
-var OtherTestMode = function() {
-  console.log('load testmode ');
-
+  console.log('load imagemode ');
 
   var module = {};
-  
-  module.play = function(data) {
-    //init();
-    //animate();
-  }
+
+  module.play = function() {
+    console.log(module.dir);
+    $('#test').html('ASSETS welcome '+module.user);
+    for (var i=0; i<module.files.length; i++) {
+      if (module.files[i].indexOf('.mp4') !== -1) { // append vine
+        $('#test').append('<object data="'+module.dir+module.files[i]+'" >');
+      } else { // append image
+        $('#test').append('<img src="'+module.dir+module.files[i]+'" />');
+      }
+    }
+  };
 
   module.exit = function() {
-    $('#container').empty();
-    // pend this is not sufficient cleanup
+    $('#test').empty();
   }
+
 /*
   var container;
 

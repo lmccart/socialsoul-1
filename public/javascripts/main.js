@@ -26,6 +26,11 @@ window.onload = function() {
     manager.init(data);
   });
 
+  socket.on('assets', function (data) {
+    console.log('assets '+data.dir);
+    manager.addAssets(data);
+  });
+
   socket.on('reconnect', function() {
     location.reload();
   });

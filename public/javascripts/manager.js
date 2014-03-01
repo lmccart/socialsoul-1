@@ -6,8 +6,9 @@ var Manager = function() {
 
   var module = {
     modes: [
-      new TestMode(),
-      new OtherTestMode()
+      new WelcomeMode(),
+      new ImageMode(),
+      new TweetMode()
     ],
     cur_mode: -1,
     last_start: 0,
@@ -15,12 +16,21 @@ var Manager = function() {
   };
 
   module.init = function(data) {
-    module.cur_mode = module.modes.length-1;
     for (var i=0; i<module.modes.length; i++) {
       module.modes[i].user = data.user;
-      module.modes[i].content = data.content;
+      module.modes[i].tweets = data.tweets;
     }
+    module.goToMode(0);
     module.started = true;
+  };
+
+  module.addAssets = function(data) {
+    for (var i=0; i<module.modes.length; i++) {
+      module.modes[i].dir = data.dir.replace('./public', '..');
+      module.modes[i].files = data.files;
+      console.log(i+' '+module.modes[i].dir);
+    }
+    module.goToMode(1);
   };
 
   module.reset = function() {
@@ -33,16 +43,23 @@ var Manager = function() {
   }
 
   module.update = function() {
-    if (module.started) {
-      var t = new Date().getTime();
-      if (t- module.last_start > 20000) {
-        module.last_start = t;
-        module.modes[module.cur_mode].exit();
-        module.cur_mode = (module.cur_mode+1)%(module.modes.length)
-        module.modes[module.cur_mode].play();
-        console.log('playing mode '+module.cur_mode);
-      }
-    }
+    // if (module.started) {
+    //   var t = new Date().getTime();
+    //   if (t - module.last_start > 20000) {
+    //     var next = (module.cur_mode+1)%(module.modes.length);
+    //     module.goToMode(next);
+    //   }
+    // }
+  }
+
+  module.goToMode = function(ind) {
+    if (ind >= 0 && ind < module.modes.length) {
+      module.last_start = new Date().getTime();
+      module.modes[module.cur_mode].exit();
+      module.cur_mode = ind;
+      module.modes[module.cur_mode].play();
+      console.log('playing mode '+module.cur_mode);
+    } else console.log('mode '+ind+' out of bounds');
   }
 
 

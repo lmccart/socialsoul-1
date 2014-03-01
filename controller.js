@@ -10,6 +10,8 @@ var _ = require('underscore')
   , similarity = require('./similarity')
   , vine = require('./vinegrab');
 
+var assets_root = './public/assets/';
+
 
 module.exports = function(config) {
   var controller = {
@@ -52,8 +54,8 @@ module.exports = function(config) {
 
     // remove and create new dir if necessary
     if (controller.cur_user !== user) {
-      fs.remove('./assets/'+controller.cur_user+'/');
-      fs.mkdirpSync('./assets/'+user+'/');
+      fs.remove(assets_root+controller.cur_user+'/');
+      fs.mkdirpSync(assets_root+user+'/');
     }
 
     console.log('start with user '+user);
@@ -68,11 +70,11 @@ module.exports = function(config) {
         for (var i=0; i<controller.sockets.length; i++) {
           controller.sockets[i].emit('trigger', {
             'user':user,
-            'content':data
+            'tweets':data
           }); 
         }
 
-        downloadMedia('./assets/'+user+'/', data);
+        downloadMedia(assets_root+user+'/', data);
 
         // analyze tweets
         data = concat_tweets(data);
@@ -82,12 +84,12 @@ module.exports = function(config) {
 
   controller.buildDb = function() {
 
-    fs.removeSync('./assets/mentors/')
+    fs.removeSync(assets_root+'mentors/')
     var data = fs.readJsonSync('./data/mentors.json');
 
     async.eachSeries(data, function(mentor, cb) {
 
-      var dir = './assets/mentors/'+mentor.user+'/';
+      var dir = assets_root+'mentors/'+mentor.user+'/';
       console.log('grabbing tweets for '+mentor.user);
       twit.getUserTimeline({screen_name:mentor.user},
         function(err, data) { 
@@ -142,12 +144,22 @@ module.exports = function(config) {
         } else {
           scrape(entity.path, dir, function(){console.log('scraped '); cb2(); });
         }
-      }, function(err) {
+      }, function() {
         console.log('done with tweet');
-        cb1(err);
+        cb1();
       });
     }, function() {
-      console.log('done with TWEETS')
+      console.log('done with TWEETS '+dir);
+
+      // send assets to client once they're collected
+      var assets = fs.readdirSync(dir);
+      for (var i=0; i<controller.sockets.length; i++) {
+        controller.sockets[i].emit('assets', {
+          'dir':dir,
+          'files':assets
+        }); 
+      }
+
       if (cb0) cb0();
     });
   }
@@ -225,7 +237,7 @@ module.exports = function(config) {
     console.log('sending mentor '+name);
     //controller.next_user = null; // pend temp
 
-    fs.readJson('./assets/mentors/'+name+'/timeline.json', function(err, data) {
+    fs.readJson(assets_root+'mentors/'+name+'/timeline.json', function(err, data) {
       for (var i=0; i<controller.sockets.length; i++) {
         controller.sockets[i].emit('mentor', {
           'user':name,
