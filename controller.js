@@ -140,7 +140,9 @@ module.exports = function(config) {
 
       async.eachSeries(entities, function(entity, cb2) {
         if (entity.type === 'img' || entity.path.indexOf('vine') !== -1) {
-          downloadFile(dir, entity.path, function() { cb2(); });
+          downloadFile(dir, entity.path, function() { 
+            cb2(); 
+          });
         } else {
           scrape(entity.path, dir, function(){console.log('scraped '); cb2(); });
         }
@@ -173,6 +175,11 @@ module.exports = function(config) {
     } else {
       request.head(d, function (err, res, body) {
         request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+          for (var i=0; i<controller.sockets.length; i++) {
+            controller.sockets[i].emit('asset', {
+              'file':filename
+            }); 
+          }
           callback(err);
         });
       });

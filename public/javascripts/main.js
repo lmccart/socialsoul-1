@@ -26,10 +26,17 @@ window.onload = function() {
     manager.init(data);
   });
 
+  // assets
   socket.on('assets', function (data) {
     console.log('assets '+data.dir);
     manager.addAssets(data);
   });
+
+  socket.on('asset', function (data) {
+    console.log('asset '+data.file);
+    manager.addAsset(data);
+  });
+
 
   socket.on('reconnect', function() {
     location.reload();

@@ -17,6 +17,7 @@ var Manager = function() {
 
   module.init = function(data) {
     for (var i=0; i<module.modes.length; i++) {
+      module.modes[i].files = [];
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
@@ -31,6 +32,18 @@ var Manager = function() {
       console.log(i+' '+module.modes[i].dir);
     }
     module.goToMode(1);
+  };
+
+  module.addAsset = function(data) {
+    module.goToMode(1);
+
+    for (var i=0; i<module.modes.length; i++) {
+      console.log(data.file.replace('./public', '..'));
+      var file = data.file.replace('./public', '..');
+      module.modes[i].files.push(file);
+      console.log(i+' '+file);
+    }
+    module.modes[module.cur_mode].next();
   };
 
   module.reset = function() {
@@ -53,13 +66,13 @@ var Manager = function() {
   }
 
   module.goToMode = function(ind) {
-    if (ind >= 0 && ind < module.modes.length) {
+    if (ind >= 0 && ind < module.modes.length && module.cur_mode !== ind) {
       module.last_start = new Date().getTime();
       module.modes[module.cur_mode].exit();
       module.cur_mode = ind;
       module.modes[module.cur_mode].play();
       console.log('playing mode '+module.cur_mode);
-    } else console.log('mode '+ind+' out of bounds');
+    } else console.log('mode '+ind+' out of bounds or already in mode');
   }
 
 

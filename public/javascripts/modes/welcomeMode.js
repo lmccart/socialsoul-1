@@ -6,7 +6,7 @@ var WelcomeMode = function() {
 
   module.play = function() {
     console.log(module.tweets);
-    $('#test').html('welcome '+module.user);
+    $('#test').html(module.user);
   };
 
   module.exit = function() {

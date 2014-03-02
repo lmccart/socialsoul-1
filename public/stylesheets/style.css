@@ -1,16 +1,36 @@
 body {
-  background: #AA00FF;
-  padding: 50px;
-  font: 25px Helvetica, Arial, sans-serif;
+  background: black;
+  font: 50px Helvetica, Arial, sans-serif;
   color: white;
+  padding: 0;
+  margin: 0;
 }
 
-
-#test {
+img, object {
+  width: 100%;
   position: absolute;
 }
 
+#test {
+  font: 300px Helvetica, Arial, sans-serif;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+}
+
+.tweet {
+  position: absolute;
+  z-index: 1;
+  color: #FF6E43;
+  padding: 50px;
+  width: 100%;
+  font: 100px Helvetica, Arial, sans-serif;
+}
+
 /*** CONTROLLER STUFF ***/
+#controller {
+  margin: 30px;
+}
 
 #controller div {
   margin-bottom: 30px;
