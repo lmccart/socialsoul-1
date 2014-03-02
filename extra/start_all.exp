@@ -5,9 +5,7 @@ for {set i 0} {$i < 6} {incr i 1} {
   expect "assword:"
   send "soulmate\r"
   expect "$ " 
-  send "ls\r" 
-  expect "$ " 
-  send "osascript SCRIPT.scpt\r" 
+  send "osascript ~/Desktop/start-social-soul-screen.scpt &\r" 
   expect "$ " 
   send "exit\r"
 }
