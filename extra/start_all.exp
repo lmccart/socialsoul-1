@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+
+for {set i 0} {$i < 6} {incr i 1} {
+  spawn ssh socialsoul@socialsoul${i}.local
+  expect "assword:"
+  send "soulmate\r"
+  expect "$ " 
+  send "ls\r" 
+  expect "$ " 
+  send "osascript SCRIPT.scpt\r" 
+  expect "$ " 
+  send "exit\r"
+}

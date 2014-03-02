@@ -14,6 +14,10 @@ var ImageMode = function() {
         $('#test').append('<img src="'+module.dir+module.files[i]+'" />');
       }
     }
+    for (var i=0; i<module.tweets.length; i++) {
+      console.log(module.tweets[i]);
+      $('#test').append('<div class="tweet">'+module.tweets[i].text+'</div>');
+    }
   };
 
   module.exit = function() {

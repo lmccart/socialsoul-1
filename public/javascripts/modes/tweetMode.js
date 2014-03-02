@@ -13,7 +13,7 @@ var TweetMode = function() {
       $('#test').append('<div class="tweet">'+module.tweets[i].text+'</div>');
     }
     //$('#test').textillate({loop: true, minDisplayTime: 1000});
-    $('.tweet').textillate({minDisplayTime: 1000});
+    //$('.tweet').textillate({minDisplayTime: 1000});
 
   };
 

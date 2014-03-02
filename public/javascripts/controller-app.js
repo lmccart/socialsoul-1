@@ -32,6 +32,7 @@ function timer() {
   if (count <= 0) {
      clearInterval(counter);
      //counter ended, do something here
+     $('#user_status').html('');
      $('#time_status').html("Ready for next visitor!");
      return;
   } else {
