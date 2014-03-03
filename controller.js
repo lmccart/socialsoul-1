@@ -54,10 +54,11 @@ module.exports = function(config) {
 
     // cleanup
     // remove and create new dir if necessary
-    for (var i=0; i<requests.length; i++) {
-      console.log(requests[i]);
-      requests[i].destroy();
-    }
+    // while(queue.length > 0) {
+      
+    //   console.log('pop '+queue.pop());
+    // }
+
     if (controller.cur_user !== user) {
       fs.remove(assets_root+controller.cur_user+'/');
       fs.mkdirpSync(assets_root+user+'/');
@@ -110,14 +111,12 @@ module.exports = function(config) {
           // download media
 
           fs.mkdirpSync(dir);
-          downloadMedia(dir, data, function() { cb(err);});
+          downloadMedia(dir, data, function() { cb();});
 
       });
-    }, function (err) {
-      console.log('totes done');
+    }, function () {
+      console.log('downloaded ');
     });
-
-
 
   };
 
@@ -125,81 +124,61 @@ module.exports = function(config) {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  function downloadMedia(dir, data, cb0) {
+  function downloadMedia(dir, data, callback) {
     // download media
-    async.eachSeries(data, function(tweet, cb1) {
-      var entities = [];
+    for (var i=0; i<data.length; i++) {
 
-      var media = tweet.entities.media;
+      var media = data[i].entities.media;
       if (media) {
         for (var j=0; j<media.length; j++) {
-          entities.push({path:media[j].media_url, type:'img'});
+          queue.push({dir:dir, url:media[j].media_url}, callback);
         }
       }
-      var urls = tweet.entities.urls;
+      var urls = data[i].entities.urls;
       if (urls) {
         for (var j=0; j<urls.length; j++) {
-          entities.push({path:urls[j].expanded_url, type:'url' });
+          scrape(dir, urls[j].expanded_url, callback);
         }
       }
+    }
+  }
 
-      async.eachSeries(entities, function(entity, cb2) {
-        if (entity.type === 'img' || entity.path.indexOf('vine') !== -1) {
-          downloadFile(dir, entity.path, function() { 
-            cb2(); 
-          });
-        } else {
-          scrape(entity.path, dir, function(){console.log('scraped '); cb2(); });
+  function scrape(dir, uri, callback) {
+    beagle.scrape(uri, function(err, bone){
+      if (err) console.log('b err', uri);
+      if (bone) {
+        for (var i=0; i<bone.images.length; i++) {
+          queue.push({dir:dir, url:bone.images[i]}, callback);
         }
-      }, function() {
-        console.log('done with tweet');
-        cb1();
-      });
-    }, function() {
-      console.log('done with TWEETS '+dir);
-
-      // send assets to client once they're collected
-      var assets = fs.readdirSync(dir);
-      for (var i=0; i<controller.sockets.length; i++) {
-        controller.sockets[i].emit('assets', {
-          'dir':dir,
-          'files':assets
-        }); 
-      }
-
-      if (cb0) cb0();
+      } 
     });
   }
 
+  //Set up our queue
+  var queue = async.queue(function(obj, callback) {
 
-  function downloadFile(dir, d, callback) {
-    var filename = dir+d.substring(d.lastIndexOf('/')+1);
-    if (d.indexOf('vine') != -1) {
-      var vine_id = d.substring(d.lastIndexOf('/')+1);  
+    var filename = obj.dir+obj.url.substring(obj.url.lastIndexOf('/')+1);
+    if (obj.url.indexOf('vine') != -1) {
+      var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
       vine.download(vine_id, {dir: filename, success: callback});
     } else {
-      requests.push(request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+      request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
         for (var i=0; i<controller.sockets.length; i++) {
           controller.sockets[i].emit('asset', {
             'file':filename
           }); 
         }
-        callback(err);
-      }));
+        callback(filename);
+      });
     } 
-  }
+  }, 1); //Only allow 1 request at a time
 
-  function scrape(uri, dir, cb0) {
-    beagle.scrape(uri, function(err, bone){
-      if (err) console.log('b err', uri);
-      if (bone) {
-        async.eachSeries(bone.images, function(img, cb1) {
-          downloadFile(dir, img, function(){ cb1(); });
-        }, function() { cb0(); });
-      } else cb0();
-    });
-  }
-
+  //When the queue is emptied we want to check if we're done
+  queue.drain = function() {
+    if (queue.length() == 0 ) { //&& listObjectsDone) {
+      console.log('ALL files have been downloaded');
+    }
+  };
 
   function findMentor(user, text, save) {
 
