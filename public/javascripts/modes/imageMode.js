@@ -27,7 +27,8 @@ var ImageMode = function() {
   };
 
   module.next = function() {
-    var ind = module.files.length-1;
+    // var ind = module.files.length-1;
+    var ind = Math.floor(module.files.length * Math.random());
     if (ind >= 0) {
       if (module.files[ind].indexOf('.mp4') !== -1) { // append vine
         $('#test').html('<object data="'+module.files[ind]+'" >');

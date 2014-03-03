@@ -68,7 +68,20 @@
     <div id='test'>
         <span style="font-size: 480px;">
         <script type="text/javascript">
-        document.write(window.location.pathname.split("/")[2]);
+        timeOffset = 0;
+
+        var screenId = window.location.pathname.split("/")[2];
+        document.write(screenId);
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+        }
+        function render() {
+            var currentServerTime = Date.now() + timeOffset;
+            var bg = (1000. * Math.abs(Math.sin(currentServerTime / 1000.)) + (screenId + 1) * 10) % 255;
+            $("body").css({ opacity: bg / 255. });
+        }
+        animate(0);
         </script>
     </span>
     </div>

@@ -67,7 +67,8 @@ var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
   controller.addSocket(socket);
-  socket.emit('message', { message: 'hello from the backend' });
+  socket.emit('message', { message: 'hello from the backend'});
+  socket.emit('sync', { serverTime: Date.now()});
   socket.on('send', function (data) {
     console.log(data);
   });

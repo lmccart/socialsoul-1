@@ -37,6 +37,7 @@ var Manager = function() {
   module.addAsset = function(data) {
     module.goToMode(1);
 
+    console.log(module.files);
     for (var i=0; i<module.modes.length; i++) {
       console.log(data.file.replace('./public', '..'));
       var file = data.file.replace('./public', '..');

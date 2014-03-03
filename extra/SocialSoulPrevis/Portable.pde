@@ -35,7 +35,7 @@ Stage getStage() {
 
 void drawScreen(int screenId) {
   noStroke();
-  float bg = (1000. * sin(millis() / 1000.) + (screenId + 1) * 1000) % 255;
+  float bg = (1000. * abs(sin(millis() / 1000.)) + (screenId + 1) * 20) % 255;
   fill(bg);
   rect(0, 0, screenSize[0], screenSize[1]);
   fill(0);

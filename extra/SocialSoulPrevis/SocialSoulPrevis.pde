@@ -1,23 +1,66 @@
-int screenSize[] = {1920, 1080};
-int screenSpacing = 100;
-int screenCount[] = {6, 8};
+float screenSize[] = {
+  1920, 1080
+};
+float screenSpacing = 100;
+int screenCount[] = {
+  5, 10
+};
 int screenIds[] = {
-12, 11, 9,  9,  11, 12,
-10, 7,  6,  5,  8,  10,
-8,  4,  2,  3,  4,  7,
-5,  3,  1,  1,  2,  6,
-6,  2,  1,  1,  3,  5,
-7,  4,  3,  2,  4,  8,
-10, 8,  5,  6,  7,  10,
-12, 11, 9,  9,  11, 12
+  12, 10, 9, 10, 12,
+  10, 8, 7, 8, 10,
+  8, 6, 5, 6, 8,
+  7, 4, 3, 4, 7,
+  7, 3, 1, 2, 7,
+  7, 2, 1, 3, 7,
+  7, 4, 3, 4, 7,
+  8, 6, 5, 6, 8,
+  10, 8, 7, 8, 10,
+  12, 10, 9, 10, 12
 };
 
 PFont font;
 
 void setup() {
-  size(1024, 800);
+  size(800, 935); // 1024x800
   font = createFont("Helvetica", 16);
   textAlign(CENTER, CENTER);
+/*
+  float lowestDev = 0;
+  for (float divisor = 6168; divisor < 6672; divisor+=.1) {
+      int allCount[] = new int[12];
+      for (int j = 0; j < screenCount[1]; j++) {
+        for (int i = 0; i < screenCount[0]; i++) {
+          float x = i * (screenSize[0] + screenSpacing);
+          float y = j * (screenSize[1] + screenSpacing);
+          float xc = ((screenCount[0] - 1) / 2.) * (screenSize[0] + screenSpacing);
+          float yc = ((screenCount[1] - 1) / 2.) * (screenSize[1] + screenSpacing);
+          float d = dist(xc, yc, x, y);
+          d /= divisor; // 514 - 556
+          d = constrain(d, 0, 1);
+//          d = pow(d, 2);
+          d *= 12;
+          d = constrain(d, 1, 12);
+          int k = j * screenCount[0] + i;
+          screenIds[k] = int(d);
+          allCount[int(d) - 1]++;
+        }
+      }
+      float mean = 0;
+      for (int i = 0; i < allCount.length; i++) {
+        mean += allCount[i];
+      }
+      mean /= allCount.length;
+      float curDev = 0;
+      for (int i = 0; i < allCount.length; i++) {
+        curDev += sq(allCount[i] - mean);
+      }
+      if (lowestDev == 0 || curDev < lowestDev) {
+        lowestDev = curDev;
+        println("lowest: " + divisor);
+        println(allCount);
+    }
+  }
+  */
 }
 
 void draw() {
@@ -27,19 +70,19 @@ void draw() {
   pushMatrix();
   scale(width / totalWidth);
   translate(screenSpacing / 2, screenSpacing / 2);
-  for(int j = 0; j < screenCount[1]; j++) {
-    for(int i = 0; i < screenCount[0]; i++) {
+  for (int j = 0; j < screenCount[1]; j++) {
+    for (int i = 0; i < screenCount[0]; i++) {
       float x = i * (screenSize[0] + screenSpacing);
       float y = j * (screenSize[1] + screenSpacing);
       int k = j * screenCount[0] + i;
       pushMatrix();
       translate(x, y);
       drawScreen(screenIds[k]);
-      popMatrix();      
+      popMatrix();
     }
   }
   popMatrix();
-  
+
   textFont(font, 32);
   fill(200, 200, 0);
   Stage stage = getStage();
@@ -50,3 +93,4 @@ void draw() {
   rect(96, 0, 16, 32 * stage.localState);
   rect(128, 0, 16, 32 * stage.stage);
 }
+
