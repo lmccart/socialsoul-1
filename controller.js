@@ -11,7 +11,7 @@ var _ = require('underscore')
   , vine = require('./vinegrab');
 
 var assets_root = './public/assets/';
-
+var requests = [];
 
 module.exports = function(config) {
   var controller = {
@@ -52,7 +52,12 @@ module.exports = function(config) {
 
     controller.start_time = new Date();
 
+    // cleanup
     // remove and create new dir if necessary
+    for (var i=0; i<requests.length; i++) {
+      console.log(requests[i]);
+      requests[i].destroy();
+    }
     if (controller.cur_user !== user) {
       fs.remove(assets_root+controller.cur_user+'/');
       fs.mkdirpSync(assets_root+user+'/');
@@ -173,16 +178,14 @@ module.exports = function(config) {
       var vine_id = d.substring(d.lastIndexOf('/')+1);  
       vine.download(vine_id, {dir: filename, success: callback});
     } else {
-      request.head(d, function (err, res, body) {
-        request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-          for (var i=0; i<controller.sockets.length; i++) {
-            controller.sockets[i].emit('asset', {
-              'file':filename
-            }); 
-          }
-          callback(err);
-        });
-      });
+      requests.push(request(d).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+        for (var i=0; i<controller.sockets.length; i++) {
+          controller.sockets[i].emit('asset', {
+            'file':filename
+          }); 
+        }
+        callback(err);
+      }));
     } 
   }
 
