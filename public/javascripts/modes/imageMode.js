@@ -6,8 +6,7 @@ var ImageMode = function() {
 
   module.play = function() {
     console.log("play");
-    $('#test').css('text-align','left');
-
+    
     // for (var i=0; i<module.files.length; i++) {
     //   if (module.files[i].indexOf('.mp4') !== -1) { // append vine
     //     $('#test').append('<object data="'+module.dir+module.files[i]+'" >');
@@ -27,8 +26,7 @@ var ImageMode = function() {
   };
 
   module.next = function() {
-    // var ind = module.files.length-1;
-    var ind = Math.floor(module.files.length * Math.random());
+    var ind = module.files.length-1;
     if (ind >= 0) {
       if (module.files[ind].indexOf('.mp4') !== -1) { // append vine
         $('#test').html('<object data="'+module.files[ind]+'" >');
@@ -43,7 +41,7 @@ var ImageMode = function() {
   module.exit = function() {
     $('#test').empty();
   };
-  
+
   return module;
 };
 
