@@ -1,3 +1,15 @@
+var ServerTime = (function() {
+  var timeOffset = 0;
+  return {
+    init: function(timeOffset) {
+      this.timeOffset = timeOffset;
+    },
+    now: function() {
+      return Date.now() + timeOffset;
+    }
+  }
+}());
+
 window.onload = function() {
   console.log('load');
   var manager = new Manager();
@@ -10,7 +22,7 @@ window.onload = function() {
   });
 
   socket.on('sync', function (data) {
-    timeOffset = data.serverTime - Date.now();
+    ServerTime.init(data.serverTime - Date.now());
   });
 
   socket.on('trigger', function (data) {

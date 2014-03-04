@@ -28,8 +28,7 @@
             render();
         }
         function render() {
-            var currentServerTime = Date.now() + timeOffset;
-            var bg = (1000. * Math.abs(Math.sin(currentServerTime / 1000.)) + (screenId + 1) * 10) % 255;
+            var bg = (1000. * Math.abs(Math.sin(ServerTime.now() / 1000.)) + (screenId + 1) * 10) % 255;
             $("body").css({ opacity: bg / 255. });
         }
         animate(0);
