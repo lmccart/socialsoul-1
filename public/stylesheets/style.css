@@ -14,19 +14,14 @@ body {
   text-align: center;
 }
 
-#test {
-  font: 300px Helvetica, Arial, sans-serif;
+#debug {
+  font: 14px Helvetica, Arial, sans-serif;
   width: 100%;
   position: absolute;
 }
 
-.tweet {
-  position: absolute;
-  z-index: 1;
-  color: #FF6E43;
-  padding: 50px;
-  width: 100%;
-  font: 100px Helvetica, Arial, sans-serif;
+#debug img {
+  height: 200px;
 }
 
 /*** CONTROLLER STUFF ***/
