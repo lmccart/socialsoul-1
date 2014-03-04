@@ -30,9 +30,9 @@ module.exports = (function() {
       var r_options = options.request || { method: 'GET', uri: address + vine_id, headers: { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0' } };
       // send the request
       request(r_options, function(err, response, body) {
-        if(err) cb(err);
+        if(err) cb('error '+err);
         if(response.statusCode === 404) {
-          cb(err);
+          cb('404 '+err);
           return;
         }
         var pattern = options.pattern || opts.pattern; // override pattern if script breaks
@@ -43,8 +43,12 @@ module.exports = (function() {
           // get request (will throw error if request was invalid)
           var r = request.get(selected);
           // return request
-          r.pipe(require('fs').createWriteStream(dir + vine_id + '.mp4')).on('close', function(err) {
-            cb(err);
+          var filename = dir + vine_id + '.mp4';
+          r.pipe(require('fs').createWriteStream(filename)).on('close', function(err) {
+            cb(filename);
+          }).on('error', function(err) {
+            console.log('Error caught and ignored: ' +err);
+            callback(filename);
           });
         }
         else cb(null);

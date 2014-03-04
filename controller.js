@@ -17,7 +17,7 @@ module.exports = function(config) {
   var controller = {
     sockets: [],
     cur_user: null,
-    queued_users: ['laurmccarthy'], // pend temp for testing
+    queued_users: ['laurmccarthy', 'twitpicfails', 'aarontweets', 'FunnyVines'], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
     run_time: 60*1000 // pend temp
@@ -50,21 +50,29 @@ module.exports = function(config) {
   // starts system with queued up next_user
   controller.start = function(user) {
 
-    controller.start_time = new Date();
+    // CLEANUP
+    // remove queued tasks
+    while(queue.length() > 0) {
+      console.log('pop '+queue.tasks.pop());
+    }
 
-    // cleanup
-    // remove and create new dir if necessary
-    // while(queue.length > 0) {
-      
-    //   console.log('pop '+queue.pop());
-    // }
+    // destroy pending requests
+    for (var i=0; i<requests.length; i++) {
+      console.log('destroying '+requests[i]);
+      requests[i].destroy();
+    }
+    requests = [];
 
+    // remove old dir and create new if nec
     if (controller.cur_user !== user) {
       fs.remove(assets_root+controller.cur_user+'/');
       fs.mkdirpSync(assets_root+user+'/');
     }
 
+
+    // START NEW
     console.log('start with user '+user);
+    controller.start_time = new Date();
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
@@ -80,7 +88,9 @@ module.exports = function(config) {
           }); 
         }
 
-        downloadMedia(assets_root+user+'/', data);
+        downloadMedia(assets_root+user+'/', data, function(res) {
+          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+        });
 
         // analyze tweets
         data = concat_tweets(data);
@@ -137,7 +147,11 @@ module.exports = function(config) {
       var urls = data[i].entities.urls;
       if (urls) {
         for (var j=0; j<urls.length; j++) {
-          scrape(dir, urls[j].expanded_url, callback);
+          if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
+            queue.push({dir:dir, url:urls[j].expanded_url}, callback);
+          } else {
+            scrape(dir, urls[j].expanded_url, callback);
+          }
         }
       }
     }
@@ -158,18 +172,22 @@ module.exports = function(config) {
   var queue = async.queue(function(obj, callback) {
 
     var filename = obj.dir+obj.url.substring(obj.url.lastIndexOf('/')+1);
-    if (obj.url.indexOf('vine') != -1) {
+    if (obj.url.indexOf('vine.co') != -1) {
       var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
-      vine.download(vine_id, {dir: filename, success: callback});
+      vine.download(vine_id, {dir: obj.dir, success: callback});
     } else {
-      request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
         for (var i=0; i<controller.sockets.length; i++) {
           controller.sockets[i].emit('asset', {
             'file':filename
           }); 
         }
         callback(filename);
+      }).on('error', function(err) {
+        console.log('Error caught and ignored: ' +err);
+        callback(filename);
       });
+      requests.push(req);
     } 
   }, 1); //Only allow 1 request at a time
 
