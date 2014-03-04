@@ -1,18 +1,7 @@
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
-            window.setTimeout(callback, 1000 / 60);
-          };
-})();
-
-
-
 window.onload = function() {
   console.log('load');
   var manager = new Manager();
-  var socket = io.connect('http://socialsoulserver.local'); // change this for deployment
+  var socket = io.connect('http://localhost'); // change this for deployment
 
   socket.emit('send', { message: 'hello from frontend' });
 
@@ -47,7 +36,7 @@ window.onload = function() {
   });
 
   (function animloop(){
-    requestAnimFrame(animloop);
+    requestAnimationFrame(animloop);
     manager.update();
   })();
 
