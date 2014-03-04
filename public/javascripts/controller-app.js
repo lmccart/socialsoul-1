@@ -5,7 +5,7 @@ window.onload = function() {
 
   startTimer(parseInt($('#cur_time').html(), 10));
 
-  if ($('#cur_user').html() == 'null') {
+  if ($('#cur_user').html() == 'undefined' || $('#error_status').html() !== undefined) {
     $('#user_status').html('');
   } 
 

@@ -36,20 +36,20 @@ app.get('/screen/:id', function(req, res) {
 });
 
 app.get('/controller', function(req, res) {
+  // splitting this because trigger needs to wait for
+  // callback to render controller with status msg
   if (req.query.action === 'trigger') {
-    controller.start(req.query.user);
+    controller.start(req.query.user, function() { renderController(res); });
+  } else {
+    if (req.query.action === 'queue_user') {
+      controller.queueUser(req.query.user);
+    }
+    else if (req.query.action === 'build_db') {
+      console.log('building db');
+      controller.buildDb();
+    }
+    renderController(res);
   }
-  else if (req.query.action === 'queue_user') {
-    controller.queueUser(req.query.user);
-  }
-  else if (req.query.action === 'build_db') {
-    console.log('building db');
-    controller.buildDb();
-  }
-  res.render('controller', { cur_user: controller.cur_user, 
-                             users: controller.queued_users, 
-                             remaining: controller.getRemaining(),
-                             error: controller.error });
 });
 
 app.get('/storage', function(req, res){
@@ -57,6 +57,14 @@ app.get('/storage', function(req, res){
     res.render('storage', { entries: entries})
   });
 });
+
+
+function renderController(res) {
+  res.render('controller', { cur_user: controller.cur_user, 
+                             users: controller.queued_users, 
+                             remaining: controller.getRemaining(),
+                             error: controller.error });
+}
 
 
 

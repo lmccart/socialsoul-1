@@ -35,7 +35,6 @@ module.exports = function(config) {
     storage.all(function(err, data) {
      // console.log(data);
       storage.default_users = _.map(data, function(obj) { return obj.user; });
-      console.log(storage.default_users);
     });
 
 
