@@ -48,7 +48,7 @@ module.exports = (function() {
             cb(filename);
           }).on('error', function(err) {
             console.log('Error caught and ignored: ' +err);
-            callback(filename);
+            cb(filename);
           });
         }
         else cb(null);

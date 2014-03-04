@@ -14,14 +14,18 @@ var assets_root = './public/assets/';
 var requests = [];
 
 module.exports = function(config) {
+ 
+  var default_user = '*DEFAULT*';
+
   var controller = {
     sockets: [],
     cur_user: null,
-    queued_users: ['laurmccarthy', 'twitpicfails', 'aarontweets', 'FunnyVines'], // pend temp for testing
+    queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
     run_time: 60*1000 // pend temp
   };
+  
 
   var twit = new twitter(config.creds);
 
@@ -40,16 +44,26 @@ module.exports = function(config) {
 
   // manual override of next user, triggered by controller app
   controller.queueUser = function(user) {
-    if (_.indexOf(controller.queued_users, user) === -1) {
+
+    var match = _.filter(controller.queued_users, function(u) { return ~u.toLowerCase().indexOf(user.toLowerCase())});
+    console.log(match);
+    if (!match.length > 0) {
       controller.queued_users.push(user);
       console.log('queueing user '+user);
     } else console.log('user '+user+' already in queue');
   };
 
   // go message received from controller app
-  // starts system with queued up next_user
+  // determines next user and starts
   controller.start = function(user) {
 
+    if (user === default_user) {
+      console.log(controller.storage);
+      var defs = controller.storage.default_users;
+      user = defs[Math.floor(Math.random()*defs.length)];
+      console.log('choosing default user: '+user);
+    }
+      
     // CLEANUP
     // remove queued tasks
     while(queue.length() > 0) {
@@ -96,7 +110,7 @@ module.exports = function(config) {
         data = concat_tweets(data);
         findMentor(user, data);
       });
-  };
+  }
 
   controller.buildDb = function() {
 
