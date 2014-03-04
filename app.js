@@ -46,7 +46,10 @@ app.get('/controller', function(req, res) {
     console.log('building db');
     controller.buildDb();
   }
-  res.render('controller', { cur_user: controller.cur_user, users: controller.queued_users, remaining: controller.getRemaining() });
+  res.render('controller', { cur_user: controller.cur_user, 
+                             users: controller.queued_users, 
+                             remaining: controller.getRemaining(),
+                             error: controller.error });
 });
 
 app.get('/storage', function(req, res){

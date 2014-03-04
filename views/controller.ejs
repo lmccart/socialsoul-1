@@ -9,6 +9,10 @@
   <body id="controller">
     <h1>controller</h1>
 
+    <% if (error) { %>
+      <div id="error_status"><%= error %></div>
+    <% } %>
+
     <div id="user_status">Currently playing with <span id="cur_user"><%= cur_user %></span></div>
     <div id="time_status">Time remaining: <span id="cur_time"><%= Math.round(remaining/1000) %></span></div>
 

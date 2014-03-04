@@ -23,7 +23,8 @@ module.exports = function(config) {
     queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
-    run_time: 60*1000 // pend temp
+    run_time: 60*1000, // pend temp
+    error: null // for status ping
   };
   
 
@@ -93,22 +94,28 @@ module.exports = function(config) {
     // grab timeline and media
     twit.getUserTimeline({screen_name:user},
       function(err, data) { 
-        if (err) console.log(err); 
-        // alert listeners to start
-        for (var i=0; i<controller.sockets.length; i++) {
-          controller.sockets[i].emit('trigger', {
-            'user':user,
-            'tweets':data
-          }); 
+        if (err) {
+          console.log(err);
+          controller.error = err; 
         }
+        else {
+          controller.error = null; 
+          // alert listeners to start
+          for (var i=0; i<controller.sockets.length; i++) {
+            controller.sockets[i].emit('trigger', {
+              'user':user,
+              'tweets':data
+            }); 
+          }
 
-        downloadMedia(assets_root+user+'/', data, function(res) {
-          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-        });
+          downloadMedia(assets_root+user+'/', data, function(res) {
+            console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+          });
 
-        // analyze tweets
-        data = concat_tweets(data);
-        findMentor(user, data);
+          // analyze tweets
+          data = concat_tweets(data);
+          findMentor(user, data);
+        }
       });
   }
 
