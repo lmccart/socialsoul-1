@@ -11,10 +11,10 @@ img, object {
   position: absolute;
 }
 
-#screenID {
-  font: 50% Helvetica, Arial, sans-serif;
+#screenId {
+  font: 480px Helvetica, Arial, sans-serif;
   width: 100%;
-  opacity: 50%;
+  opacity: .25;
   position: absolute;
   text-align: center;
 }
