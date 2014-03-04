@@ -1,14 +1,16 @@
 var ServerTime = (function() {
   var timeOffset = 0;
   return {
-    init: function(timeOffset) {
-      this.timeOffset = timeOffset;
+    init: function(serverTime) {
+      this.timeOffset = serverTime - Date.now();
     },
     now: function() {
       return Date.now() + timeOffset;
     }
   }
 }());
+
+var screenId = window.location.pathname.split("/")[2];
 
 window.onload = function() {
   console.log('load');
@@ -22,7 +24,7 @@ window.onload = function() {
   });
 
   socket.on('sync', function (data) {
-    ServerTime.init(data.serverTime - Date.now());
+    ServerTime.init(data.serverTime);
   });
 
   socket.on('trigger', function (data) {

@@ -11,6 +11,14 @@ img, object {
   position: absolute;
 }
 
+#screenID {
+  font: 50% Helvetica, Arial, sans-serif;
+  width: 100%;
+  opacity: 50%;
+  position: absolute;
+  text-align: center;
+}
+
 #test {
   font: 300px Helvetica, Arial, sans-serif;
   width: 100%;
