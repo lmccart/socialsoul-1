@@ -56,7 +56,7 @@ module.exports = function(config) {
 
   // go message received from controller app
   // determines next user and starts
-  controller.start = function(user) {
+  controller.start = function(user, callback) {
 
     if (user === default_user) {
       console.log(controller.storage);
@@ -68,12 +68,11 @@ module.exports = function(config) {
     // CLEANUP
     // remove queued tasks
     while(queue.length() > 0) {
-      console.log('pop '+queue.tasks.pop());
+      queue.tasks.pop();
     }
 
     // destroy pending requests
     for (var i=0; i<requests.length; i++) {
-      console.log('destroying '+requests[i]);
       requests[i].destroy();
     }
     requests = [];
@@ -94,9 +93,15 @@ module.exports = function(config) {
     // grab timeline and media
     twit.getUserTimeline({screen_name:user},
       function(err, data) { 
+
+        // render controller once user status is known
         if (err) {
           console.log(err);
-          controller.error = err; 
+          if (err.statusCode === 404) {
+            controller.error = 'User '+user+' does not exist.';
+          } else {
+            controller.error = 'Something went wrong, please try again. ('+err+')';
+          }
         }
         else {
           controller.error = null; 
@@ -116,6 +121,7 @@ module.exports = function(config) {
           data = concat_tweets(data);
           findMentor(user, data);
         }
+        callback();
       });
   }
 
