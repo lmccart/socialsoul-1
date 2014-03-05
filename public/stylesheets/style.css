@@ -6,25 +6,22 @@ body {
   margin: 0;
 }
 
-img, object {
+#screenId {
+  font: 480px Helvetica, Arial, sans-serif;
   width: 100%;
-  position: absolute;
-}
-
-#test {
-  font: 300px Helvetica, Arial, sans-serif;
-  width: 100%;
+  opacity: .25;
   position: absolute;
   text-align: center;
 }
 
-.tweet {
-  position: absolute;
-  z-index: 1;
-  color: #FF6E43;
-  padding: 50px;
+#debug {
+  font: 14px Helvetica, Arial, sans-serif;
   width: 100%;
-  font: 100px Helvetica, Arial, sans-serif;
+  position: absolute;
+}
+
+#debug img {
+  height: 200px;
 }
 
 /*** CONTROLLER STUFF ***/

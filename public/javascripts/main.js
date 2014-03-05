@@ -1,19 +1,23 @@
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
-            window.setTimeout(callback, 1000 / 60);
-          };
-})();
+var ServerTime = (function() {
+  var timeOffset = 0;
+  return {
+    init: function(serverTime) {
+      this.timeOffset = serverTime - Date.now();
+    },
+    now: function() {
+      return Date.now() + timeOffset;
+    }
+  }
+}());
 
-
+var screenId = window.location.pathname.split("/")[2];
 
 window.onload = function() {
   console.log('load');
   var manager = new Manager();
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost' : 'http://socialsoulserver.local';
   var socket = io.connect(host); 
+  
   socket.emit('send', { message: 'hello from frontend' });
 
   socket.on('message', function (data) {
@@ -21,7 +25,7 @@ window.onload = function() {
   });
 
   socket.on('sync', function (data) {
-    timeOffset = data.serverTime - Date.now();
+    ServerTime.init(data.serverTime);
   });
 
   socket.on('trigger', function (data) {
@@ -47,7 +51,7 @@ window.onload = function() {
   });
 
   (function animloop(){
-    requestAnimFrame(animloop);
+    requestAnimationFrame(animloop);
     manager.update();
   })();
 

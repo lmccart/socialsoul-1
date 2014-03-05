@@ -1,14 +1,12 @@
-
-
 var Manager = function() {
 
   console.log('load manager ');
 
   var module = {
     modes: [
+      new DebugMode(),
       new WelcomeMode(),
-      new ImageMode(),
-      new TweetMode()
+      new TweetMode(),
     ],
     cur_mode: -1,
     last_start: 0,
@@ -31,11 +29,11 @@ var Manager = function() {
       module.modes[i].files = data.files;
       console.log(i+' '+module.modes[i].dir);
     }
-    module.goToMode(1);
+    module.goToMode(0);
   };
 
   module.addAsset = function(data) {
-    module.goToMode(1);
+    module.goToMode(0);
 
     console.log(module.files);
     for (var i=0; i<module.modes.length; i++) {
