@@ -77,7 +77,6 @@ function renderController(res) {
 
 
 io.sockets.on('connection', function (socket) {
-  //controller.addSocket(socket);
   socket.emit('message', { message: 'hello from the backend'});
   socket.emit('sync', { serverTime: Date.now()});
   socket.on('send', function (data) {

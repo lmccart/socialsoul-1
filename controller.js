@@ -19,7 +19,6 @@ module.exports = function(config, io) {
 
   var controller = {
     io: io,
-    sockets: [],
     cur_user: null,
     queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
     storage: require('./storage')(),
@@ -37,12 +36,6 @@ module.exports = function(config, io) {
       console.log('queueing user '+data.user.screen_name);
     });
   });
-
-  controller.addSocket = function(s) {
-    if (!_.contains(controller.sockets, s)) {
-      controller.sockets.push(s);
-    }
-  };
 
   // manual override of next user, triggered by controller app
   controller.queueUser = function(user) {
