@@ -45,11 +45,11 @@ npm install
 
 ### messages (from server)
 
-* message: `{ message:"hello from the backend" }` -- just to confirm connection
-* sync: `{ serverTime: Date.now() }`
-* trigger: `{ user: String, tweets: JSON }`
-* mentor: `{ user: String, content: JSON }`
-* asset: `{ file: String, tag: String(optional) }`
+* `message`: `{ message:"hello from the backend" }` -- just to confirm connection
+* `sync`: `{ serverTime: Date.now() }`
+* `trigger`: `{ user: String, tweets: JSON }`
+* `mentor`: `{ user: String, content: JSON }`
+* `asset`: `{ file: String, tag: String(optional) }`
 
 
 
