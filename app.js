@@ -47,7 +47,7 @@ app.get('/controller', function(req, res) {
   // splitting this because trigger needs to wait for
   // callback to render controller with status msg
   if (req.query.action === 'trigger') {
-    controller.start(req.query.user, function() { renderController(res); });
+    controller.trigger(req.query.user, function() { renderController(res); });
   } else {
     if (req.query.action === 'queue_user') {
       controller.queueUser(req.query.user);

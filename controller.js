@@ -49,8 +49,8 @@ module.exports = function(config, io) {
   };
 
   // go message received from controller app
-  // determines next user and starts
-  controller.start = function(user, callback) {
+  // determines next user, does cleanup, then calls start
+  controller.trigger = function(user, callback) {
 
     if (user === default_user) {
       console.log(controller.storage);
@@ -74,9 +74,18 @@ module.exports = function(config, io) {
     // remove old dir and create new if nec
     if (controller.cur_user !== user) {
       fs.remove(assets_root+controller.cur_user+'/');
-      fs.mkdirpSync(assets_root+user+'/');
+      fs.mkdirs(assets_root+user+'/', function() {
+        start(user, callback);
+      });
+    } else {
+      start(user, callback);
     }
 
+
+  }
+
+  // starts installation for new user
+  function start(user, callback) {
 
     // START NEW
     console.log('start with user '+user);
@@ -85,67 +94,66 @@ module.exports = function(config, io) {
     controller.queued_users = _.without(controller.queued_users, user); 
 
     // grab timeline and media
-    twit.getUserTimeline({screen_name:user},
-      function(err, data) { 
+    twit.getUserTimeline({screen_name:user}, function(err, data) { 
 
-        // render controller once user status is known
-        if (err) {
-          console.log(err);
-          if (err.statusCode === 404) {
-            controller.error = 'User '+user+' does not exist.';
-          } else {
-            controller.error = 'Something went wrong, please try again. ('+err+')';
-          }
+      // render controller once user status is known
+      if (err) {
+        console.log(err);
+        if (err.statusCode === 404) {
+          controller.error = 'User '+user+' does not exist.';
+        } else {
+          controller.error = 'Something went wrong, please try again. ('+err+')';
         }
-        else {
-          controller.error = null; 
-          // alert listeners to start
-          controller.io.sockets.emit('trigger', {
-            'user':user,
-            'tweets':data
-          }); 
-  
+      }
+      else {
+        controller.error = null; 
+        // alert listeners to start
+        controller.io.sockets.emit('trigger', {
+          'user':user,
+          'tweets':data
+        }); 
 
-          downloadMedia(assets_root+user+'/', data, function(res) {
-            console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-          });
 
-          // analyze tweets
-          data = concat_tweets(data);
-          findMentor(user, data);
-        }
-        callback();
-      });
+        downloadMedia(assets_root+user+'/', data, function(res) {
+          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+        });
+
+        // analyze tweets
+        data = concat_tweets(data);
+        findMentor(user, data);
+      }
+      callback();
+    });
   }
 
   controller.buildDb = function() {
 
-    fs.removeSync(assets_root+'mentors/')
-    var data = fs.readJsonSync('./data/mentors.json');
+    fs.remove(assets_root+'mentors/', function(err) {
+      fs.readJson('./data/mentors.json', function(err, data) {
+        async.eachSeries(data, function(mentor, cb) {
 
-    async.eachSeries(data, function(mentor, cb) {
+          var dir = assets_root+'mentors/'+mentor.user+'/';
+          console.log('grabbing tweets for '+mentor.user);
+          twit.getUserTimeline({screen_name:mentor.user}, function(err, data) { 
+            if (err) console.log(err); 
 
-      var dir = assets_root+'mentors/'+mentor.user+'/';
-      console.log('grabbing tweets for '+mentor.user);
-      twit.getUserTimeline({screen_name:mentor.user},
-        function(err, data) { 
-          if (err) console.log(err); 
+            // insert text in db
+            console.log('inserting '+mentor.user+' in db');
+            mentor.text = concat_tweets(data);
+            controller.storage.insert(mentor);
 
-          // insert text in db
-          console.log('inserting '+mentor.user+' in db');
-          mentor.text = concat_tweets(data);
-          controller.storage.insert(mentor);
+            // save json
+            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+            // download media
 
-          // save json
-          fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-          // download media
-
-          fs.mkdirpSync(dir);
-          downloadMedia(dir, data, function() { cb();});
-
+            fs.mkdirs(dir, function() {
+              downloadMedia(dir, data, function() { cb();});
+            });
+          });
+        }, function () {
+          console.log('downloaded ');
+        });
       });
-    }, function () {
-      console.log('downloaded ');
     });
 
   };
