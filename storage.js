@@ -31,11 +31,20 @@ module.exports = function(config) {
       });
     };
 
-    // initialize default options
-    storage.all(function(err, data) {
-     // console.log(data);
-      storage.default_users = _.map(data, function(obj) { return obj.user; });
-    });
+    //insert person
+    storage.reset = function(callback) {
+      storage.db.dropCollection('people', callback);
+    };
+
+    storage.updateDefaultUsers = function() {
+      // initialize default options
+      storage.all(function(err, data) {
+        storage.default_users = _.map(data, function(obj) { return obj.user; });
+        console.log(storage.default_users);
+      });
+    };
+
+    storage.updateDefaultUsers();
 
 
   });

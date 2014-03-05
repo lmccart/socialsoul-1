@@ -130,28 +130,32 @@ module.exports = function(config, io) {
 
     fs.remove(assets_root+'mentors/', function(err) {
       fs.readJson('./data/mentors.json', function(err, data) {
-        async.eachSeries(data, function(mentor, cb) {
+        controller.storage.reset(function() {
+          async.eachSeries(data, function(mentor, cb) {
 
-          var dir = assets_root+'mentors/'+mentor.user+'/';
-          console.log('grabbing tweets for '+mentor.user);
-          twit.getUserTimeline({screen_name:mentor.user}, function(err, data) { 
-            if (err) console.log(err); 
+            var dir = assets_root+'mentors/'+mentor.user+'/';
+            console.log('grabbing tweets for '+mentor.user);
+            twit.getUserTimeline({screen_name:mentor.user}, function(err, data) { 
+              if (err) console.log(err); 
 
-            // insert text in db
-            console.log('inserting '+mentor.user+' in db');
-            mentor.text = concat_tweets(data);
-            controller.storage.insert(mentor);
+              // insert text in db
+              console.log('inserting '+mentor.user+' in db');
+              mentor.text = concat_tweets(data);
+              controller.storage.insert(mentor);
 
-            // save json
-            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-            // download media
+              // save json
+              fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+              // download media
 
-            fs.mkdirs(dir, function() {
-              downloadMedia(dir, data, function() { cb();});
+              fs.mkdirs(dir, function() {
+                downloadMedia(dir, data, function() { cb();});
+              });
             });
+          }, function () {
+
+            controller.storage.updateDefaultUsers();
+            console.log('downloaded ');
           });
-        }, function () {
-          console.log('downloaded ');
         });
       });
     });
