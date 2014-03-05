@@ -167,6 +167,15 @@ module.exports = function(config, io) {
   };
 
   function downloadMedia(dir, data, callback) {
+
+    // get profile pic
+    if (data.length > 0) {
+      var profile = data[0].user.profile_image_url.replace('_normal', '');
+      queue.push({dir:dir, url:profile, tag:'profile'}, callback);
+      queue.push({dir:dir, url:data[0].user.profile_background_image_url, tag:'background'}, callback);
+    }
+    
+
     // download media
     for (var i=0; i<data.length; i++) {
 
@@ -210,7 +219,8 @@ module.exports = function(config, io) {
     } else {
       var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
         controller.io.sockets.emit('asset', {
-          'file':filename
+          'file':filename,
+          'tag':obj.tag
         }); 
         callback(filename);
       }).on('error', function(err) {
