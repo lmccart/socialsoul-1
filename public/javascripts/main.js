@@ -12,8 +12,8 @@ window.requestAnimFrame = (function(){
 window.onload = function() {
   console.log('load');
   var manager = new Manager();
-  var socket = io.connect('http://socialsoulserver.local'); // change this for deployment
-
+  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost' : 'http://socialsoulserver.local';
+  var socket = io.connect(host); 
   socket.emit('send', { message: 'hello from frontend' });
 
   socket.on('message', function (data) {

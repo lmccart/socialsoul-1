@@ -13,11 +13,12 @@ var _ = require('underscore')
 var assets_root = './public/assets/';
 var requests = [];
 
-module.exports = function(config) {
+module.exports = function(config, io) {
  
   var default_user = '*DEFAULT*';
 
   var controller = {
+    io: io,
     sockets: [],
     cur_user: null,
     queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
@@ -106,12 +107,11 @@ module.exports = function(config) {
         else {
           controller.error = null; 
           // alert listeners to start
-          for (var i=0; i<controller.sockets.length; i++) {
-            controller.sockets[i].emit('trigger', {
-              'user':user,
-              'tweets':data
-            }); 
-          }
+          controller.io.sockets.emit('trigger', {
+            'user':user,
+            'tweets':data
+          }); 
+  
 
           downloadMedia(assets_root+user+'/', data, function(res) {
             console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
@@ -204,11 +204,9 @@ module.exports = function(config) {
       vine.download(vine_id, {dir: obj.dir, success: callback});
     } else {
       var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-        for (var i=0; i<controller.sockets.length; i++) {
-          controller.sockets[i].emit('asset', {
-            'file':filename
-          }); 
-        }
+        controller.io.sockets.emit('asset', {
+          'file':filename
+        }); 
         callback(filename);
       }).on('error', function(err) {
         console.log('Error caught and ignored: ' +err);
@@ -272,12 +270,10 @@ module.exports = function(config) {
     //controller.next_user = null; // pend temp
 
     fs.readJson(assets_root+'mentors/'+name+'/timeline.json', function(err, data) {
-      for (var i=0; i<controller.sockets.length; i++) {
-        controller.sockets[i].emit('mentor', {
-          'user':name,
-          'content':data
-        }); 
-      }
+      controller.io.sockets.emit('mentor', {
+        'user':name,
+        'content':data
+      }); 
     });
   }
 
