@@ -5,8 +5,10 @@ var Manager = function() {
   var module = {
     modes: [
       new DebugMode(),
+      new EnterMode(),
       new WelcomeMode(),
       new TweetMode(),
+      new ExitMode()
     ],
     cur_mode: -1,
     last_start: 0,
