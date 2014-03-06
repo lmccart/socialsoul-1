@@ -21,7 +21,7 @@ var Manager = function() {
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
-    module.goToMode(0);
+    module.goToMode(1);
     module.started = true;
   };
 

@@ -9,7 +9,9 @@ var DebugMode = function() {
       for(var i = 0; i < module.tweets.length; i++) {
         tweetText += module.tweets[i].text;
       }
-      $('#debug').html('<div class="tweet">'+tweetText+'</div>');
+      $('body').append('<div id="screenId">'+screenId+'</div>');
+      $('body').append('<div class="tweet">'+tweetText+'</div>');
+      $('body').append('<div class="images"></div>');
     }
   };
 
@@ -17,15 +19,15 @@ var DebugMode = function() {
     var ind = module.files.length-1;
     if (ind >= 0) {
       if (module.files[ind].indexOf('.mp4') !== -1) { // append vine
-        $('#debug').append('<object data="'+module.files[ind]+'" />');
+        $('.images').append('<object data="'+module.files[ind]+'" />');
       } else { // append image
-        $('#debug').append('<img src="'+module.files[ind]+'" />');
+        $('.images').append('<img src="'+module.files[ind]+'" />');
       }
     }
   };
 
   module.exit = function() {
-    $('#debug').empty();
+    $('body').empty();
   };
 
   return module;
