@@ -6,8 +6,6 @@ var Manager = function() {
     modes: [
       new DebugMode(),
       new EnterMode(),
-      new WelcomeMode(),
-      new TweetMode(),
       new ExitMode()
     ],
     cur_mode: -1,
@@ -21,7 +19,7 @@ var Manager = function() {
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
-    module.goToMode(1);
+    module.goToMode(0);
     module.started = true;
   };
 
