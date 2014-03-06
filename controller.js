@@ -13,12 +13,12 @@ var _ = require('underscore')
 var assets_root = './public/assets/';
 var requests = [];
 
-module.exports = function(config) {
+module.exports = function(config, io) {
  
   var default_user = '*DEFAULT*';
 
   var controller = {
-    sockets: [],
+    io: io,
     cur_user: null,
     queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
     storage: require('./storage')(),
@@ -37,12 +37,6 @@ module.exports = function(config) {
     });
   });
 
-  controller.addSocket = function(s) {
-    if (!_.contains(controller.sockets, s)) {
-      controller.sockets.push(s);
-    }
-  };
-
   // manual override of next user, triggered by controller app
   controller.queueUser = function(user) {
 
@@ -55,8 +49,8 @@ module.exports = function(config) {
   };
 
   // go message received from controller app
-  // determines next user and starts
-  controller.start = function(user, callback) {
+  // determines next user, does cleanup, then calls start
+  controller.trigger = function(user, callback) {
 
     if (user === default_user) {
       console.log(controller.storage);
@@ -80,9 +74,18 @@ module.exports = function(config) {
     // remove old dir and create new if nec
     if (controller.cur_user !== user) {
       fs.remove(assets_root+controller.cur_user+'/');
-      fs.mkdirpSync(assets_root+user+'/');
+      fs.mkdirs(assets_root+user+'/', function() {
+        start(user, callback);
+      });
+    } else {
+      start(user, callback);
     }
 
+
+  }
+
+  // starts installation for new user
+  function start(user, callback) {
 
     // START NEW
     console.log('start with user '+user);
@@ -91,68 +94,70 @@ module.exports = function(config) {
     controller.queued_users = _.without(controller.queued_users, user); 
 
     // grab timeline and media
-    twit.getUserTimeline({screen_name:user},
-      function(err, data) { 
+    twit.getUserTimeline({screen_name:user}, function(err, data) { 
 
-        // render controller once user status is known
-        if (err) {
-          console.log(err);
-          if (err.statusCode === 404) {
-            controller.error = 'User '+user+' does not exist.';
-          } else {
-            controller.error = 'Something went wrong, please try again. ('+err+')';
-          }
+      // render controller once user status is known
+      if (err) {
+        console.log(err);
+        if (err.statusCode === 404) {
+          controller.error = 'User '+user+' does not exist.';
+        } else {
+          controller.error = 'Something went wrong, please try again. ('+err+')';
         }
-        else {
-          controller.error = null; 
-          // alert listeners to start
-          for (var i=0; i<controller.sockets.length; i++) {
-            controller.sockets[i].emit('trigger', {
-              'user':user,
-              'tweets':data
-            }); 
-          }
+      }
+      else {
+        controller.error = null; 
+        // alert listeners to start
+        controller.io.sockets.emit('trigger', {
+          'user':user,
+          'tweets':data
+        }); 
 
-          downloadMedia(assets_root+user+'/', data, function(res) {
-            console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-          });
 
-          // analyze tweets
-          data = concat_tweets(data);
-          findMentor(user, data);
-        }
-        callback();
-      });
+        downloadMedia(assets_root+user+'/', data, function(res) {
+          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+        });
+
+        // analyze tweets
+        data = concat_tweets(data);
+        findMentor(user, data);
+      }
+      callback();
+    });
   }
 
   controller.buildDb = function() {
 
-    fs.removeSync(assets_root+'mentors/')
-    var data = fs.readJsonSync('./data/mentors.json');
+    fs.remove(assets_root+'mentors/', function(err) {
+      fs.readJson('./data/mentors.json', function(err, data) {
+        controller.storage.reset(function() {
+          async.eachSeries(data, function(mentor, cb) {
 
-    async.eachSeries(data, function(mentor, cb) {
+            var dir = assets_root+'mentors/'+mentor.user+'/';
+            console.log('grabbing tweets for '+mentor.user);
+            twit.getUserTimeline({screen_name:mentor.user}, function(err, data) { 
+              if (err) console.log(err); 
 
-      var dir = assets_root+'mentors/'+mentor.user+'/';
-      console.log('grabbing tweets for '+mentor.user);
-      twit.getUserTimeline({screen_name:mentor.user},
-        function(err, data) { 
-          if (err) console.log(err); 
+              // insert text in db
+              console.log('inserting '+mentor.user+' in db');
+              mentor.text = concat_tweets(data);
+              controller.storage.insert(mentor);
 
-          // insert text in db
-          console.log('inserting '+mentor.user+' in db');
-          mentor.text = concat_tweets(data);
-          controller.storage.insert(mentor);
+              // save json
+              fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+              // download media
 
-          // save json
-          fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-          // download media
+              fs.mkdirs(dir, function() {
+                downloadMedia(dir, data, function() { cb();});
+              });
+            });
+          }, function () {
 
-          fs.mkdirpSync(dir);
-          downloadMedia(dir, data, function() { cb();});
-
+            controller.storage.updateDefaultUsers();
+            console.log('downloaded ');
+          });
+        });
       });
-    }, function () {
-      console.log('downloaded ');
     });
 
   };
@@ -162,6 +167,15 @@ module.exports = function(config) {
   };
 
   function downloadMedia(dir, data, callback) {
+
+    // get profile pic
+    if (data.length > 0) {
+      var profile = data[0].user.profile_image_url.replace('_normal', '');
+      queue.push({dir:dir, url:profile, tag:'profile'}, callback);
+      queue.push({dir:dir, url:data[0].user.profile_background_image_url, tag:'background'}, callback);
+    }
+    
+
     // download media
     for (var i=0; i<data.length; i++) {
 
@@ -204,11 +218,10 @@ module.exports = function(config) {
       vine.download(vine_id, {dir: obj.dir, success: callback});
     } else {
       var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-        for (var i=0; i<controller.sockets.length; i++) {
-          controller.sockets[i].emit('asset', {
-            'file':filename
-          }); 
-        }
+        controller.io.sockets.emit('asset', {
+          'file':filename,
+          'tag':obj.tag
+        }); 
         callback(filename);
       }).on('error', function(err) {
         console.log('Error caught and ignored: ' +err);
@@ -272,12 +285,10 @@ module.exports = function(config) {
     //controller.next_user = null; // pend temp
 
     fs.readJson(assets_root+'mentors/'+name+'/timeline.json', function(err, data) {
-      for (var i=0; i<controller.sockets.length; i++) {
-        controller.sockets[i].emit('mentor', {
-          'user':name,
-          'content':data
-        }); 
-      }
+      controller.io.sockets.emit('mentor', {
+        'user':name,
+        'content':data
+      }); 
     });
   }
 
