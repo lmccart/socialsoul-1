@@ -2,7 +2,7 @@ var DebugMode = function() {
 
   var module = {};
 
-  module.play = function() {
+  module.init = function() {
     if (module.tweets) {
       var tweets = "";
       console.log(module.tweets);
@@ -27,7 +27,6 @@ var DebugMode = function() {
   };
 
   module.exit = function() {
-    $('body').empty();
   };
 
   return module;
@@ -35,8 +34,18 @@ var DebugMode = function() {
 
 var EnterMode = function() {
   var module = {};
-  module.play = function() {
+  module.init = function() {
+    if(screenId == 0) {
+      $('body').html('<div class="fullscreen whitebg" id="color"></div>');
+    } else {
+      $('body').html('<div class="fullscreen blackbg" id="color"></div>');
+    }
 
+    var timeline = new TimelineMax();
+    timeline
+      .set("#color", {opacity:1})
+      .to("#color", 3, {opacity:0, ease:Power2.easeIn})
+      .repeat(-1);
   }
   module.next = function() {
 
@@ -49,8 +58,8 @@ var EnterMode = function() {
 
 var ExitMode = function() {
   var module = {};
-  module.play = function() {
-
+  module.init = function() {
+    $('body').html('<div class="fullscreen whitebg"></div>');
   }
   module.next = function() {
 

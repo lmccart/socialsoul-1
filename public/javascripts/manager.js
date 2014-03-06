@@ -1,7 +1,5 @@
 var Manager = function() {
 
-  console.log('load manager ');
-
   var module = {
     modes: [
       new DebugMode(),
@@ -13,13 +11,19 @@ var Manager = function() {
     started: false
   };
 
+  module.sync = function() {
+    // any pre-user setup goes here
+    module.goToMode(1);
+  }
+
   module.init = function(data) {
+    // any per-user setup goes here
     for (var i=0; i<module.modes.length; i++) {
       module.modes[i].files = [];
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
-    module.goToMode(0);
+    module.goToMode(1); // init mode, switch to 0 for debug
     module.started = true;
   };
 
@@ -27,20 +31,20 @@ var Manager = function() {
     for (var i=0; i<module.modes.length; i++) {
       module.modes[i].dir = data.dir.replace('./public', '..');
       module.modes[i].files = data.files;
-      console.log(i+' '+module.modes[i].dir);
+      // console.log(i+' '+module.modes[i].dir);
     }
-    module.goToMode(0);
+    // module.goToMode(0);
   };
 
   module.addAsset = function(data) {
-    module.goToMode(0);
+    // module.goToMode(0);
 
-    console.log(module.files);
+    // console.log(module.files);
     for (var i=0; i<module.modes.length; i++) {
-      console.log(data.file.replace('./public', '..'));
+      // console.log(data.file.replace('./public', '..'));
       var file = data.file.replace('./public', '..');
       module.modes[i].files.push(file);
-      console.log(i+' '+file);
+      // console.log(i+' '+file);
     }
     module.modes[module.cur_mode].next();
   };
@@ -65,16 +69,23 @@ var Manager = function() {
   }
 
   module.goToMode = function(ind) {
-    if (ind >= 0 && ind < module.modes.length && module.cur_mode !== ind) {
-      module.last_start = new Date().getTime();
-      module.modes[module.cur_mode].exit();
+    if (module.cur_mode == ind) {
+      console.log("already in mode");
+      return;
+    }
+    if (ind >= 0 && ind < module.modes.length) {
+      if(module.started) {
+        module.last_start = new Date().getTime();
+        module.modes[module.cur_mode].exit();
+      }
+      $('body').empty();
       module.cur_mode = ind;
-      module.modes[module.cur_mode].play();
-      console.log('playing mode '+module.cur_mode);
-    } else console.log('mode '+ind+' out of bounds or already in mode');
+      module.modes[module.cur_mode].init();
+      console.log('init mode '+module.cur_mode);
+    } else {
+      console.log('mode '+ind+' out of bounds');
+    }
   }
-
-
 
   return module;
 };
