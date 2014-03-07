@@ -1,30 +1,11 @@
 body {
   background: black;
-  font: 50px Helvetica, Arial, sans-serif;
+  font: 25px sans-serif;
   color: white;
   padding: 0;
   margin: 0;
 }
 
-#screenId {
-  font: 480px Helvetica, Arial, sans-serif;
-  width: 100%;
-  opacity: .25;
-  position: absolute;
-  text-align: center;
-}
-
-#debug {
-  font: 14px Helvetica, Arial, sans-serif;
-  width: 100%;
-  position: absolute;
-}
-
-#debug img {
-  height: 200px;
-}
-
-/*** CONTROLLER STUFF ***/
 #controller {
   margin: 30px;
 }
@@ -36,25 +17,28 @@ body {
 .button {
   background: #FF6E43;
   color: white;
-  margin: 0 10px 10px 0;
-  padding: 10px;
   display: inline-block;
   cursor: pointer;
+}
+
+.button, #user {
+  margin: 0 10px 10px 0;
+  padding: 10px;
+}
+
+.trigger {
+  min-width: 300px;
 }
 
 .button:hover, .button.selected {
   background: white;
   color: #FF6E43;
   outline: 2px solid #FF6E43;
-  padding: 9px;
-  margin-bottom:12px;
 }
 
 
 input {
-  font: 25px Helvetica, Arial, sans-serif;
-  padding:0;
-  margin: 10px 0;
+  font: 25px sans-serif;
   color:black;
   border:0 !important;
   display: inline-block;

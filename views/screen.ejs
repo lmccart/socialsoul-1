@@ -2,24 +2,23 @@
 <html>
   <head>
     <title><%= id %></title>
-    <link rel='stylesheet' href='../stylesheets/style.css' />
+    <link rel='stylesheet' href='../stylesheets/screen.css' />
     <link rel='stylesheet' href='../stylesheets/animate.min.css' />
 
     <script type='text/javascript' src='/socket.io/socket.io.js'></script>
     <script type='text/javascript' src='../javascripts/libs/jquery-1.11.0.js'></script>
     <script type='text/javascript' src='../javascripts/libs/lettering.js'></script>
     <script type='text/javascript' src='../javascripts/libs/textillate.js'></script>
-    <!--<script type='text/javascript' src='../javascripts/libs/three.js'></script>-->
 
-    <script type='text/javascript' src='../javascripts/modes/welcomeMode.js'></script>
-    <script type='text/javascript' src='../javascripts/modes/tweetMode.js'></script>
-    <script type='text/javascript' src='../javascripts/modes/debugMode.js'></script>
+    <script type='text/javascript' src='../javascripts/libs/TweenMax.min.js'></script>
+    <script type='text/javascript' src='../javascripts/libs/TimelineMax.min.js'></script>
+
+<!-- <script type='text/javascript' src='../javascripts/libs/three.js'></script> -->
+
+    <script type='text/javascript' src='../javascripts/modes.js'></script>
     <script type='text/javascript' src='../javascripts/manager.js'></script>
     <script type='text/javascript' src='../javascripts/main.js'></script>
   </head>
   <body>
-    <div id='screenId'><%= id %></div>
-    <div id='debug'></div>
-    <div id='container'></div>
   </body>
 </html>
