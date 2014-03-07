@@ -4,16 +4,18 @@ var Manager = function() {
     modes: [
       new DebugMode(),
       new EnterMode(),
+      new CenteredTextMode(),
+      new BreakMode,
       new ExitMode()
     ],
-    cur_mode: -1,
+    cur_mode: 0,
     last_start: 0,
     started: false
   };
 
   module.sync = function() {
     // any pre-user setup goes here
-    module.goToMode(1);
+    module.goToMode(2);
   }
 
   module.init = function(data) {
@@ -23,7 +25,7 @@ var Manager = function() {
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
-    module.goToMode(1); // init mode, switch to 0 for debug
+    module.goToMode(1);
     module.started = true;
   };
 
@@ -66,6 +68,9 @@ var Manager = function() {
     //     module.goToMode(next);
     //   }
     // }
+    if(module.modes[module.cur_mode].update != undefined) {
+      module.modes[module.cur_mode].update();
+    }
   }
 
   module.goToMode = function(ind) {
