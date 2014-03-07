@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Oswald:300);
+@import url(http://fonts.googleapis.com/css?family=Lato|Arvo|Playfair+Display|BenchNine|Lora|Bitter|Kreon|Crete+Round|Droid+Serif|Oswald:300|Open+Sans+Condensed:300|Montserrat|Raleway|Roboto+Slab|Inconsolata|Signika|Old+Standard+TT);
 
 body {
   background-color: black;
@@ -34,6 +34,22 @@ body, html {
 
 .debug img {
   height: 120px;
+}
+
+/* centeredText */
+
+.centeredText {
+  position:absolute;
+  top:0; bottom:0; left:0; right:0;
+  margin:auto;
+  text-align: center;
+  height: 240px;
+}
+
+#centeredWord {
+  font-size:240px;
+  border: 1px solid white;
+  display: inline-block;
 }
 
 /* enter / exit */

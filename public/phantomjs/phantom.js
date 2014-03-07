@@ -13,14 +13,14 @@ var screens = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 async.eachSeries(screens, function(s, cb) {
 
-  page.open('http://localhost:3000/controller?action=trigger', function() {
+  // page.open('http://localhost:3000/controller?action=trigger', function() {
 
     page.open('http://localhost:3000/screen/'+s, function() {
       console.log(step);
       step = 0;
       grabScreen(s, cb);
     });
-  });
+  // });
 
 },
 function(err) {
