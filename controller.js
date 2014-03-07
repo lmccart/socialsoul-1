@@ -217,14 +217,13 @@ module.exports = function(config, io) {
       var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
       vine.download(vine_id, {dir: obj.dir, success: callback});
     } else {
-      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err, f) {
-        console.log('req');
-        console.log(req);
-        console.log(f); 
-        controller.io.sockets.emit('asset', {
-          'file':filename,
-          'tag':obj.tag
-        }); 
+      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+        if (req.bytesWritten > 4000) { // only send if bigger than 4kb
+          controller.io.sockets.emit('asset', {
+            'file':filename,
+            'tag':obj.tag
+          }); 
+        }
         callback(filename);
       }).on('error', function(err) {
         console.log('Error caught and ignored: ' +err);
