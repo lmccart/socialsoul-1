@@ -74,16 +74,24 @@ var EnterMode = function() {
 var CenteredTextMode = function() {
   var module = {};
   var salientWords = [];
+  var ctx = {};
   module.init = function() {
+    $('body').append('<canvas id="centeredTextCanvas"></canvas>');
     $('body').append('<div class="centeredText"><span id="centeredWord">phantom</span></div>');
     if (module.tweets) {
       for(i in module.tweets) {
         var tokens = module.tweets[i].text.split(' ');
         for(j in tokens) {
+          if(tokens[j].length > 4 && tokens[j].length < 12)
           salientWords.push(tokens[j]);
         }
       }
     }
+    ctx = document.getElementById('centeredTextCanvas').getContext('2d');
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
   }
   module.next = function() {}
   module.exit = function() {}
@@ -94,6 +102,14 @@ var CenteredTextMode = function() {
       backgroundColor: '#fff',
       color: '#000'
     });
+    var img = new Image();
+    img.src = randomChoice(module.files);
+    img.onload = function() {
+      var width = img.width;
+      var height = img.height;
+      var scale = window.innerWidth / width;
+      ctx.drawImage(img, 0, 0, scale * width, scale * height);
+    }
   }
   return module;
 };
