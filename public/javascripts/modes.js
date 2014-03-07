@@ -1,3 +1,23 @@
+var fonts = [
+  "Lato",
+  "Arvo",
+  "Playfair Display",
+  "BenchNine",
+  "Lora",
+  "Bitter",
+  "Kreon",
+  "Crete Round",
+  "Droid Serif",
+  "Oswald",
+  "Open Sans Condensed",
+  "Montserrat",
+  "Raleway",
+  "Roboto+Slab",
+  "Inconsolata",
+  "Signika",
+  "Old Standard TT"
+];
+
 var DebugMode = function() {
   var module = {};
   module.init = function() {
@@ -53,50 +73,22 @@ var EnterMode = function() {
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
   var module = {};
+  var salientWords = [];
   module.init = function() {
     $('body').append('<div class="centeredText"><span id="centeredWord">phantom</span></div>');
+    if (module.tweets) {
+      for(i in module.tweets) {
+        var tokens = module.tweets[i].text.split(' ');
+        for(j in tokens) {
+          salientWords.push(tokens[j]);
+        }
+      }
+    }
   }
   module.next = function() {}
   module.exit = function() {}
   module.update = function() {
-    var words = [
-      "Charley",
-      "consummate",
-      "convexity",
-      "forche",
-      "glitteringly",
-      "hawser",
-      "indicable",
-      "musteline",
-      "oinomancy",
-      "pail",
-      "spirt",
-      "synclinorium",
-      "tolusafranine",
-      "uncope",
-      "vexatory",
-      "warsle"
-    ];
-    var fonts = [
-      "Lato",
-      "Arvo",
-      "Playfair Display",
-      "BenchNine",
-      "Lora",
-      "Bitter",
-      "Kreon",
-      "Crete Round",
-      "Droid Serif",
-      "Oswald",
-      "Open Sans Condensed",
-      "Montserrat",
-      "Raleway",
-      "Roboto+Slab",
-      "Inconsolata",
-      "Signika",
-      "Old Standard TT"
-    ];
-    $('#centeredWord').text(randomChoice(words));
+    $('#centeredWord').text(randomChoice(salientWords));
     $('#centeredWord').css({
       fontFamily: randomChoice(fonts),
       backgroundColor: '#fff',

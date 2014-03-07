@@ -15,7 +15,7 @@ var Manager = function() {
 
   module.sync = function() {
     // any pre-user setup goes here
-    module.goToMode(0);
+    // module.goToMode(0);
   }
 
   module.init = function(data) {
@@ -25,7 +25,7 @@ var Manager = function() {
       module.modes[i].user = data.user;
       module.modes[i].tweets = data.tweets;
     }
-    module.goToMode(0);
+    module.goToMode(2);
     module.started = true;
   };
 
