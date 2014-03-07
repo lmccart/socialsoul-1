@@ -14,37 +14,39 @@ module.exports = function(config) {
 
   MongoClient.connect(format("mongodb://%s:%s/TED?w=1", host, port), function(err, db) {
     storage.db = db;
+    storage.db.createCollection('people', function() {
 
-    //find all people
-    storage.all = function(callback) {
-      var collection = storage.db.collection('people');
-      collection.find().toArray(function(err, arr) {
-        callback(err, arr);
-      });
-    };
+      //find all people
+      storage.all = function(callback) {
+        var collection = storage.db.collection('people');
+        collection.find().toArray(function(err, arr) {
+          callback(err, arr);
+        });
+      };
 
-    //insert person
-    storage.insert = function(doc) {
-      var collection = storage.db.collection('people');
-      collection.update({user: doc.user}, {$set: doc}, {upsert: true}, function(err) {
-        if (err) console.log(err);
-      });
-    };
+      //insert person
+      storage.insert = function(doc) {
+        var collection = storage.db.collection('people');
+        collection.update({user: doc.user}, {$set: doc}, {upsert: true}, function(err) {
+          if (err) console.log(err);
+        });
+      };
 
-    //insert person
-    storage.reset = function(callback) {
-      storage.db.dropCollection('people', callback);
-    };
+      //insert person
+      storage.reset = function(callback) {
+        storage.db.dropCollection('people', callback);
+      };
 
-    storage.updateDefaultUsers = function() {
-      // initialize default options
-      storage.all(function(err, data) {
-        storage.default_users = _.map(data, function(obj) { return obj.user; });
-        console.log(storage.default_users);
-      });
-    };
+      storage.updateDefaultUsers = function() {
+        // initialize default options
+        storage.all(function(err, data) {
+          storage.default_users = _.map(data, function(obj) { return obj.user; });
+          console.log(storage.default_users);
+        });
+      };
 
-    storage.updateDefaultUsers();
+      storage.updateDefaultUsers();
+    });
 
 
   });
