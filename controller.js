@@ -231,7 +231,7 @@ module.exports = function(config, io) {
     }
   };
 
-  function findMentor(user, text, save) {
+  function findMentor(user, text, default) {
 
     // pick related mentor
     var low = 0, lowKey = '';
@@ -254,6 +254,7 @@ module.exports = function(config, io) {
       }
       console.log(highKey + " similarity " + high);
       sendMentor(highKey);
+      //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
     });
 
   }
@@ -283,6 +284,11 @@ module.exports = function(config, io) {
         'content':data
       }); 
     });
+  }
+
+  function sendEndTweet(user, name) {
+    twit.updateStatus('@'+user+' your social soulmate is @'+name,
+      function(err) {console.log(err); });
   }
 
   return controller;
