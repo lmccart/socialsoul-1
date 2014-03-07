@@ -71,60 +71,16 @@ module.exports = function(config, io) {
     }
     requests = [];
 
-    // remove old dir and create new if nec
-    if (controller.cur_user !== user) {
-      fs.remove(assets_root+controller.cur_user+'/');
-      fs.mkdirs(assets_root+user+'/', function() {
-        start(user, callback);
-      });
-    } else {
-      start(user, callback);
-    }
-
-
-  }
-
-  // starts installation for new user
-  function start(user, callback) {
-
     // START NEW
     console.log('start with user '+user);
     controller.start_time = new Date();
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
-    // grab timeline and media
-    twit.getUserTimeline({screen_name:user}, function(err, data) { 
+    getPerson(user, true, callback);
 
-      // render controller once user status is known
-      if (err) {
-        console.log(err);
-        if (err.statusCode === 404) {
-          controller.error = 'User '+user+' does not exist.';
-        } else {
-          controller.error = 'Something went wrong, please try again. ('+err+')';
-        }
-      }
-      else {
-        controller.error = null; 
-        // alert listeners to start
-        controller.io.sockets.emit('trigger', {
-          'user':user,
-          'tweets':data
-        }); 
-
-
-        downloadMedia(assets_root+user+'/', data, function(res) {
-          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-        });
-
-        // analyze tweets
-        data = concat_tweets(data);
-        findMentor(user, data);
-      }
-      callback();
-    });
   }
+
 
   controller.buildDb = function() {
 
@@ -132,27 +88,8 @@ module.exports = function(config, io) {
       fs.readJson('./data/mentors.json', function(err, data) {
         controller.storage.reset(function() {
           async.eachSeries(data, function(mentor, cb) {
-
-            var dir = assets_root+'mentors/'+mentor.user+'/';
-            console.log('grabbing tweets for '+mentor.user);
-            twit.getUserTimeline({screen_name:mentor.user}, function(err, data) { 
-              if (err) console.log(err); 
-
-              // insert text in db
-              console.log('inserting '+mentor.user+' in db');
-              mentor.text = concat_tweets(data);
-              controller.storage.insert(mentor);
-
-              // save json
-              fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-              // download media
-
-              fs.mkdirs(dir, function() {
-                downloadMedia(dir, data, function() { cb();});
-              });
-            });
+            getPerson(mentor.user, false, cb);
           }, function () {
-
             controller.storage.updateDefaultUsers();
             console.log('downloaded ');
           });
@@ -165,6 +102,60 @@ module.exports = function(config, io) {
   controller.getRemaining = function() {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
+
+  function getPerson(user, live, cb) {
+    var dir = assets_root+'mentors/'+user+'/';
+    console.log('grabbing tweets for '+user);
+
+    twit.getUserTimeline({screen_name:user}, function(err, data) { 
+      // render controller once user status is known
+      if (err) {
+        console.log(err);
+        if (err.statusCode === 404) {
+          controller.error = 'User '+user+' does not exist.';
+        } else {
+          controller.error = 'Something went wrong, please try again. ('+err+')';
+        }
+      } else {
+
+        controller.error = null; 
+
+        if (live) {
+          // alert listeners to start
+          controller.io.sockets.emit('trigger', {
+            'user':user,
+            'tweets':data
+          }); 
+        }
+
+
+        // insert text in db
+        console.log('inserting '+user+' in db');
+        
+        var obj = { 
+          user: user,
+          text: concat_tweets(data),
+          name: data[0].user.name
+        };
+        controller.storage.insert(obj);
+
+        // analyze tweets
+        if (live) findMentor(user, obj.text);
+
+        // save json
+        fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+        // download media
+
+        fs.mkdirs(dir, function() {
+          downloadMedia(dir, data, function(res) { 
+            console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+            cb();
+          });
+        });        
+      }
+
+    });
+  }
 
   function downloadMedia(dir, data, callback) {
 
