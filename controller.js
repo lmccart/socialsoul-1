@@ -52,7 +52,8 @@ module.exports = function(config, io) {
   // determines next user, does cleanup, then calls start
   controller.trigger = function(user, callback) {
 
-    if (user === default_user) {
+    var is_def = user === default_user;
+    if (is_def) {
       console.log(controller.storage);
       var defs = controller.storage.default_users;
       user = defs[Math.floor(Math.random()*defs.length)];
@@ -77,7 +78,7 @@ module.exports = function(config, io) {
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
-    getPerson(user, true, callback);
+    getPerson(user, true, !is_def, callback);
 
   }
 
@@ -88,7 +89,7 @@ module.exports = function(config, io) {
       fs.readJson('./data/mentors.json', function(err, data) {
         controller.storage.reset(function() {
           async.eachSeries(data, function(mentor, cb) {
-            getPerson(mentor.user, false, cb);
+            getPerson(mentor.user, false, false, cb);
           }, function () {
             controller.storage.updateDefaultUsers();
             console.log('downloaded ');
@@ -103,7 +104,7 @@ module.exports = function(config, io) {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  function getPerson(user, live, cb) {
+  function getPerson(user, live, send_tweet, cb) {
     var dir = assets_root+'mentors/'+user+'/';
     console.log('grabbing tweets for '+user);
 
@@ -140,7 +141,7 @@ module.exports = function(config, io) {
         controller.storage.insert(obj);
 
         // analyze tweets
-        if (live) findMentor(user, obj.text);
+        if (live) findMentor(user, obj.text, send_tweet);
 
         // save json
         fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
@@ -231,7 +232,7 @@ module.exports = function(config, io) {
     }
   };
 
-  function findMentor(user, text, default) {
+  function findMentor(user, text, send_tweet) {
 
     // pick related mentor
     var low = 0, lowKey = '';
@@ -254,7 +255,9 @@ module.exports = function(config, io) {
       }
       console.log(highKey + " similarity " + high);
       sendMentor(highKey);
-      //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
+      if (send_tweet) {
+       //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
+      }
     });
 
   }
