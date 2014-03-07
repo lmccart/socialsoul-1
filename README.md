@@ -53,16 +53,6 @@ npm install
 
 
 
-### phantomjs preview
-
-
-1. install phantomjs `brew update && brew install phantomjs`
-2. set interval and duration in public/phantomjs/settings.json
-3. generate images
-```
-cd public/phantomjs
-phantomjs phantom.js
-```
 
 
 

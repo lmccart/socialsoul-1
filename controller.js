@@ -147,12 +147,14 @@ module.exports = function(config, io) {
         fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
         // download media
 
-        fs.mkdirs(dir, function() {
-          downloadMedia(dir, data, function(res) { 
-            console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-            cb();
-          });
-        });        
+        fs.remove(dir, function() {
+          fs.mkdirs(dir, function() {
+            downloadMedia(dir, data, function(res) { 
+              console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+              cb();
+            });
+          });    
+        });
       }
 
     });
