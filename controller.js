@@ -217,10 +217,10 @@ module.exports = function(config, io) {
       var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
       vine.download(vine_id, {dir: obj.dir, success: callback});
     } else {
-      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err, obj) {
+      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err, f) {
         console.log('req');
         console.log(req);
-        console.log(obj);
+        console.log(f); 
         controller.io.sockets.emit('asset', {
           'file':filename,
           'tag':obj.tag
