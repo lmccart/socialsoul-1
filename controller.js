@@ -128,7 +128,8 @@ module.exports = function(config, io) {
           // alert listeners to start
           controller.io.sockets.emit('trigger', {
             'user':user,
-            'tweets':data
+            'tweets':data,
+            'salient':get_salient(data)
           }); 
         }
 
@@ -148,6 +149,9 @@ module.exports = function(config, io) {
 
         fs.remove(dir, function() {
           fs.mkdirs(dir, function() {
+
+            // save salient // test pend
+            fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
 
             // save json
             fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
@@ -272,6 +276,25 @@ module.exports = function(config, io) {
     });
 
   }
+
+  function get_salient(data) {
+    var salient = [];
+    for (var i=0; i<data.length; i++) {
+      var tweet = data[i].text;
+      tweet = tweet.replace(/['…,.():;|{}_=+<>~"`/[/]/g, '').replace(/[-–/]/g, ' ');
+      console.log(tweet);
+      var tokens = tweet.split(' ');
+      for (var j=0; j<tokens.length; j++) {
+        if (tokens[j].length > 4 && tokens[j].length < 12 && 
+          tokens[j].indexOf('http') === -1) {
+          salient.push(tokens[j]);
+        }
+      }
+    }
+    
+    return salient;
+  }
+
 
   function concat_tweets(data) {
     var text = '';
