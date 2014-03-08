@@ -8,7 +8,10 @@ var _ = require('underscore')
   , beagle = require('beagle')
   , natural = require('natural')
   , similarity = require('./similarity')
-  , vine = require('./vinegrab');
+  , vine = require('./vinegrab')
+  , mmm = require('mmmagic');
+
+var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
 var assets_root = './public/assets/';
 var requests = [];
@@ -143,18 +146,19 @@ module.exports = function(config, io) {
         // analyze tweets
         if (live) findMentor(user, obj.text, send_tweet);
 
-        // save json
-        fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-        // download media
-
         fs.remove(dir, function() {
           fs.mkdirs(dir, function() {
+
+            // save json
+            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+            // download media
+
             downloadMedia(dir, data, function(res) { 
               console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
               cb();
             });
-          });    
-        });
+          }); 
+        }); 
       }
 
     });
@@ -196,6 +200,7 @@ module.exports = function(config, io) {
     beagle.scrape(uri, function(err, bone){
       if (err) console.log('b err', uri);
       if (bone) {
+        console.log(bone.images);
         for (var i=0; i<bone.images.length; i++) {
           queue.push({dir:dir, url:bone.images[i]}, callback);
         }
@@ -213,10 +218,14 @@ module.exports = function(config, io) {
     } else {
       var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
         if (req.bytesWritten > 4000) { // only send if bigger than 4kb
-          controller.io.sockets.emit('asset', {
-            'file':filename,
-            'tag':obj.tag
-          }); 
+          magic.detectFile(filename, function(err, res) {
+            if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
+              controller.io.sockets.emit('asset', {
+                'file':filename,
+                'tag':obj.tag
+              }); 
+            }
+          });
         }
         callback(filename);
       }).on('error', function(err) {
