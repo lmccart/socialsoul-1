@@ -1,3 +1,23 @@
+var fonts = [
+  "Lato",
+  "Arvo",
+  "Playfair Display",
+  "BenchNine",
+  "Lora",
+  "Bitter",
+  "Kreon",
+  "Crete Round",
+  "Droid Serif",
+  "Oswald",
+  "Open Sans Condensed",
+  "Montserrat",
+  "Raleway",
+  "Roboto+Slab",
+  "Inconsolata",
+  "Signika",
+  "Old Standard TT"
+];
+
 var DebugMode = function() {
   var module = {};
   module.init = function() {
@@ -53,55 +73,43 @@ var EnterMode = function() {
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
   var module = {};
+  var salientWords = [];
+  var ctx = {};
   module.init = function() {
+    $('body').append('<canvas id="centeredTextCanvas"></canvas>');
     $('body').append('<div class="centeredText"><span id="centeredWord">phantom</span></div>');
+    if (module.tweets) {
+      for(i in module.tweets) {
+        var tokens = module.tweets[i].text.split(' ');
+        for(j in tokens) {
+          if(tokens[j].length > 4 && tokens[j].length < 12)
+          salientWords.push(tokens[j]);
+        }
+      }
+    }
+    ctx = document.getElementById('centeredTextCanvas').getContext('2d');
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
   }
   module.next = function() {}
   module.exit = function() {}
   module.update = function() {
-    var words = [
-      "Charley",
-      "consummate",
-      "convexity",
-      "forche",
-      "glitteringly",
-      "hawser",
-      "indicable",
-      "musteline",
-      "oinomancy",
-      "pail",
-      "spirt",
-      "synclinorium",
-      "tolusafranine",
-      "uncope",
-      "vexatory",
-      "warsle"
-    ];
-    var fonts = [
-      "Lato",
-      "Arvo",
-      "Playfair Display",
-      "BenchNine",
-      "Lora",
-      "Bitter",
-      "Kreon",
-      "Crete Round",
-      "Droid Serif",
-      "Oswald",
-      "Open Sans Condensed",
-      "Montserrat",
-      "Raleway",
-      "Roboto+Slab",
-      "Inconsolata",
-      "Signika",
-      "Old Standard TT"
-    ];
-    $('#centeredWord').text(randomChoice(words));
+    $('#centeredWord').text(randomChoice(salientWords));
     $('#centeredWord').css({
       fontFamily: randomChoice(fonts),
       backgroundColor: '#fff',
       color: '#000'
     });
+    var img = new Image();
+    img.src = randomChoice(module.files);
+    img.onload = function() {
+      var width = img.width;
+      var height = img.height;
+      var scale = window.innerWidth / width;
+      ctx.drawImage(img, 0, 0, scale * width, scale * height);
+    }
   }
   return module;
 };
