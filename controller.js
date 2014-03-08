@@ -13,7 +13,7 @@ var _ = require('underscore')
 
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
-var assets_root = './public/assets/';
+var assets_root = __dirname +'/public/assets/';
 var requests = [];
 
 module.exports = function(config, io) {
