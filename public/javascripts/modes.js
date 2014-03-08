@@ -77,7 +77,7 @@ var CenteredTextMode = function() {
   var ctx = {};
   module.init = function() {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>');
-    $('body').append('<div class="centeredText"><span id="centeredWord">phantom</span></div>');
+    $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
     if (module.tweets) {
       for(i in module.tweets) {
         var tokens = module.tweets[i].text.split(' ');
@@ -87,7 +87,10 @@ var CenteredTextMode = function() {
         }
       }
     }
-    ctx = document.getElementById('centeredTextCanvas').getContext('2d');
+    var canvas = document.getElementById('centeredTextCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx = canvas.getContext('2d');
     ctx.mozImageSmoothingEnabled = false;
     ctx.webkitImageSmoothingEnabled = false;
     ctx.msImageSmoothingEnabled = false;
@@ -96,19 +99,31 @@ var CenteredTextMode = function() {
   module.next = function() {}
   module.exit = function() {}
   module.update = function() {
-    $('#centeredWord').text(randomChoice(salientWords));
-    $('#centeredWord').css({
-      fontFamily: randomChoice(fonts),
-      backgroundColor: '#fff',
-      color: '#000'
-    });
     var img = new Image();
     img.src = randomChoice(module.files);
     img.onload = function() {
       var width = img.width;
       var height = img.height;
-      var scale = window.innerWidth / width;
+      var fullscreen = Math.random() < .2;
+      var scale;
+      if(fullscreen) {
+        var widthScale = window.innerWidth / width;
+        var heightScale = window.innerHeight / height;
+        scale = Math.max(widthScale, heightScale);
+      } else {
+        var pixelCount = randomPowerOfTwo();
+        scale = window.innerWidth / pixelCount;
+      }
       ctx.drawImage(img, 0, 0, scale * width, scale * height);
+
+      var clusters = colorThief.getPalette(img, 4, 1000);
+      clusters = _.shuffle(clusters);
+      $('#centeredWord').text(randomChoice(salientWords));
+      $('#centeredWord').css({
+        fontFamily: randomChoice(fonts),
+        backgroundColor: rgb(clusters[0]),
+        color: rgb(clusters[1])
+      });
     }
   }
   return module;

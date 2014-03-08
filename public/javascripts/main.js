@@ -1,23 +1,3 @@
-var ServerTime = (function() {
-  var timeOffset = 0;
-  return {
-    init: function(serverTime) {
-      this.timeOffset = serverTime - Date.now();
-    },
-    now: function() {
-      return new Date(Date.now() + timeOffset);
-    },
-    getTimeOffset: function() {
-      return timeOffset;
-    }
-  }
-}());
-
-var screenId = window.location.pathname.split("/")[2];
-
-// show the screen number on startup
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
-
 window.onload = function() {
 
   var manager = new Manager();
@@ -58,6 +38,4 @@ window.onload = function() {
     requestAnimationFrame(animloop);
     manager.update();
   })();
-
-
 }
