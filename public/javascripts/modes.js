@@ -57,6 +57,11 @@ var EnterMode = function() {
   return module;
 };
 
+var AllImagesMode = function() {
+  var module = new Mode();
+  return module;
+}
+
 // one scene involves flashing single words briefly in the center
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {

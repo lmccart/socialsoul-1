@@ -9,6 +9,7 @@ var Manager = function() {
       new DebugMode(),
       new EnterMode(),
       new CenteredTextMode(),
+      new AllImagesMode(),
       new BreakMode,
       new ExitMode()
     ],
@@ -35,7 +36,7 @@ var Manager = function() {
     subject.user = data.user;
     subject.tweets = data.tweets;
 
-    module.goToMode(2);
+    module.goToMode(3);
     module.started = true;
   };
 
