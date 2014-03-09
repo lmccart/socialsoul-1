@@ -23,7 +23,7 @@ var Manager = function() {
 
   module.sync = function() {
     // any pre-user setup goes here
-    module.goToMode(3);
+    // module.goToMode(4);
   }
 
   module.trigger = function(data) {
@@ -39,7 +39,7 @@ var Manager = function() {
     subject.user = data.user;
     subject.tweets = data.tweets;
 
-    module.goToMode(3);
+    module.goToMode(2);
     module.started = true;
   };
 

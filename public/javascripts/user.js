@@ -3,13 +3,24 @@
 
 var User = function() {
 	var module = {
+		// backend
 		user: "",
 		tweets: [],
 		salient: [],
 
 		profile: "",
 		background: "",
-		files: []
+		files: [],
 	};
+	var paletteCache = {};
+	module.getPalette = function(img) {
+		if(!paletteCache[img.src]) {
+	        var sampleSize = 1000;
+	        var stepSize = Math.floor(img.width * img.height / sampleSize);
+	        stepSize = Math.min(stepSize, 1);
+			paletteCache[img.src] = colorThief.getPalette(img, 4, stepSize);
+		}
+		return paletteCache[img.src];
+	}
 	return module;
 }

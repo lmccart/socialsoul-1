@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= id %></title>
+    <style>
+    body {
+      background-color: gray;
+    }
+    .scaled-frame {
+      width: 1920px; 
+      height: 1080px;
+      border: 0px;
+      -webkit-transform: scale(0.5);
+      -webkit-transform-origin: 0 0;
+    }
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+      .scaled-frame  { zoom: 1;  }
+    }
+    </style>
+
+  </head>
+  <body>
+    <iframe class="scaled-frame" src="../screen/<%= id %>"></iframe>
+  </body>
+</html>

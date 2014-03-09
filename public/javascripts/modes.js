@@ -93,7 +93,7 @@ var CenteredTextMode = function() {
     ctx.imageSmoothingEnabled = false;
   }
   module.update = function(user) {
-    if(user.files.length > 0) { 
+    if(user.files.length > 0) {
       var img = new Image();
       img.src = randomChoice(user.files);
       img.onload = function() {
@@ -110,10 +110,7 @@ var CenteredTextMode = function() {
           scale = window.innerWidth / pixelCount;
         }
         ctx.drawImage(img, 0, 0, scale * width, scale * height);
-        var sampleSize = 1000;
-        var stepSize = Math.floor(width * height / sampleSize);
-        stepSize = Math.min(stepSize, 1);
-        var clusters = colorThief.getPalette(img, 4, stepSize);
+        var clusters = user.getPalette(img);
         clusters = _.shuffle(clusters);
         $('#centeredWord').text(randomChoice(salientWords));
         $('#centeredWord').css({

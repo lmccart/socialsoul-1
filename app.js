@@ -39,6 +39,10 @@ app.get('/', function(req, res) {
   res.render('index', { id: 'all' });
 });
 
+app.get('/preview/:id', function(req, res) {
+  res.render('preview', { id: req.params.id });
+});
+
 app.get('/screen/:id', function(req, res) {
   res.render('screen', { id: req.params.id });
 });
