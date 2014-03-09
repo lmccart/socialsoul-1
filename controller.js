@@ -81,7 +81,7 @@ module.exports = function(config, io) {
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
-    getPerson(user, true, !is_def, callback);
+    getPerson({user:user, get_media:true, is_def:true, cb:callback});
 
   }
 
@@ -92,7 +92,7 @@ module.exports = function(config, io) {
       fs.readJson('./data/mentors.json', function(err, data) {
         controller.storage.reset(function() {
           async.eachSeries(data, function(mentor, cb) {
-            getPerson(mentor.user, false, false, cb);
+            getPerson({user:mentor.user, init:true, cb:cb});
           }, function () {
             controller.storage.updateDefaultUsers();
             console.log('downloaded ');
@@ -107,11 +107,13 @@ module.exports = function(config, io) {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  function getPerson(user, live, send_tweet, cb) {
-    var dir = assets_root+'mentors/'+user+'/';
-    console.log('grabbing tweets for '+user);
+  // opts -- user, get_media, send_tweet, is_def, is_mentor, cb, init
+  function getPerson(opts) {
 
-    twit.getUserTimeline({screen_name:user}, function(err, data) { 
+    var dir = assets_root+'mentors/'+opts.user+'/';
+    console.log('grabbing tweets for '+opts.user);
+
+    twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
       // render controller once user status is known
       if (err) {
         console.log(err);
@@ -124,45 +126,47 @@ module.exports = function(config, io) {
 
         controller.error = null; 
 
-        if (live) {
-          // alert listeners to start
-          controller.io.sockets.emit('trigger', {
-            'user':user,
-            'tweets':data,
-            'salient':get_salient(data)
-          }); 
-        }
-
-
         // insert text in db
-        console.log('inserting '+user+' in db');
+        console.log('inserting '+opts.user+' in db');
         
         var obj = { 
-          user: user,
+          user: opts.user,
           text: concat_tweets(data),
           name: data[0].user.name
         };
         controller.storage.insert(obj);
 
-        // analyze tweets
-        if (live) findMentor(user, obj.text, send_tweet);
-
-        fs.remove(dir, function() {
-          fs.mkdirs(dir, function() {
-
-            // save salient // test pend
-            fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
-
-            // save json
-            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-            // download media
-
-            downloadMedia(dir, data, function(res) { 
-              console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-              cb();
-            });
+        if (!opts.init && !opts.is_mentor) {
+          // alert listeners to start
+          controller.io.sockets.emit('trigger', {
+            'user':opts.user,
+            'tweets':data,
+            'salient':get_salient(data)
           }); 
-        }); 
+
+          findMentor(opts.user, obj.text, opts.send_tweet);
+        }
+
+        if (opts.get_media) {
+          fs.remove(dir, function() {
+            fs.mkdirs(dir, function() {
+
+              // save salient // test pend
+              fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
+
+              // save json
+              fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+              // download media
+
+              downloadMedia(dir, data, function(res) { 
+                //console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+                if (opts.cb) opts.cb();
+              });
+            }); 
+          }); 
+        } else {
+          if (opts.cb) opts.cb();
+        }
       }
 
     });
@@ -204,7 +208,7 @@ module.exports = function(config, io) {
     beagle.scrape(uri, function(err, bone){
       if (err) console.log('b err', uri);
       if (bone) {
-        console.log(bone.images);
+        //console.log(bone.images);
         for (var i=0; i<bone.images.length; i++) {
           queue.push({dir:dir, url:bone.images[i]}, callback);
         }
@@ -213,9 +217,15 @@ module.exports = function(config, io) {
   }
 
   //Set up our queue
+  var replacements = ['%', '=', '?'];
   var queue = async.queue(function(obj, callback) {
 
     var filename = obj.dir+obj.url.substring(obj.url.lastIndexOf('/')+1);
+
+    for (var i=0; i<replacements.length; i++) {
+      filename = filename.replace(replacements[i], '');
+    }
+
     if (obj.url.indexOf('vine.co') != -1) {
       var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
       vine.download(vine_id, {dir: obj.dir, success: callback});
@@ -223,14 +233,16 @@ module.exports = function(config, io) {
       var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
         if (req.bytesWritten > 4000) { // only send if bigger than 4kb
           magic.detectFile(filename, function(err, res) {
-            if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
+            if (err) {
+              console.log("MAGIC ERR") 
+            } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
               controller.io.sockets.emit('asset', {
                 'file':filename,
                 'tag':obj.tag
               }); 
             }
           });
-        }
+        } 
         callback(filename);
       }).on('error', function(err) {
         console.log('Error caught and ignored: ' +err);
@@ -270,6 +282,7 @@ module.exports = function(config, io) {
       }
       console.log(highKey + " similarity " + high);
       sendMentor(highKey);
+      getPerson({user:highKey, is_mentor:true, get_media:true});
       if (send_tweet) {
        //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
       }
@@ -282,7 +295,6 @@ module.exports = function(config, io) {
     for (var i=0; i<data.length; i++) {
       var tweet = data[i].text;
       tweet = tweet.replace(/['…,.():;|{}_=+<>~"`/[/]/g, '').replace(/[-–/]/g, ' ');
-      console.log(tweet);
       var tokens = tweet.split(' ');
       for (var j=0; j<tokens.length; j++) {
         if (tokens[j].length > 4 && tokens[j].length < 12 && 
@@ -327,6 +339,8 @@ module.exports = function(config, io) {
     twit.updateStatus('@'+user+' your social soulmate is @'+name,
       function(err) {console.log(err); });
   }
+
+
 
   return controller;
 };
