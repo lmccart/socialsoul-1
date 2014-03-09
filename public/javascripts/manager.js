@@ -1,3 +1,7 @@
+// manager keeps track of all the modes
+
+var subject, mentor;
+
 var Manager = function() {
 
   var module = {
@@ -18,47 +22,38 @@ var Manager = function() {
     // module.goToMode(0);
   }
 
-  module.init = function(data) {
-    // any per-user setup goes here
-    for (var i=0; i<module.modes.length; i++) {
-      module.modes[i].files = [];
-      module.modes[i].user = data.user;
-      module.modes[i].tweets = data.tweets;
-    }
-    module.goToMode(2);
-    module.started = true;
-  };
-
-  module.addAssets = function(data) {
-    for (var i=0; i<module.modes.length; i++) {
-      module.modes[i].dir = data.dir.replace('./public', '..');
-      module.modes[i].files = data.files;
-      // console.log(i+' '+module.modes[i].dir);
-    }
-    // module.goToMode(0);
-  };
-
-  module.addAsset = function(data) {
-    // module.goToMode(0);
-
-    // console.log(module.files);
-    for (var i=0; i<module.modes.length; i++) {
-      // console.log(data.file.replace('./public', '..'));
-      var file = data.file.replace('./public', '..');
-      module.modes[i].files.push(file);
-      // console.log(i+' '+file);
-    }
-    module.modes[module.cur_mode].next();
-  };
-
-  module.reset = function() {
+  module.trigger = function(data) {
+    // reset everything
     module.started = false;
     module.last_start = 0;
     module.cur_mode = module.modes.length-1;
     for (var i=0; i<module.modes.length; i++) {
       module.modes[i].exit();
     }
-  }
+
+    subject = new User();
+    subject.user = data.user;
+    subject.tweets = data.tweets;
+
+    module.goToMode(2);
+    module.started = true;
+  };
+
+  module.addAsset = function(data) {
+    // better way to do this might be sending json like
+    // {subject: {profile: filename, background: filename}}
+    // then we can just loop through properties and copy them over
+    // using .push if they already exist
+    if(data.tag == "profile") {
+      subject.profile = data.file;
+    } else if(data.tag == "background") {
+      subject.background = data.file;
+    } else {
+      subject.files.push(data.file);
+    }
+
+    module.modes[module.cur_mode].next(subject);
+  };
 
   module.update = function() {
     // if (module.started) {
@@ -68,9 +63,7 @@ var Manager = function() {
     //     module.goToMode(next);
     //   }
     // }
-    if(module.modes[module.cur_mode].update != undefined) {
-      module.modes[module.cur_mode].update();
-    }
+    module.modes[module.cur_mode].update(subject);
   }
 
   module.goToMode = function(ind) {
@@ -85,7 +78,7 @@ var Manager = function() {
       }
       $('body').empty();
       module.cur_mode = ind;
-      module.modes[module.cur_mode].init();
+      module.modes[module.cur_mode].init(subject);
       console.log('init mode '+module.cur_mode);
     } else {
       console.log('mode '+ind+' out of bounds');

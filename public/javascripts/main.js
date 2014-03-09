@@ -1,22 +1,4 @@
-var ServerTime = (function() {
-  var timeOffset = 0;
-  return {
-    init: function(serverTime) {
-      this.timeOffset = serverTime - Date.now();
-    },
-    now: function() {
-      return new Date(Date.now() + timeOffset);
-    },
-    getTimeOffset: function() {
-      return timeOffset;
-    }
-  }
-}());
-
-var screenId = window.location.pathname.split("/")[2];
-
-// show the screen number on startup
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
+// main just handles the routing of socket.io messages
 
 window.onload = function() {
 
@@ -28,36 +10,36 @@ window.onload = function() {
 
   socket.on('sync', function (data) {
     ServerTime.init(data.serverTime);
-    console.log("synced with server @ " + ServerTime.now().toLocaleString() + " (" + ServerTime.getTimeOffset() + " ms offset)");
+    console.log("synced with server (" + ServerTime.getTimeOffset() + " ms offset)");
     manager.sync();
   });
 
+  // new user available
   socket.on('trigger', function (data) {
-  	console.log('trigger '+data.user);
-    manager.reset();
-    manager.init(data);
+    manager.trigger(data);
   });
 
-  // assets
-  socket.on('assets', function (data) {
-    // console.log('assets '+data.dir);
-    manager.addAssets(data);
-  });
-
+  // new media available
   socket.on('asset', function (data) {
-    // console.log('asset '+data.file);
+    // convert from backend to frontend directory
+    data.file = data.file.replace('./public', '..');
     manager.addAsset(data);
   });
 
+  // mentor chosen
+  socket.on('mentor', function (data) {
+    // need to everything into a user object
+    // console.log(data);
+  });
 
+  // refresh the page when node restarts
   socket.on('reconnect', function() {
     location.reload();
   });
 
+  // animation loop for modes
   (function animloop(){
     requestAnimationFrame(animloop);
     manager.update();
   })();
-
-
 }
