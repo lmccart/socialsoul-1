@@ -13,6 +13,11 @@ function randomPowerOfTwo() {
 
 var colorThief = new ColorThief();
 
+// show the screen number on startup
+var screenId = window.location.pathname.split("/")[2];
+document.write('<div class="debug" id="screenId">'+screenId+"</div>");
+
+// singleton class
 var ServerTime = (function() {
   var timeOffset = 0;
   return {
@@ -28,7 +33,22 @@ var ServerTime = (function() {
   }
 }());
 
-var screenId = window.location.pathname.split("/")[2];
-
-// show the screen number on startup
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
+var fonts = [
+  "Lato",
+  "Arvo",
+  "Playfair Display",
+  "BenchNine",
+  "Lora",
+  "Bitter",
+  "Kreon",
+  "Crete Round",
+  "Droid Serif",
+  "Oswald",
+  "Open Sans Condensed",
+  "Montserrat",
+  "Raleway",
+  "Roboto+Slab",
+  "Inconsolata",
+  "Signika",
+  "Old Standard TT"
+];
