@@ -110,8 +110,10 @@ var CenteredTextMode = function() {
           scale = window.innerWidth / pixelCount;
         }
         ctx.drawImage(img, 0, 0, scale * width, scale * height);
-
-        var clusters = colorThief.getPalette(img, 4, 1000);
+        var sampleSize = 1000;
+        var stepSize = Math.floor(width * height / sampleSize);
+        stepSize = Math.min(stepSize, 1);
+        var clusters = colorThief.getPalette(img, 4, stepSize);
         clusters = _.shuffle(clusters);
         $('#centeredWord').text(randomChoice(salientWords));
         $('#centeredWord').css({
@@ -124,6 +126,50 @@ var CenteredTextMode = function() {
   }
   return module;
 };
+
+var ThreeMode = function() {
+  var module = new Mode();
+  module.init = function() {
+
+  }
+  module.update = function() {
+    
+  }
+  return module;
+}
+
+// easy way to display the username, need to work on this
+var TextillateMode = function() {
+  var module = new Mode();
+  module.init = function(user) {
+    console.log(user);
+    $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
+    $('#centeredWord').text(user.user);
+    $('#centeredWord').textillate({
+      selector: '.texts',
+      loop: true,
+      minDisplayTime: 2000,
+      initialDelay: 0,
+      in: {
+        effect: 'wobble',
+        delayScale: 1.5,
+        delay: 50,
+        sync: false,
+        reverse: false,
+        shuffle: false,
+        callback: function () {}
+      },
+      out: {
+        effect: 'none'
+      },
+      autoStart: true,
+      inEffects: [],
+      outEffects: [],
+      callback: function () {}
+    });
+  }
+  return module;
+}
 
 // the break should be quick pulsing of the whole space
 // ideally in sync, or starting out of sync and coming into sync
