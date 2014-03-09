@@ -1,5 +1,14 @@
-var DebugMode = function() {
+var Mode = function() {
   var module = {};
+  module.init = function() {}
+  module.next = function() {}
+  module.update = function() {}
+  module.exit = function() {}
+  return module;
+}
+
+var DebugMode = function() {
+  var module = new Mode();
   module.init = function(user) {
     var tweetText = "";
     for(var i = 0; i < user.tweets.length; i++) {
@@ -24,14 +33,13 @@ var DebugMode = function() {
       }
     }
   }
-  module.exit = function() {}
   return module;
 };
 
 // the entrance is pulsing white to black on the centermost two screens
 // everything else is black
 var EnterMode = function() {
-  var module = {};
+  var module = new Mode();
   var timeline = {};
   module.init = function() {
     // the browser can barely handle this at 60fps, maybe should be webgl
@@ -46,15 +54,13 @@ var EnterMode = function() {
       $('body').append('<div class="fullscreen blackbg" id="color"></div>');
     }
   }
-  module.next = function() {}
-  module.exit = function() {}
   return module;
 };
 
 // one scene involves flashing single words briefly in the center
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
-  var module = {};
+  var module = new Mode();
   var salientWords = [];
   var ctx = {};
   module.init = function(user) {
@@ -81,8 +87,6 @@ var CenteredTextMode = function() {
     ctx.msImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
   }
-  module.next = function() {}
-  module.exit = function() {}
   module.update = function(user) {
     if(user.files.length > 0) { 
       var img = new Image();
@@ -119,7 +123,7 @@ var CenteredTextMode = function() {
 // the break should be quick pulsing of the whole space
 // ideally in sync, or starting out of sync and coming into sync
 var BreakMode = function() {
-  var module = {};
+  var module = new Mode();
   var timeline = {};
   module.init = function() {
     $('body').append('<div class="fullscreen whitebg" id="color"></div>');
@@ -129,19 +133,15 @@ var BreakMode = function() {
       .to("#color", .5, {opacity:0, ease:Power2.easeIn})
       .repeat(-1);
   }
-  module.next = function() {},
-  module.exit = function() {}
   return module;
 };
 
 // exit is just white on all screens
 var ExitMode = function() {
-  var module = {};
+  var module = new Mode();
   module.init = function() {
-      $('body').append('<div class="fullscreen whitebg"></div>');
-    },
-  module.next = function() {}
-  module.exit = function() {}
+    $('body').append('<div class="fullscreen whitebg"></div>');
+  };
   return module;
 };
 

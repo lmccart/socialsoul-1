@@ -63,9 +63,7 @@ var Manager = function() {
     //     module.goToMode(next);
     //   }
     // }
-    if(module.modes[module.cur_mode].update) {
-      module.modes[module.cur_mode].update(subject);
-    }
+    module.modes[module.cur_mode].update(subject);
   }
 
   module.goToMode = function(ind) {
