@@ -48,8 +48,8 @@ npm install
 * `message`: `{ message:"hello from the backend" }` -- just to confirm connection
 * `sync`: `{ serverTime: Date.now() }`
 * `trigger`: `{ user: String, tweets: JSON, salient: [String] }`
-* `mentor`: `{ user: String, content: JSON }`
-* `asset`: `{ file: String, tag: String(optional -- profile, background, etc) }`
+* `mentor`: `{ user: String, content: JSON, salient: [String] }`
+* `asset`: `{ file: String, tag: String(optional -- profile, background, etc), is_mentor: BOOL }`
 
 
 
