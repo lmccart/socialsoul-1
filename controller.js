@@ -8,8 +8,7 @@ var _ = require('underscore')
   , mmm = require('mmmagic')
   , natural = require('natural')
   , similarity = require('./similarity')
-  , scraper = require('./scraper')
-  , vine = require('./vinegrab');
+  , scraper = require('./scraper');
 
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
@@ -238,7 +237,7 @@ module.exports = function(config, io) {
       if (!exists) {
         if (obj.url.indexOf('vine.co') != -1) {
           var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
-          vine.download(vine_id, {dir: obj.dir, success: callback});
+          scraper.getVine(vine_id, {dir: obj.dir, success: callback});
         } else {
           var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
             if (req.bytesWritten > 4000) { // only send if bigger than 4kb
