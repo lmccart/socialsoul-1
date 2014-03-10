@@ -22,7 +22,7 @@ window.onload = function() {
   // new media available
   socket.on('asset', function (data) {
     // convert from backend to frontend directory
-    data.file = data.file.replace('./public', '..');
+    data.file = data.file.replace(/.+public/, "..");
     manager.addAsset(data);
   });
 

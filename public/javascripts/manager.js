@@ -1,16 +1,20 @@
 // manager keeps track of all the modes
 
-var subject, mentor;
+var subject = new User();
+var mentor = new User();
 
 var Manager = function() {
 
   var module = {
     modes: [
-      new DebugMode(),
-      new EnterMode(),
-      new CenteredTextMode(),
-      new BreakMode,
-      new ExitMode()
+      new DebugMode(), // 100%
+      new EnterMode(), // 100%
+      new CenteredTextMode(), // 90%
+      new ThreeMode(),
+      new TextillateMode(), // 25%
+      new AllImagesMode(), // 0%
+      new BreakMode, // 80%
+      new ExitMode() // 100%
     ],
     cur_mode: 0,
     last_start: 0,
@@ -19,7 +23,7 @@ var Manager = function() {
 
   module.sync = function() {
     // any pre-user setup goes here
-    // module.goToMode(0);
+    // module.goToMode(5);
   }
 
   module.trigger = function(data) {
@@ -35,7 +39,7 @@ var Manager = function() {
     subject.user = data.user;
     subject.tweets = data.tweets;
 
-    module.goToMode(2);
+    module.goToMode(5);
     module.started = true;
   };
 

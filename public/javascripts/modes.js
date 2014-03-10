@@ -57,6 +57,37 @@ var EnterMode = function() {
   return module;
 };
 
+var AllImagesMode = function() {
+  var module = new Mode();
+  module.init = function(user) {
+    $('body').append('<div class="allImages" id="container"></div>');
+    var n = 5 * 8; // enough images to fill the screen at 240x240 each
+    for(var i = 0; i < n; i++) {
+      if(Math.random() < .5) {
+        $('#container').append('<div class="wrapper"><img src="../images/placeholder.png"/></div>');
+      } else {
+        $('#container').append(
+          '<div class="wrapper">'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '</div>');
+      }
+    }
+  }
+  module.update = function(user) {
+    if(user.files.length) {
+      $('img').each(function(){
+        this.src=randomChoice(user.files);
+        // could add some more randomization of positions here
+        // so they're not all top-left aligned
+      });
+    }
+  }
+  return module;
+}
+
 // one scene involves flashing single words briefly in the center
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
@@ -88,7 +119,7 @@ var CenteredTextMode = function() {
     ctx.imageSmoothingEnabled = false;
   }
   module.update = function(user) {
-    if(user.files.length > 0) { 
+    if(user.files.length > 0) {
       var img = new Image();
       img.src = randomChoice(user.files);
       img.onload = function() {
@@ -105,8 +136,7 @@ var CenteredTextMode = function() {
           scale = window.innerWidth / pixelCount;
         }
         ctx.drawImage(img, 0, 0, scale * width, scale * height);
-
-        var clusters = colorThief.getPalette(img, 4, 1000);
+        var clusters = user.getPalette(img);
         clusters = _.shuffle(clusters);
         $('#centeredWord').text(randomChoice(salientWords));
         $('#centeredWord').css({
@@ -119,6 +149,81 @@ var CenteredTextMode = function() {
   }
   return module;
 };
+
+var ThreeMode = function() {
+  var module = new Mode();
+  
+  var container;
+  var camera, scene, renderer;
+  var uniforms, material, mesh;
+  var mouseX = 0, mouseY = 0,
+  lat = 0, lon = 0, phy = 0, theta = 0;
+  var windowHalfX = window.innerWidth / 2;
+  var windowHalfY = window.innerHeight / 2;
+
+  module.init = function() {
+    container = document.body;
+    camera = new THREE.Camera();
+    camera.position.z = 1;
+    scene = new THREE.Scene();
+    uniforms = {
+      time: { type: "f", value: 1.0 },
+      resolution: { type: "v2", value: new THREE.Vector2() }
+    };
+    material = new THREE.ShaderMaterial( {
+      uniforms: uniforms,
+      vertexShader: document.getElementById( 'vertexShader' ).textContent,
+      fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+    } );
+    mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), material );
+    scene.add( mesh );
+    renderer = new THREE.WebGLRenderer();
+    container.appendChild( renderer.domElement );
+    
+    uniforms.resolution.value.x = window.innerWidth;
+    uniforms.resolution.value.y = window.innerHeight;
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+
+  module.update = function() {
+    uniforms.time.value += .05;// Math.floor(Date.now()) / 1000.;
+    renderer.render( scene, camera );    
+  }
+  return module;
+}
+
+// easy way to display the username, need to work on this
+var TextillateMode = function() {
+  var module = new Mode();
+  module.init = function(user) {
+    console.log(user);
+    $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
+    $('#centeredWord').text(user.user);
+    $('#centeredWord').textillate({
+      selector: '.texts',
+      loop: true,
+      minDisplayTime: 2000,
+      initialDelay: 0,
+      in: {
+        effect: 'wobble',
+        delayScale: 1.5,
+        delay: 50,
+        sync: false,
+        reverse: false,
+        shuffle: false,
+        callback: function () {}
+      },
+      out: {
+        effect: 'none'
+      },
+      autoStart: true,
+      inEffects: [],
+      outEffects: [],
+      callback: function () {}
+    });
+  }
+  return module;
+}
 
 // the break should be quick pulsing of the whole space
 // ideally in sync, or starting out of sync and coming into sync
