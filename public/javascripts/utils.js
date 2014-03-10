@@ -40,7 +40,9 @@ var VariableTimeout = function() {
   }
   module.stop = function() {
     alive = false;
-    clearTimeout(curTimeout);
+    if(curTimeout) {
+      clearTimeout(curTimeout);
+    }
   }
   return module;
 };

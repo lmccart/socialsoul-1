@@ -59,7 +59,7 @@ var EnterMode = function() {
 
 var AllImagesMode = function() {
   var module = new Mode();
-  var timeout = new VariableTimeout();
+  module.timeout = new VariableTimeout();
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
@@ -77,7 +77,7 @@ var AllImagesMode = function() {
           '</div>');
       }
     }
-    timeout.start(function() {
+    module.timeout.start(function() {
       if(user.files.length) {
         $('img').each(function(){
           if(Math.random() < .1) {
@@ -87,34 +87,41 @@ var AllImagesMode = function() {
           }
         })
       }
-    }, 500);
+    },
+    // 500); // subject
+    30); // mentor
   }
   module.exit = function() {
-    timeout.stop();
+    module.timeout.stop();
   }
   return module;
 }
 
 
-// a single large tweet in black outline
+// a single large tweet with black background
 var TweetMode = function() {
   var module = new Mode();
   var timeline = {};
-  var timeout = new VariableTimeout();
+  module.timeout = new VariableTimeout();
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet"></span></div></div></div>');
     timeline = new TimelineMax();
-    timeout.start(function() {
+    module.timeout.start(function() {
+      $('#tweet').hide();
       $('#tweet').text(randomChoice(user.tweets).text);
+      $('#tweet').css({fontFamily: randomChoice(fonts)});
+      $('#tweet').show();
       timeline
         .clear()
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
-    }, 5000);
+    },
+    // 5000 + (screenId * 500)); // subject
+    5000 - (screenId * 500)); // mentor
   }
   module.exit = function() {
-    timeout.stop();
+    module.timeout.stop();
   }
   return module;
 };
@@ -125,6 +132,7 @@ var CenteredTextMode = function() {
   var module = new Mode();
   var salientWords = [];
   var ctx = {};
+  module.timeout = new VariableTimeout();
   module.init = function(user) {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>');
     $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
@@ -148,35 +156,43 @@ var CenteredTextMode = function() {
     ctx.webkitImageSmoothingEnabled = false;
     ctx.msImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
-  }
-  module.update = function(user) {
-    if(user.files.length > 0) {
-      var img = new Image();
-      img.src = randomChoice(user.files);
-      img.onload = function() {
-        var width = img.width;
-        var height = img.height;
-        var fullscreen = Math.random() < .2;
-        var scale;
-        if(fullscreen) {
-          var widthScale = window.innerWidth / width;
-          var heightScale = window.innerHeight / height;
-          scale = Math.max(widthScale, heightScale);
-        } else {
-          var pixelCount = randomPowerOfTwo();
-          scale = window.innerWidth / pixelCount;
+  
+    module.timeout.start(function() {
+      if(user.files.length > 0) {
+        var img = new Image();
+        img.src = randomChoice(user.files);
+        img.onload = function() {
+          var width = img.width;
+          var height = img.height;
+          var fullscreen = Math.random() < .2;
+          var scale;
+          if(fullscreen) {
+            var widthScale = window.innerWidth / width;
+            var heightScale = window.innerHeight / height;
+            scale = Math.max(widthScale, heightScale);
+          } else {
+            var pixelCount = randomPowerOfTwo();
+            scale = window.innerWidth / pixelCount;
+          }
+          ctx.drawImage(img, 0, 0, scale * width, scale * height);
+          var clusters = user.getPalette(img);
+          clusters = _.shuffle(clusters);
+          $('#word').hide();
+          $('#word').text(randomChoice(salientWords));
+          $('#word').css({
+            fontFamily: randomChoice(fonts),
+            backgroundColor: rgb(clusters[0]),
+            color: rgb(clusters[1])
+          });
+          $('#word').show();
         }
-        ctx.drawImage(img, 0, 0, scale * width, scale * height);
-        var clusters = user.getPalette(img);
-        clusters = _.shuffle(clusters);
-        $('#word').text(randomChoice(salientWords));
-        $('#word').css({
-          fontFamily: randomChoice(fonts),
-          backgroundColor: rgb(clusters[0]),
-          color: rgb(clusters[1])
-        });
       }
-    }
+    },
+    // 1000 - (screenId * 80)); // subject-side
+    16 + (screenId * 5));
+  }
+  module.exit = function() {
+    module.timeout.stop();
   }
   return module;
 };
@@ -266,7 +282,7 @@ var BreakMode = function() {
     timeline = new TimelineMax();
     timeline
       .set("#color", {opacity:1})
-      .to("#color", .5, {opacity:0, ease:Power2.easeIn})
+      .to("#color", (Math.random() * .2) + .5, {opacity:0, ease:Power2.easeIn})
       .repeat(-1);
   }
   return module;
