@@ -5,12 +5,11 @@ var _ = require('underscore')
   , fs = require('fs-extra')
   , _ = require('underscore')
   , async = require('async')
-  , beagle = require('beagle')
+  , mmm = require('mmmagic')
   , natural = require('natural')
   , similarity = require('./similarity')
-  , vine = require('./vinegrab')
-  , mmm = require('mmmagic')
-  , cheerio = require('cheerio');
+  , scraper = require('./scraper')
+  , vine = require('./vinegrab');
 
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
@@ -211,11 +210,12 @@ module.exports = function(config, io) {
 
 
   function scrape(dir, uri, is_mentor, callback, timeline) {
-    beagle.scrape(uri, function(err, bone){
+    scraper.scrape(uri, function(err, imgs){
       if (err) console.log('b err', uri);
-      if (bone) {
-        for (var i=0; i<bone.images.length; i++) {
-          queue.push({dir:dir, url:bone.images[i], is_mentor: is_mentor}, callback);
+      console.log(imgs);
+      if (imgs) {
+        for (var i=0; i<imgs.length; i++) {
+          queue.push({dir:dir, url:imgs[i], is_mentor: is_mentor}, callback);
         }
       } 
     }, timeline);
