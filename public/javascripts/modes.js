@@ -96,7 +96,7 @@ var CenteredTextMode = function() {
   var ctx = {};
   module.init = function(user) {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>');
-    $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
+    $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="centeredWord"></span></div></div></div>');
 
     // replace this with backend salient words
     if (user.tweets) {

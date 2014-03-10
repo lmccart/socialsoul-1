@@ -23,7 +23,7 @@ var Manager = function() {
 
   module.sync = function() {
     // any pre-user setup goes here
-    // module.goToMode(5);
+    module.goToMode(2);
   }
 
   module.trigger = function(data) {
@@ -39,24 +39,30 @@ var Manager = function() {
     subject.user = data.user;
     subject.tweets = data.tweets;
 
-    module.goToMode(0);
+    mentor = new User();
+
+    module.goToMode(2);
     module.started = true;
   };
 
   module.addAsset = function(data) {
-    // better way to do this might be sending json like
-    // {subject: {profile: filename, background: filename}}
-    // then we can just loop through properties and copy them over
-    // using .push if they already exist
-    if(data.tag == "profile") {
-      subject.profile = data.file;
-    } else if(data.tag == "background") {
-      subject.background = data.file;
-    } else {
-      subject.files.push(data.file);
-    }
+    if(data.is_mentor) {
 
-    module.modes[module.cur_mode].next(subject);
+    } else {
+      // better way to do this might be sending json like
+      // {subject: {profile: filename, background: filename}}
+      // then we can just loop through properties and copy them over
+      // using .push if they already exist
+      if(data.tag == "profile") {
+        subject.profile = data.file;
+      } else if(data.tag == "background") {
+        subject.background = data.file;
+      } else {
+        subject.files.push(data.file);
+      }
+
+      module.modes[module.cur_mode].next(subject);
+    }
   };
 
   module.update = function() {
