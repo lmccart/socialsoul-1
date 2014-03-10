@@ -146,8 +146,6 @@ module.exports = function(config, io) {
             'salient':get_salient(data)
           }); 
 
-          if (!opts.is_mentor) findMentor(opts.user, obj.text, opts.send_tweet);
-
         }
 
         if (opts.get_media) {
@@ -167,6 +165,9 @@ module.exports = function(config, io) {
                 console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
                 if (opts.cb) opts.cb();
               });
+
+              if (!opts.is_mentor && !opts.init) findMentor(opts.user, obj.text, opts.send_tweet);
+
             }); 
           }); 
         } else {
