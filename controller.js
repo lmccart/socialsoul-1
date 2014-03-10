@@ -137,15 +137,17 @@ module.exports = function(config, io) {
         };
         controller.storage.insert(obj);
 
-        if (!opts.init && !opts.is_mentor) {
-          // alert listeners to start
-          controller.io.sockets.emit('trigger', {
+        if (!opts.init) {
+          var msg_name = opts.is_mentor ? 'mentor' : 'trigger';
+
+          controller.io.sockets.emit(msg_name, {
             'user':opts.user,
             'tweets':data,
             'salient':get_salient(data)
           }); 
 
-          findMentor(opts.user, obj.text, opts.send_tweet);
+          if (!opts.is_mentor) findMentor(opts.user, obj.text, opts.send_tweet);
+
         }
 
         if (opts.get_media) {
@@ -159,9 +161,9 @@ module.exports = function(config, io) {
               fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
               // download media
               var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=412320714281082880&oldest_unread_id=0';
-              scrape(dir, media_timeline, opts.cb, true);
+              scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
 
-              downloadMedia(dir, data, function(res) { 
+              downloadMedia(dir, data, opts.is_mentor, function(res) { 
                 console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
                 if (opts.cb) opts.cb();
               });
@@ -175,13 +177,13 @@ module.exports = function(config, io) {
     });
   }
 
-  function downloadMedia(dir, data, callback) {
+  function downloadMedia(dir, data, is_mentor, callback) {
 
     // get profile pic
     if (data.length > 0) {
       var profile = data[0].user.profile_image_url.replace('_normal', '');
-      queue.push({dir:dir, url:profile, tag:'profile'}, callback);
-      queue.push({dir:dir, url:data[0].user.profile_background_image_url, tag:'background'}, callback);
+      queue.push({dir:dir, url:profile, tag:'profile', is_mentor:is_mentor}, callback);
+      queue.push({dir:dir, url:data[0].user.profile_background_image_url, tag:'background', is_mentor:is_mentor}, callback);
     }
     
 
@@ -191,16 +193,16 @@ module.exports = function(config, io) {
       var media = data[i].entities.media;
       if (media) {
         for (var j=0; j<media.length; j++) {
-          queue.push({dir:dir, url:media[j].media_url}, callback);
+          queue.push({dir:dir, url:media[j].media_url, is_mentor:is_mentor}, callback);
         }
       }
       var urls = data[i].entities.urls;
       if (urls) {
         for (var j=0; j<urls.length; j++) {
           if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
-            queue.push({dir:dir, url:urls[j].expanded_url}, callback);
+            queue.push({dir:dir, url:urls[j].expanded_url, is_mentor:is_mentor}, callback);
           } else {
-            scrape(dir, urls[j].expanded_url, callback, false);
+            scrape(dir, urls[j].expanded_url, is_mentor, callback, false);
           }
         }
       }
@@ -209,12 +211,12 @@ module.exports = function(config, io) {
 
 
 
-  function scrape(dir, uri, callback, timeline) {
+  function scrape(dir, uri, is_mentor, callback, timeline) {
     beagle.scrape(uri, function(err, bone){
       if (err) console.log('b err', uri);
       if (bone) {
         for (var i=0; i<bone.images.length; i++) {
-          queue.push({dir:dir, url:bone.images[i]}, callback);
+          queue.push({dir:dir, url:bone.images[i], is_mentor: is_mentor}, callback);
         }
       } 
     }, timeline);
@@ -244,7 +246,8 @@ module.exports = function(config, io) {
             } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
               controller.io.sockets.emit('asset', {
                 'file':filename,
-                'tag':obj.tag
+                'tag':obj.tag,
+                'is_mentor':obj.is_mentor
               }); 
             }
           });
@@ -287,7 +290,6 @@ module.exports = function(config, io) {
         }
       }
       console.log(highKey + " similarity " + high);
-      sendMentor(highKey);
       getPerson({user:highKey, is_mentor:true, get_media:true});
       if (send_tweet) {
        //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
@@ -327,18 +329,6 @@ module.exports = function(config, io) {
     natural.LancasterStemmer.attach();
     // maybe need to remove urls too
     return text.tokenizeAndStem();
-  }
-
-  function sendMentor(name) {
-    console.log('sending mentor '+name);
-    //controller.next_user = null; // pend temp
-
-    fs.readJson(assets_root+'mentors/'+name+'/timeline.json', function(err, data) {
-      controller.io.sockets.emit('mentor', {
-        'user':name,
-        'content':data
-      }); 
-    });
   }
 
   function sendEndTweet(user, name) {
