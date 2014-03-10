@@ -59,6 +59,32 @@ var EnterMode = function() {
 
 var AllImagesMode = function() {
   var module = new Mode();
+  module.init = function(user) {
+    $('body').append('<div class="allImages" id="container"></div>');
+    var n = 5 * 8; // enough images to fill the screen at 240x240 each
+    for(var i = 0; i < n; i++) {
+      if(Math.random() < .5) {
+        $('#container').append('<div class="wrapper"><img src="../images/placeholder.png"/></div>');
+      } else {
+        $('#container').append(
+          '<div class="wrapper">'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '</div>');
+      }
+    }
+  }
+  module.update = function(user) {
+    if(user.files.length) {
+      $('img').each(function(){
+        this.src=randomChoice(user.files);
+        // could add some more randomization of positions here
+        // so they're not all top-left aligned
+      });
+    }
+  }
   return module;
 }
 
