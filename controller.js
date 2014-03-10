@@ -9,7 +9,8 @@ var _ = require('underscore')
   , natural = require('natural')
   , similarity = require('./similarity')
   , vine = require('./vinegrab')
-  , mmm = require('mmmagic');
+  , mmm = require('mmmagic')
+  , cheerio = require('cheerio');
 
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
@@ -157,9 +158,11 @@ module.exports = function(config, io) {
               // save json
               fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
               // download media
+              var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=412320714281082880&oldest_unread_id=0';
+              scrape(dir, media_timeline, opts.cb, true);
 
               downloadMedia(dir, data, function(res) { 
-                //console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+                console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
                 if (opts.cb) opts.cb();
               });
             }); 
@@ -197,34 +200,37 @@ module.exports = function(config, io) {
           if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
             queue.push({dir:dir, url:urls[j].expanded_url}, callback);
           } else {
-            scrape(dir, urls[j].expanded_url, callback);
+            scrape(dir, urls[j].expanded_url, callback, false);
           }
         }
       }
     }
   }
 
-  function scrape(dir, uri, callback) {
+
+
+  function scrape(dir, uri, callback, timeline) {
     beagle.scrape(uri, function(err, bone){
       if (err) console.log('b err', uri);
       if (bone) {
-        //console.log(bone.images);
         for (var i=0; i<bone.images.length; i++) {
           queue.push({dir:dir, url:bone.images[i]}, callback);
         }
       } 
-    });
+    }, timeline);
   }
 
   //Set up our queue
-  var replacements = ['%', '=', '?'];
   var queue = async.queue(function(obj, callback) {
 
-    var filename = obj.dir+obj.url.substring(obj.url.lastIndexOf('/')+1);
+    var filename = obj.url.substring(obj.url.lastIndexOf('/')+1);
 
-    for (var i=0; i<replacements.length; i++) {
-      filename = filename.replace(replacements[i], '');
+    if (filename.indexOf('proxy.jpg') !== -1) { // media timeline imgs are f'd
+      filename = new Date().getTime()+'.jpg';
+    } else {
+      filename = filename.replace(/['…,():;|{}_=+<>~"`/[/]/g, '');
     }
+    filename = obj.dir+filename;
 
     if (obj.url.indexOf('vine.co') != -1) {
       var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
