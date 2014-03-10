@@ -155,7 +155,7 @@ module.exports = function(config, io) {
             // save json
             fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
             // download media
-            var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=412320714281082880&oldest_unread_id=0';
+            var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=9199999999999999999&oldest_unread_id=0';
             scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
 
             downloadMedia(dir, data, opts.is_mentor, function(res) { 
@@ -229,7 +229,7 @@ module.exports = function(config, io) {
     if (ind !== -1) { // media timeline imgs are f'd
       filename = filename.substring(ind+12)+'.jpg';
     } 
-
+    filename = filename.replace(':large', '');
     filename = filename.replace(/['&…,():;|{}_=+<>~"`/[/]/g, '');
     filename = obj.dir+filename;
 
