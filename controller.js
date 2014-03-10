@@ -201,7 +201,7 @@ module.exports = function(config, io) {
           if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
             queue.push({dir:dir, url:urls[j].expanded_url, is_mentor:is_mentor}, callback);
           } else {
-            scrape(dir, urls[j].expanded_url, is_mentor, callback, false);
+            //scrape(dir, urls[j].expanded_url, is_mentor, callback, false);
           }
         }
       }
@@ -226,8 +226,9 @@ module.exports = function(config, io) {
 
     var filename = obj.url.substring(obj.url.lastIndexOf('/')+1);
 
-    if (filename.indexOf('proxy.jpg') !== -1) { // media timeline imgs are f'd
-      filename = new Date().getTime()+'.jpg';
+    var ind = filename.indexOf('proxy.jpg?t=');
+    if (ind !== -1) { // media timeline imgs are f'd
+      filename = filename.substring(ind+12)+'.jpg';
     } else {
       filename = filename.replace(/['…,():;|{}_=+<>~"`/[/]/g, '');
     }
@@ -265,7 +266,7 @@ module.exports = function(config, io) {
         callback(filename);
       }
     });
-  }, 1); //Only allow 1 request at a time
+  }, 10); //Only allow 1 request at a time
 
   //When the queue is emptied we want to check if we're done
   queue.drain = function() {
