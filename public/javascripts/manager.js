@@ -7,15 +7,17 @@ var Manager = function() {
 
   var module = {
     modes: [
-      new DebugMode(), // 100%
-      new EnterMode(), // 100%
-      new CenteredTextMode(), // 90%
+      new DebugMode(),
+
+      new EnterMode(),
       new TweetMode(),
+      new AllImagesMode(),
+      new CenteredTextMode(),
+      new BreakMode,
+      new ExitMode(),
+
       new ThreeMode(),
-      new TextillateMode(), // 25%
-      new AllImagesMode(), // 0%
-      new BreakMode, // 80%
-      new ExitMode() // 100%
+      new TextillateMode(),
     ],
     cur_mode: 0,
     last_start: 0,

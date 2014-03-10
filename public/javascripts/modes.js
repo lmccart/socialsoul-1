@@ -59,7 +59,9 @@ var EnterMode = function() {
 
 var AllImagesMode = function() {
   var module = new Mode();
+  var timeout = new VariableTimeout();
   module.init = function(user) {
+    alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
     var n = 5 * 8; // enough images to fill the screen at 240x240 each
     for(var i = 0; i < n; i++) {
@@ -75,43 +77,44 @@ var AllImagesMode = function() {
           '</div>');
       }
     }
+    timeout.start(function() {
+      if(user.files.length) {
+        $('img').each(function(){
+          if(Math.random() < .1) {
+            this.src=randomChoice(user.files);
+            // could add some more randomization of positions here
+            // so they're not all top-left aligned
+          }
+        })
+      }
+    }, 500);
   }
-  module.update = function(user) {
-    if(user.files.length) {
-      $('img').each(function(){
-        this.src=randomChoice(user.files);
-        // could add some more randomization of positions here
-        // so they're not all top-left aligned
-      });
-    }
+  module.exit = function() {
+    timeout.stop();
   }
   return module;
 }
+
 
 // a single large tweet in black outline
 var TweetMode = function() {
   var module = new Mode();
   var timeline = {};
-  var curTimeout;
-  var timeoutLength = 5000;
-  var alive = false;
+  var timeout = new VariableTimeout();
   module.init = function(user) {
     alive = true;
-    $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet">this is a tweet</span></div></div></div>');
+    $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet"></span></div></div></div>');
     timeline = new TimelineMax();
-    (function updateText() {
+    timeout.start(function() {
       $('#tweet').text(randomChoice(user.tweets).text);
       timeline
+        .clear()
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
-      if(alive) {
-        module.curTimeout = setTimeout(updateText, timeoutLength);
-      }
-    })();
+    }, 5000);
   }
   module.exit = function() {
-    alive = false;
-    clearTimeout(module.curTimeout);
+    timeout.stop();
   }
   return module;
 };
