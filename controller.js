@@ -263,6 +263,11 @@ module.exports = function(config, io) {
         } 
       } else {
         console.log(filename+' exists');
+        controller.io.sockets.emit('asset', {
+          'file':filename,
+          'tag':obj.tag,
+          'is_mentor':obj.is_mentor
+        }); 
         callback(filename);
       }
     });
