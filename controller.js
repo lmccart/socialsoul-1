@@ -149,26 +149,24 @@ module.exports = function(config, io) {
         }
 
         if (opts.get_media) {
-          fs.remove(dir, function() {
-            fs.mkdirs(dir, function() {
+          fs.mkdirs(dir, function() {
 
-              // save salient // test pend
-              fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
+            // save salient // test pend
+            fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
 
-              // save json
-              fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-              // download media
-              var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=412320714281082880&oldest_unread_id=0';
-              scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
+            // save json
+            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+            // download media
+            var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=412320714281082880&oldest_unread_id=0';
+            scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
 
-              downloadMedia(dir, data, opts.is_mentor, function(res) { 
-                console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-                if (opts.cb) opts.cb();
-              });
+            downloadMedia(dir, data, opts.is_mentor, function(res) { 
+              console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+              if (opts.cb) opts.cb();
+            });
 
-              if (!opts.is_mentor && !opts.init) findMentor(opts.user, obj.text, opts.send_tweet);
+            if (!opts.is_mentor && !opts.init) findMentor(opts.user, obj.text, opts.send_tweet);
 
-            }); 
           }); 
         } else {
           if (opts.cb) opts.cb();
@@ -235,31 +233,38 @@ module.exports = function(config, io) {
     }
     filename = obj.dir+filename;
 
-    if (obj.url.indexOf('vine.co') != -1) {
-      var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
-      vine.download(vine_id, {dir: obj.dir, success: callback});
-    } else {
-      var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-        if (req.bytesWritten > 4000) { // only send if bigger than 4kb
-          magic.detectFile(filename, function(err, res) {
-            if (err) {
-              console.log("MAGIC ERR") 
-            } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
-              controller.io.sockets.emit('asset', {
-                'file':filename,
-                'tag':obj.tag,
-                'is_mentor':obj.is_mentor
-              }); 
-            }
+    fs.exists(filename, function(exists) {
+      if (!exists) {
+        if (obj.url.indexOf('vine.co') != -1) {
+          var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
+          vine.download(vine_id, {dir: obj.dir, success: callback});
+        } else {
+          var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+            if (req.bytesWritten > 4000) { // only send if bigger than 4kb
+              magic.detectFile(filename, function(err, res) {
+                if (err) {
+                  console.log("MAGIC ERR") 
+                } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
+                  controller.io.sockets.emit('asset', {
+                    'file':filename,
+                    'tag':obj.tag,
+                    'is_mentor':obj.is_mentor
+                  }); 
+                }
+              });
+            } 
+            callback(filename);
+          }).on('error', function(err) {
+            console.log('Error caught and ignored: ' +err);
+            callback(filename);
           });
+          requests.push(req);
         } 
+      } else {
+        console.log(filename+' exists');
         callback(filename);
-      }).on('error', function(err) {
-        console.log('Error caught and ignored: ' +err);
-        callback(filename);
-      });
-      requests.push(req);
-    } 
+      }
+    });
   }, 1); //Only allow 1 request at a time
 
   //When the queue is emptied we want to check if we're done
