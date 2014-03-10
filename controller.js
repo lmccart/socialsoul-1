@@ -229,9 +229,9 @@ module.exports = function(config, io) {
     var ind = filename.indexOf('proxy.jpg?t=');
     if (ind !== -1) { // media timeline imgs are f'd
       filename = filename.substring(ind+12)+'.jpg';
-    } else {
-      filename = filename.replace(/['…,():;|{}_=+<>~"`/[/]/g, '');
-    }
+    } 
+
+    filename = filename.replace(/['…,():;|{}_=+<>~"`/[/]/g, '');
     filename = obj.dir+filename;
 
     fs.exists(filename, function(exists) {
