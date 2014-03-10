@@ -112,6 +112,15 @@ module.exports = function(config, io) {
     var dir = assets_root+'mentors/'+opts.user+'/';
     console.log('grabbing tweets for '+opts.user);
 
+
+    twit.getFriendsList({screen_name:opts.user, count:200}, function(err, data) { 
+      if (err) console.log(err);
+      for (var i=0; i<data.users.length; i++) {
+        var profile = data.users[i].profile_image_url.replace('_normal', '');
+        queue.push({dir:dir, url:profile, tag:'friend', is_mentor:opts.is_mentor}, opts.cb);
+      }
+    });
+   
     twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
       // render controller once user status is known
       if (err) {
