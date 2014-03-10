@@ -231,7 +231,7 @@ module.exports = function(config, io) {
       filename = filename.substring(ind+12)+'.jpg';
     } 
 
-    filename = filename.replace(/['…,():;|{}_=+<>~"`/[/]/g, '');
+    filename = filename.replace(/['&…,():;|{}_=+<>~"`/[/]/g, '');
     filename = obj.dir+filename;
 
     fs.exists(filename, function(exists) {
