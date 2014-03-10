@@ -88,6 +88,34 @@ var AllImagesMode = function() {
   return module;
 }
 
+// a single large tweet in black outline
+var TweetMode = function() {
+  var module = new Mode();
+  var timeline = {};
+  var curTimeout;
+  var timeoutLength = 5000;
+  var alive = false;
+  module.init = function(user) {
+    alive = true;
+    $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet">this is a tweet</span></div></div></div>');
+    timeline = new TimelineMax();
+    (function updateText() {
+      $('#tweet').text(randomChoice(user.tweets).text);
+      timeline
+        .set('#tweet', {opacity:1})
+        .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
+      if(alive) {
+        module.curTimeout = setTimeout(updateText, timeoutLength);
+      }
+    })();
+  }
+  module.exit = function() {
+    alive = false;
+    clearTimeout(module.curTimeout);
+  }
+  return module;
+};
+
 // one scene involves flashing single words briefly in the center
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
@@ -96,7 +124,7 @@ var CenteredTextMode = function() {
   var ctx = {};
   module.init = function(user) {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>');
-    $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="centeredWord"></span></div></div></div>');
+    $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
 
     // replace this with backend salient words
     if (user.tweets) {
@@ -138,8 +166,8 @@ var CenteredTextMode = function() {
         ctx.drawImage(img, 0, 0, scale * width, scale * height);
         var clusters = user.getPalette(img);
         clusters = _.shuffle(clusters);
-        $('#centeredWord').text(randomChoice(salientWords));
-        $('#centeredWord').css({
+        $('#word').text(randomChoice(salientWords));
+        $('#word').css({
           fontFamily: randomChoice(fonts),
           backgroundColor: rgb(clusters[0]),
           color: rgb(clusters[1])

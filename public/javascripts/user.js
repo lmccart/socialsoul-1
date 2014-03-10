@@ -12,6 +12,13 @@ var User = function() {
 		background: "",
 		files: [],
 	};
+
+	module.cleanTweets = function() {
+		for(var i = 0; i < module.tweets.length; i++) {
+			module.tweets[i].text = module.tweets[i].text.replace('&amp;', '&');
+		}
+	}
+
 	var paletteCache = {};
 	module.getPalette = function(img) {
 		if(!paletteCache[img.src]) {

@@ -70,13 +70,20 @@ body, html {
   margin-left: auto;
   margin-right: auto; 
   text-align: center;
+  width: 90%;
 }
 
 .centered .text {
   color: black;
   background-color: white;
   font-family: sans-serif;
+}
+
+.text#word {
   font-size:300px;
+}
+.text#tweet {
+  font-size:120px;
 }
 
 /* allImages */

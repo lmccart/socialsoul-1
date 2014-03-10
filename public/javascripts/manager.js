@@ -10,6 +10,7 @@ var Manager = function() {
       new DebugMode(), // 100%
       new EnterMode(), // 100%
       new CenteredTextMode(), // 90%
+      new TweetMode(),
       new ThreeMode(),
       new TextillateMode(), // 25%
       new AllImagesMode(), // 0%
@@ -23,7 +24,7 @@ var Manager = function() {
 
   module.sync = function() {
     // any pre-user setup goes here
-    module.goToMode(2);
+    // module.goToMode(2);
   }
 
   module.trigger = function(data) {
@@ -38,10 +39,11 @@ var Manager = function() {
     subject = new User();
     subject.user = data.user;
     subject.tweets = data.tweets;
+    subject.cleanTweets();
 
     mentor = new User();
 
-    module.goToMode(2);
+    module.goToMode(3);
     module.started = true;
   };
 
