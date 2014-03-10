@@ -114,7 +114,7 @@ module.exports = function(config, io) {
     var dir = assets_root+'mentors/'+opts.user+'/';
     console.log('grabbing tweets for '+opts.user);
 
-    twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
+    twit.getUserTimeline({screen_name:opts.user, count:200}, function(err, data) { 
       // render controller once user status is known
       if (err) {
         console.log(err);

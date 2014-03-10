@@ -39,7 +39,7 @@ var Manager = function() {
     subject.user = data.user;
     subject.tweets = data.tweets;
 
-    module.goToMode(5);
+    module.goToMode(0);
     module.started = true;
   };
 
