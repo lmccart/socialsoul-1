@@ -4,17 +4,17 @@
     <title>controller</title>
     <link rel='stylesheet' href='/stylesheets/controller.css' />
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
+    <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
   <body id="controller">
-    <h1>controller</h1>
+    <div>controller</div>
 
-    <% if (error) { %>
-      <div id="error_status"><%= error %></div>
-    <% } %>
+    <div id="error_status"></div>
 
-    <div id="user_status">Currently playing with <span id="cur_user"><%= cur_user %></span></div>
-    <div id="time_status">Time remaining: <span id="cur_time"><%= Math.round(remaining/1000) %></span></div>
+
+    <div id="user_status"></div>
+    <div id="time_status"></div>
 
     <div>
     <input id="user" name="user" /> 
@@ -22,10 +22,7 @@
 	</div>
 
 	<div>
-    <ul>
-    <% for (var i=0; i<users.length; i++) { %>
-      <li><span id='<%= users[i] %>' class='button trigger'><%= users[i] %></span></li>
-    <% } %>
+    <ul id="users">
     </ul>
   </div>
 

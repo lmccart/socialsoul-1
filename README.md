@@ -16,7 +16,9 @@ http://www.mongodb.org/
 ### setup
 
 1. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
-2. setup app
+2. install nginx http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
+3. place ted app in Users/username/ folder, set default path (location root) in nginx.conf to this folder 
+4. setup app
 ```
 cd app
 npm install
@@ -49,7 +51,7 @@ npm install
 * `sync`: `{ serverTime: Date.now() }`
 * `trigger`: `{ user: String, tweets: JSON, salient: [String] }`
 * `mentor`: `{ user: String, content: JSON, salient: [String] }`
-* `asset`: `{ file: String, tag: String(optional -- profile, background, etc), is_mentor: BOOL }`
+* `asset`: `{ file: String, tag: String(optional -- profile, background, friend, etc), is_mentor: BOOL }`
 
 
 

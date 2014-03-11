@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= id %></title>
+    <title></title>
     <style>
     body {
       background-color: black;
@@ -18,8 +18,15 @@
     }
     </style>
 
+    <script type="text/javascript">
+      window.onload = function () {
+        var screenId = parseInt(window.location.search.substring(1), 10);
+        document.title = screenId;
+        document.body.innerHTML = '<iframe class="scaled-frame" src="../screen.html?'+screenId+'"></iframe>';
+      };
+    </script>
+
   </head>
-  <body>
-    <iframe class="scaled-frame" src="../screen/<%= id %>"></iframe>
+  <body>  
   </body>
 </html>

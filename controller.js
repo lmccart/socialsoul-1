@@ -52,7 +52,7 @@ module.exports = function(config, io) {
 
   // go message received from controller app
   // determines next user, does cleanup, then calls start
-  controller.trigger = function(user, callback) {
+  controller.trigger = function(user) {
 
     var is_def = user === default_user;
     if (is_def) {
@@ -80,7 +80,7 @@ module.exports = function(config, io) {
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
-    getPerson({user:user, get_media:true, is_def:true, cb:callback});
+    getPerson({user:user, get_media:true, is_def:true, cb:function(){}});
 
   }
 
@@ -117,14 +117,14 @@ module.exports = function(config, io) {
       if (data) {
         handleTimeline(dir, data, opts);
       } else {
-        twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
+        twit.getUserTimeline({screen_name:opts.user, count:200}, function(err, data) { 
           // render controller once user status is known
           if (err) {
             console.log(err);
             if (err.statusCode === 404) {
-              controller.error = 'User '+user+' does not exist.';
+              io.sockets.emit('error', {msg: 'User '+opts.user+' does not exist.'});
             } else {
-              controller.error = 'Something went wrong, please try again. ('+err+')';
+              io.sockets.emit('error', {msg: 'Something went wrong, please try again. ('+err+')'});
             }
           } else {
             handleTimeline(dir, data, opts, true);
@@ -155,7 +155,8 @@ module.exports = function(config, io) {
       controller.io.sockets.emit(msg_name, {
         'user':opts.user,
         'tweets':data,
-        'salient':get_salient(data)
+        'salient':get_salient(data),
+        'remaining': controller.getRemaining()
       }); 
 
     }
