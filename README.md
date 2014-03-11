@@ -33,22 +33,17 @@ npm install
 
 ### endpoints
 
-* ```/screen/:id``` -- view for screen (int or "exit")
-* ```/``` -- view all 48 screens in iframes
+* ```/screen.html?id``` -- view for screen (id = int or "exit")
 
 * ```/controller``` -- BA controller page
+* ```/controller?build_db``` -- rebuild the cached mentor db / data
 
-* ```/controller?action=trigger``` -- start with current user
-* ```/controller?action=set_user&user=XXX``` -- set next user
-* ```/controller?action=build_db``` -- rebuild the cached mentor db / data
-
-* ```/storage``` -- view all in mongodb
 
 
 ### messages (from server)
 
 * `message`: `{ message:"hello from the backend" }` -- just to confirm connection
-* `sync`: `{ serverTime: Date.now() }`
+* `sync`: `{ serverTime: Date.now(), cur_user: controller.cur_user, users: controller.queued_users, remaining: controller.getRemaining(), error: controller.error, serverTime: Date.now() }`
 * `trigger`: `{ user: String, tweets: JSON, salient: [String] }`
 * `mentor`: `{ user: String, content: JSON, salient: [String] }`
 * `asset`: `{ file: String, tag: String(optional -- profile, background, friend, etc), is_mentor: BOOL }`
