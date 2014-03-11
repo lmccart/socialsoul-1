@@ -2,7 +2,9 @@
 
 window.onload = function() {
 
+
   var manager = new Manager();
+
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost' : 'http://socialsoulserver.local';
   var socket = io.connect(host); 
   

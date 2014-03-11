@@ -112,75 +112,101 @@ module.exports = function(config, io) {
     var dir = assets_root+'mentors/'+opts.user+'/';
     console.log('grabbing tweets for '+opts.user);
 
-
-    twit.getFriendsList({screen_name:opts.user, count:200}, function(err, data) { 
-      if (err) console.log(err);
-      for (var i=0; i<data.users.length; i++) {
-        var profile = data.users[i].profile_image_url.replace('_normal', '');
-        queue.push({dir:dir, url:profile, tag:'friend', is_mentor:opts.is_mentor}, opts.cb);
-      }
-    });
    
-    twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
-      // render controller once user status is known
-      if (err) {
-        console.log(err);
-        if (err.statusCode === 404) {
-          controller.error = 'User '+user+' does not exist.';
-        } else {
-          controller.error = 'Something went wrong, please try again. ('+err+')';
-        }
+    fs.readJson(dir+'timeline.json', function(err, data) {
+      if (data) {
+        handleTimeline(dir, data, opts);
       } else {
+        twit.getUserTimeline({screen_name:opts.user}, function(err, data) { 
+          // render controller once user status is known
+          if (err) {
+            console.log(err);
+            if (err.statusCode === 404) {
+              controller.error = 'User '+user+' does not exist.';
+            } else {
+              controller.error = 'Something went wrong, please try again. ('+err+')';
+            }
+          } else {
+            handleTimeline(dir, data, opts, true);
+          }
 
-        controller.error = null; 
-
-        // insert text in db
-        console.log('inserting '+opts.user+' in db');
-        
-        var obj = { 
-          user: opts.user,
-          text: concat_tweets(data),
-          name: data[0].user.name
-        };
-        controller.storage.insert(obj);
-
-        if (!opts.init) {
-          var msg_name = opts.is_mentor ? 'mentor' : 'trigger';
-
-          controller.io.sockets.emit(msg_name, {
-            'user':opts.user,
-            'tweets':data,
-            'salient':get_salient(data)
-          }); 
-
-        }
-
-        if (opts.get_media) {
-          fs.mkdirs(dir, function() {
-
-            // save salient // test pend
-            fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
-
-            // save json
-            fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
-            // download media
-            var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=9199999999999999999&oldest_unread_id=0';
-            scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
-
-            downloadMedia(dir, data, opts.is_mentor, function(res) { 
-              console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
-              if (opts.cb) opts.cb();
-            });
-
-            if (!opts.is_mentor && !opts.init) findMentor(opts.user, obj.text, opts.send_tweet);
-
-          }); 
-        } else {
-          if (opts.cb) opts.cb();
-        }
+        });
       }
-
     });
+  }
+
+  function handleTimeline(dir, data, opts, is_new) {
+
+    controller.error = null; 
+
+    // insert text in db
+    console.log('inserting '+opts.user+' in db');
+    
+    var obj = { 
+      user: opts.user,
+      text: concat_tweets(data),
+      name: data[0].user.name
+    };
+    controller.storage.insert(obj);
+
+    if (!opts.init) {
+      var msg_name = opts.is_mentor ? 'mentor' : 'trigger';
+
+      controller.io.sockets.emit(msg_name, {
+        'user':opts.user,
+        'tweets':data,
+        'salient':get_salient(data)
+      }); 
+
+    }
+
+    if (opts.get_media) {
+      fs.mkdirs(dir, function() {
+
+        // save salient // test pend
+        if (is_new) fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
+
+        // save json
+        if (is_new) fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
+        // download media
+        var media_timeline = 'http://twitter.com/i/profiles/show/'+opts.user+'/media_timeline?include_available_features=0&include_entities=0&last_note_ts=0&max_id=9199999999999999999&oldest_unread_id=0';
+        scrape(dir, media_timeline, opts.is_mentor, opts.cb, true);
+
+
+        fs.readJson(dir+'friends.json', function(err, friends_data) {
+          if (friends_data) handleFriends(dir, friends_data, opts);
+          else {
+            twit.getFriendsList({screen_name:opts.user, count:200}, function(err, friends_data) { 
+              if (err) console.log(err);
+              else {
+                handleFriends(dir, friends_data, opts, true);
+              }
+
+            });
+          }
+        });
+
+        downloadMedia(dir, data, opts.is_mentor, function(res) { 
+          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+          if (opts.cb) opts.cb();
+        });
+
+        if (!opts.is_mentor && !opts.init) findMentor(opts.user, obj.text, opts.send_tweet);
+
+      }); 
+    } else {
+      if (opts.cb) opts.cb();
+    }
+  }
+
+  function handleFriends(dir, friends_data, opts, is_new) {
+    // save json
+    if (is_new) fs.outputJson(dir+'friends.json', friends_data, function(e){ if (e) console.log(e); });
+  
+    for (var i=0; i<friends_data.users.length; i++) {
+      var profile = friends_data.users[i].profile_image_url.replace('_normal', '');
+      queue.push({dir:dir, url:profile, tag:'friend', is_mentor:opts.is_mentor}, opts.cb);
+    }
   }
 
   function downloadMedia(dir, data, is_mentor, callback) {

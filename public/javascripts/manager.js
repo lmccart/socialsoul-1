@@ -2,6 +2,7 @@
 
 var subject = new User();
 var mentor = new User();
+//var tts = new TTS();
 
 var Manager = function() {
 
@@ -10,7 +11,7 @@ var Manager = function() {
       // new DebugMode(),
 
       // subject
-      // new EnterMode(),
+      new EnterMode(),
       // new TweetMode(),
       // new AllImagesMode(),
       // new CenteredTextMode(),
@@ -49,6 +50,8 @@ var Manager = function() {
     subject.cleanTweets();
 
     mentor = new User();
+
+    //tts.init(data.tweets);
 
     module.goToMode(0);
     module.started = true;
