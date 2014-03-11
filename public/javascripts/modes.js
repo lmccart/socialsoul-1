@@ -88,8 +88,8 @@ var AllImagesMode = function() {
         })
       }
     },
-    500); // subject
-    // 30); // mentor
+    // 30 + 30 * screenId); // subject
+    390 + 30 * screenId); // mentor
   }
   module.exit = function() {
     module.timeout.stop();
@@ -117,8 +117,8 @@ var TweetMode = function() {
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
     },
-    5000 + (screenId * 500)); // subject
-    // 5000 - (screenId * 500)); // mentor
+    // 5000 + (screenId * 500)); // subject
+    5000 - (screenId * 500)); // mentor
   }
   module.exit = function() {
     module.timeout.stop();
@@ -292,7 +292,11 @@ var BreakMode = function() {
 var ExitMode = function() {
   var module = new Mode();
   module.init = function(user) {
-    $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
+    if(screenId == 0) {
+      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
+    } else {
+      $('body').append('<div class="fullscreen whitebg" id="color"></div>');
+    }
   };
   return module;
 };

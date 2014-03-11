@@ -10,17 +10,17 @@ var Manager = function() {
       // new DebugMode(),
 
       // subject
-      new EnterMode(),
-      new TweetMode(),
-      new AllImagesMode(),
-      new CenteredTextMode(),
-      new BreakMode(),
+      // new EnterMode(),
+      // new TweetMode(),
+      // new AllImagesMode(),
+      // new CenteredTextMode(),
+      // new BreakMode(),
 
       // mentor
-      // new CenteredTextMode(),
-      // new AllImagesMode(),
-      // new TweetMode(),
-      // new ExitMode(),
+      new CenteredTextMode(),
+      new AllImagesMode(),
+      new TweetMode(),
+      new ExitMode(),
 
       // new ThreeMode(),
       // new TextillateMode(),

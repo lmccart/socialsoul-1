@@ -32,10 +32,13 @@ var VariableTimeout = function() {
       module.timeoutLength = timeoutLength;
     }
     (function loop() {
-      if(alive) {
-        curTimeout = setTimeout(loop, module.timeoutLength);
-      }
-      requestAnimationFrame(func);
+      requestAnimationFrame(
+        function() {
+          func();
+          if(alive) {
+            curTimeout = setTimeout(loop, module.timeoutLength);
+          }
+        });
     })();
   }
   module.stop = function() {
