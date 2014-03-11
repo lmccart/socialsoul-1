@@ -11,32 +11,26 @@ mongodb database
 https://github.com/mongodb/node-mongodb-native
 http://www.mongodb.org/
 
-
-
 ### setup
 
-1. install mongodb http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
-2. install nginx http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
-3. place ted app in Users/username/ folder, set default path (location root) in nginx.conf to this folder 
-4. setup app
-```
-cd app
-npm install
-```
-
+0. [install git](http://git-scm.com/downloads)
+0. clone this repository `cd / && git clone git@github.com:lmccart/socialsoul.git` (if you want to keep it somewhere else, you might need to configure the directory permissions properly for nginx to work)
+0. [install brew](http://brew.sh/) `ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"`
+0. [install mongodb](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) `brew install mongodb`
+0. [install nginx](http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/) `brew install nginx`
+0. configure nginx `open -t /usr/local/etc/nginx/nginx.conf`, change `listen 8080` to `listen 3000`, change `location root html` to `location root /socialsoul/public`
+0. install node modules `cd /socialsoul && npm install`
 
 ### to run
-1. start mongo ```mongod```
-2. start app ```node app.js```
-
-
+0. open terminal and start mongo `mongod`
+0. open a new terminal tab and start nginx `nginx`
+0. nginx will return immediately, then start node `node app`
 
 ### endpoints
 
 * ```/screen.html?id``` -- view for screen (id = int or "exit")
-
-* ```/controller``` -- BA controller page
-* ```/controller?build_db``` -- rebuild the cached mentor db / data
+* ```/controller.html``` -- BA controller page
+* ```/controller.html?build_db``` -- rebuild the cached mentor db / data
 
 
 
