@@ -39,9 +39,10 @@ io.sockets.on('connection', function (socket) {
       sync();
     } else if (data.action === 'queue_user') {
       controller.queueUser(data.user);
-      updateController();
+      sync();
     } else if (data.action === 'trigger') {
       controller.trigger(data.user);
+      sync();
     } else if (data.action === 'build_db') {
       console.log('building db');
       controller.buildDb();

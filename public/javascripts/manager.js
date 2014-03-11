@@ -2,7 +2,7 @@
 
 var subject = new User();
 var mentor = new User();
-//var tts = new TTS();
+var tts = new TTS();
 
 var Manager = function() {
 
@@ -51,7 +51,7 @@ var Manager = function() {
 
     mentor = new User();
 
-    //tts.init(data.tweets);
+    tts.init(data.tweets);
 
     module.goToMode(0);
     module.started = true;
