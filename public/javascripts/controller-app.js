@@ -22,6 +22,7 @@ window.onload = function() {
 
   socket.on('error', function(data) {
     $('#error_status').html(data.msg);
+    $('#user_status').html('');
   });
 
   // update controller

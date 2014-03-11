@@ -123,8 +123,8 @@ module.exports = function(config, io) {
             console.log(err);
             if (err.statusCode === 404) {
               io.sockets.emit('error', {msg: 'User '+opts.user+' does not exist.'});
-            } else {
-              io.sockets.emit('error', {msg: 'Something went wrong, please try again. ('+err+')'});
+            } else if (err.statusCode === 401) {
+              io.sockets.emit('error', {msg: 'User '+opts.user+' is protected. Please try another user.'});
             }
           } else {
             handleTimeline(dir, data, opts, true);
