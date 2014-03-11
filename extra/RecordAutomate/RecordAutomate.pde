@@ -43,7 +43,7 @@ void setup() {
     
     loadStrings("http://localhost:3000/controller?action=trigger&user=BillGates");
     
-    delay(4 * 12 * 1000);
+    delay(5 * 12 * 1000);
     robot.mouseMove(1182, 9); // stop button
     robot.leftClick();
 }

@@ -41,10 +41,10 @@ var DebugMode = function() {
 var EnterMode = function() {
   var module = new Mode();
   var timeline = {};
-  module.init = function() {
+  module.init = function(user) {
     // the browser can barely handle this at 60fps, maybe should be webgl
     if(screenId == 0) {
-      $('body').append('<div class="fullscreen whitebg" id="color"></div>');
+      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
       timeline = new TimelineMax();
       timeline
         .set("#color", {opacity:1})
@@ -291,8 +291,8 @@ var BreakMode = function() {
 // exit is just white on all screens
 var ExitMode = function() {
   var module = new Mode();
-  module.init = function() {
-    $('body').append('<div class="fullscreen whitebg"></div>');
+  module.init = function(user) {
+    $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
   };
   return module;
 };
