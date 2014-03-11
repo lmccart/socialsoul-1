@@ -35,7 +35,7 @@ var VariableTimeout = function() {
       if(alive) {
         curTimeout = setTimeout(loop, module.timeoutLength);
       }
-      func();
+      requestAnimationFrame(func);
     })();
   }
   module.stop = function() {

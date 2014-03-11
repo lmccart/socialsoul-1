@@ -41,7 +41,7 @@ void setup() {
     robot.leftClick();
     robot.mouseMove(0, 0);
     
-    loadStrings("http://localhost:3000/controller?action=trigger&user=algore");
+    loadStrings("http://localhost:3000/controller?action=trigger&user=BillGates");
     
     delay(4 * 12 * 1000);
     robot.mouseMove(1182, 9); // stop button
