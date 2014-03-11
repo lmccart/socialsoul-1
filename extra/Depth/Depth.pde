@@ -1,12 +1,12 @@
 import processing.pdf.*;
 
 float[] totalScale = {
-  12 * 9 + 5,
-  12 * 11 + 9
+  1080,//12 * 9 + 5,
+  1404//12 * 11 + 9
 };
 float[] screenSize = {
-  22 + (1. / 2.),
-  13 + (1. / 8.)
+  192,//22 + (1. / 2.),
+  108//13 + (1. / 8.)
 };
 int[] screenCount = {
   5,
@@ -19,6 +19,19 @@ float z(float x, float y) {
   base = float(round(base * 2)) / 2;
   return (21 - depth) + base;
 }
+
+float[][] monitors = {
+{12, 10, 9, 10, 12},
+{10, 8, 7, 8, 10},
+{8, 6, 5, 6, 8},
+{11, 4, 3, 4, 11},
+{7, 3, 1, 2, 7},
+{7, 2, 1, 3, 7},
+{11, 4, 3, 4, 11},
+{8, 6, 5, 6, 8},
+{10, 8, 7, 8, 10},
+{12, 10, 9, 10, 1}
+};
 
 PFont font;
 float rescale = 6;
@@ -42,10 +55,12 @@ void setup() {
     spacing[1] / 2
   };
 
+  println("var map={};for(i = 0; i < 12; i++){map[i]=[]}");
   for (int i = 0; i < screenCount[0]; i++) {
     for (int j = 0; j < screenCount[1]; j++) {
       float x = leftovers[0] + (screenSize[0] + spacing[0]) * i;
       float y = leftovers[1] + (screenSize[1] + spacing[1]) * j;
+      println("map["+int(monitors[j][i]-1) + "].push([" + round(x) + ", " + round(y) + "])");
       
       stroke(0, 10);
       noFill();
@@ -58,6 +73,7 @@ void setup() {
       drawSample(x + screenSize[0], y + screenSize[1], RIGHT, BOTTOM);
     }
   }
+  println("console.log(JSON.stringify(map));");
 }
 
 void drawSample(float x, float y, int lr, int tb) {
