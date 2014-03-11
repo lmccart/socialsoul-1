@@ -90,8 +90,8 @@ var AllImagesMode = function() {
         })
       }
     },
-    // 500); // subject
-    30); // mentor
+    500); // subject
+    // 30); // mentor
   }
   module.exit = function() {
     module.timeout.stop();
@@ -119,8 +119,8 @@ var TweetMode = function() {
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
     },
-    // 5000 + (screenId * 500)); // subject
-    5000 - (screenId * 500)); // mentor
+    5000 + (screenId * 500)); // subject
+    // 5000 - (screenId * 500)); // mentor
   }
   module.exit = function() {
     module.timeout.stop();
@@ -190,8 +190,8 @@ var CenteredTextMode = function() {
         }
       }
     },
-    // 1000 - (screenId * 80)); // subject-side
-    16 + (screenId * 5));
+    1000 - (screenId * 80)); // subject-side
+    // 16 + (screenId * 5));
   }
   module.exit = function() {
     module.timeout.stop();

@@ -12,16 +12,16 @@ var Manager = function() {
 
       // subject
       new EnterMode(),
-      // new TweetMode(),
-      // new AllImagesMode(),
-      // new CenteredTextMode(),
-      // new BreakMode(),
+      new TweetMode(),
+      new AllImagesMode(),
+      new CenteredTextMode(),
+      new BreakMode(),
 
       // mentor
-      new CenteredTextMode(),
-      new AllImagesMode(),
-      new TweetMode(),
-      new ExitMode(),
+      // new CenteredTextMode(),
+      // new AllImagesMode(),
+      // new TweetMode(),
+      // new ExitMode(),
 
       // new ThreeMode(),
       // new TextillateMode(),
@@ -87,8 +87,8 @@ var Manager = function() {
     module.modes[module.cur_mode].update(subject);
     var timeout = module.modes[module.cur_mode].timeout;
     if(timeout) {
-      // timeout.timeoutLength *= (1-.001); // subject-side
-      timeout.timeoutLength *= (1+.002); // mentor-side
+      timeout.timeoutLength *= (1-.001); // subject-side
+      // timeout.timeoutLength *= (1+.002); // mentor-side
     }
   }
 
