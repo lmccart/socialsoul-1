@@ -23,19 +23,22 @@ body {
 }
 
 .button, #user {
-  margin: 0 10px 10px 0;
-  padding: 12px 12px 9px 9px;
+  margin: 0 15px 15px 0;
+  padding: 12px 9px 9px 9px;
 }
 
 .trigger {
   width: 300px;
 }
 
-.button:hover, .button.selected, #queue_user {
+.button:hover, .button.selected, #queue_user, .button.remove {
   background: rgb(41, 41, 41);
   color: white;
 }
 
+.button.remove {
+  padding: 12px 15px 9px 15px;
+}
 
 input {
   font: 25px sans-serif;
@@ -50,6 +53,7 @@ input {
   appearance:none;
   cursor:pointer;
   width: 300px;
+  float: left;
 }
 
 ul {
