@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>controller</title>
+    <title>social soul controller</title>
     <link rel='stylesheet' href='/stylesheets/controller.css' />
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
   <body id="controller">
-    <div>controller</div>
+    <div style="font-size:1.5em">Social Soul Controller</div>
 
     <div id="error_status"></div>
 
@@ -17,14 +17,14 @@
     <div id="time_status"></div>
 
     <div>
-    <input id="user" name="user" /> 
-    <span id='queue_user' class='button'>queue user</span>
-	</div>
+      <ul id="users">
+      </ul>
+    </div>
 
-	<div>
-    <ul id="users">
-    </ul>
-  </div>
+    <div>
+      <input id="user" name="user" /> 
+      <span id='queue_user' class='button'>queue user</span>
+  	</div>
 
 
   </body>
