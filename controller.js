@@ -58,6 +58,11 @@ module.exports = function(config, io) {
     } else console.log('user '+user+' already in queue');
   };
 
+  // removes user from queue
+  controller.removeUser = function(user) {
+    controller.queued_users = _.without(controller.queued_users, user);
+  }
+
   // go message received from controller app
   // determines next user, does cleanup, then calls start
   controller.trigger = function(user) {

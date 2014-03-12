@@ -40,6 +40,9 @@ io.sockets.on('connection', function (socket) {
     } else if (data.action === 'queue_user') {
       controller.queueUser(data.user);
       sync();
+    } else if (data.action === 'remove') {
+      controller.removeUser(data.user);
+      sync();
     } else if (data.action === 'trigger') {
       controller.trigger(data.user);
       sync();
