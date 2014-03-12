@@ -6,7 +6,6 @@ var tts = new TTS();
 
 var Manager = function() {
   
-  var urlRegex = /(https?:\/\/[^\s]+)/g;
 
   var module = {
     modes: [
@@ -44,10 +43,6 @@ var Manager = function() {
     module.cur_mode = module.modes.length-1;
     for (var i=0; i<module.modes.length; i++) {
       module.modes[i].exit();
-    }
-
-    for (var i=0; i<data.tweets.length; i++) {
-      data.tweets[i].text = data.tweets[i].text.replace(urlRegex, ''); // remove urls
     }
 
     subject = new User();

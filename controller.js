@@ -10,6 +10,8 @@ var _ = require('underscore')
   , similarity = require('./similarity')
   , scraper = require('./scraper');
 
+var urlRegex = /(https?:\/\/[^\s]+)/g;
+
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
 var assets_root = __dirname +'/public/assets/';
@@ -28,7 +30,13 @@ module.exports = function(config, io) {
     run_time: 60*1000, // pend temp
     error: null // for status ping
   };
+
+  var filtered = [];
   
+  fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
+    if (err) console.log(err);
+    filtered = data.split('\n');
+  });
 
   var twit = new twitter(config.creds);
 
@@ -88,7 +96,7 @@ module.exports = function(config, io) {
   controller.buildDb = function() {
 
     fs.remove(assets_root+'mentors/', function(err) {
-      fs.readJson('./data/mentors.json', function(err, data) {
+      fs.readJson(__dirname +'/data/mentors.json', function(err, data) {
         controller.storage.reset(function() {
           async.eachSeries(data, function(mentor, cb) {
             getPerson({user:mentor.user, init:true, cb:cb});
@@ -154,7 +162,7 @@ module.exports = function(config, io) {
 
       controller.io.sockets.emit(msg_name, {
         'user':opts.user,
-        'tweets':data,
+        'tweets':get_clean(data),
         'salient':get_salient(data),
         'remaining': controller.getRemaining()
       }); 
@@ -360,6 +368,19 @@ module.exports = function(config, io) {
     }
     
     return salient;
+  }
+
+  // removes urls and banned words
+  function get_clean(data) {
+    for (var i=0; i<data.length; i++) {
+      data[i].text = data[i].text.replace(urlRegex, '');
+
+      for (var j=0; j<filtered.length; j++) {
+        data[i].text = data[i].text.replace(filtered[j], '');
+      }
+    }
+
+    return data;
   }
 
 
