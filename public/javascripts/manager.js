@@ -1,115 +1,112 @@
 // manager keeps track of all the modes
 
-var subject = new User();
-var mentor = new User();
-var tts = new TTS();
-
 var Manager = function() {
-  
 
-  var module = {
-    modes: [
-      // new DebugMode(),
+  var module = {};
 
-      // subject
-      new EnterMode(),
-      new TweetMode(),
-      new AllImagesMode(),
-      new CenteredTextMode(),
-      new BreakMode(),
+  var modes = {
+    debug: new DebugMode(),
 
-      // mentor
-      // new CenteredTextMode(),
-      // new AllImagesMode(),
-      // new TweetMode(),
-      // new ExitMode(),
+    enter: new EnterMode(),
+    tweet: new TweetMode(),
+    allImages: new AllImagesMode(),
+    centeredText: new CenteredTextMode(),
+    bridge: new BridgeMode(),
+    exit: new ExitMode()
 
-      // new ThreeMode(),
-      // new TextillateMode(),
-    ],
-    cur_mode: 0,
-    last_start: 0,
-    started: false
+    // new ThreeMode(),
+    // new TextillateMode(),
   };
+  var users, playlistPosition, triggerTime, playing;
 
+  function reset() {
+    if(playing) {
+      getCurrentMode().exit();
+    }
+    playlistPosition = 0;
+    triggerTime = 0;
+    playing = false;
+    users = {
+      subject: new User(),
+      mentor: new User()
+    }
+  }
+  reset();
+
+  function getCurrentModeName() {
+    return settings.playlist[playlistPosition].mode;
+  }
+
+  function getCurrentMode() {
+    return modes[getCurrentModeName()];
+  }
+
+  function getCurrentDuration() {
+    return settings.playlist[playlistPosition].duration;
+  }
+
+  function getCurrentUser() {
+    return users[settings.playlist[playlistPosition].user];
+  }
+
+  // any pre-user setup goes here
   module.sync = function() {
-    // any pre-user setup goes here
-    // module.goToMode(2);
   }
 
   module.trigger = function(data) {
-    // reset everything
-    module.started = false;
-    module.cur_mode = module.modes.length-1;
-    for (var i=0; i<module.modes.length; i++) {
-      module.modes[i].exit();
-    }
+    reset();
 
-    subject = new User();
-    subject.user = data.user;
-    subject.tweets = data.tweets;
-    subject.cleanTweets();
-
-    mentor = new User();
+    users.subject.user = data.user;
+    users.subject.tweets = data.tweets;
+    users.subject.cleanTweets();
 
     tts.init(data.tweets);
 
-    module.goToMode(0);
-    module.started = true;
+    // setup playlist
+    var totalDuration = 0;
+    for(var i = 0; i < settings.playlist.length; i++) {
+      settings.playlist[i].timeout =
+        setTimeout((function(index){
+          return function() {
+            console.log("calling setPlaylistPosition " + index);
+            module.setPlaylistPosition(index);
+          }
+        })(i), totalDuration * 1000);
+      console.log("function setPlaylistPosition " + i + " @ " + totalDuration);
+      totalDuration += settings.playlist[i].duration;
+    }
+    triggerTime = ServerTime.now();
   };
 
   module.addAsset = function(data) {
+    // better way to do this might be sending json like
+    // {subject: {profile: filename, background: filename}}
+    // then we can just loop through properties and copy them over
+    // using .push if they already exist
     if(data.is_mentor) {
 
     } else {
-      // better way to do this might be sending json like
-      // {subject: {profile: filename, background: filename}}
-      // then we can just loop through properties and copy them over
-      // using .push if they already exist
       if(data.tag == "profile") {
-        subject.profile = data.file;
+        users.subject.profile = data.file;
       } else if(data.tag == "background") {
-        subject.background = data.file;
+        users.subject.background = data.file;
       } else {
-        subject.files.push(data.file);
+        users.subject.files.push(data.file);
       }
-
-      module.modes[module.cur_mode].next(subject);
+      getCurrentMode().next(getCurrentUser());
     }
   };
 
-  module.update = function() {
-    if (module.started) {
-      var elapsed = new Date() - module.last_start;
-      if (elapsed > 12000) {
-        module.goToMode(module.cur_mode + 1);
-      }
-    }
-    module.modes[module.cur_mode].update(subject);
-    var timeout = module.modes[module.cur_mode].timeout;
-    if(timeout) {
-      timeout.timeoutLength *= (1-.001); // subject-side
-      // timeout.timeoutLength *= (1+.002); // mentor-side
-    }
-  }
-
-  module.goToMode = function(ind) {
-    if (module.cur_mode == ind) {
-      console.log("already in mode");
-      return;
-    }
-    if (ind >= 0 && ind < module.modes.length) {
-      if(module.started) {
-        module.modes[module.cur_mode].exit();
+  module.setPlaylistPosition = function(index) {
+    if (index >= 0 && index < settings.playlist.length) {
+      if(playing) {
+        console.info('exit mode ' + getCurrentModeName());
+        getCurrentMode().exit();
       }
       $('body').empty();
-      module.cur_mode = ind;
-      module.modes[module.cur_mode].init(subject);
-      module.last_start = new Date();
-      console.log('init mode '+module.cur_mode);
-    } else {
-      tts.stop();
-      console.log('mode '+ind+' out of bounds');
+      playlistPosition = index;
+      getCurrentMode().init(getCurrentUser());
+      console.info('init mode ' + getCurrentModeName());
     }
   }
 

@@ -17,11 +17,15 @@ window.onload = function() {
 
   // new user available
   socket.on('trigger', function (data) {
+    console.info('socket trigger');
+    console.info(data);
     manager.trigger(data);
   });
 
   // new media available
   socket.on('asset', function (data) {
+    console.info('socket asset');
+    console.info(data);
     // convert from backend to frontend directory
     data.file = data.file.replace(/.+public/, "..");
     manager.addAsset(data);
@@ -29,18 +33,16 @@ window.onload = function() {
 
   // mentor chosen
   socket.on('mentor', function (data) {
+    console.info('mentor');
+    console.info(data);
     // need to everything into a user object
     // console.log(data);
   });
 
   // refresh the page when node restarts
   socket.on('reconnect', function() {
+    console.info('reconnect');
     location.reload();
   });
-
-  // animation loop for modes
-  (function animloop(){
-    requestAnimationFrame(animloop);
-    manager.update();
-  })();
+  
 }

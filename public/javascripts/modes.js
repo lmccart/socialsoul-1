@@ -10,30 +10,35 @@ var Mode = function() {
 
 var DebugMode = function() {
   var module = new Mode();
+
   module.init = function(user) {
     var tweetText = "";
     for(var i = 0; i < user.tweets.length; i++) {
       tweetText += '<div class="tweet">' + user.tweets[i].text + '</div>';
     }
-    $('body').append('<div class="debug" id="info">'+screenId+':'+user.user+'</div>');
-    $('body').append('<img class="debug" id="profile"/>')
-    $('body').append('<div class="debug">'+tweetText+'</div>');
-    $('body').append('<div class="debug" id="files"></div>');
+    $body = $('body');
+    $body.append('<div class="debug" id="info">'+screenId+':'+user.user+'</div>');
+    $body.append('<img class="debug" id="profile"/>')
+    $body.append('<div class="debug">'+tweetText+'</div>');
+    $body.append('<div class="debug" id="files"></div>');
   }
+
   module.next = function(user) {
     if(user.profile) {
       document.getElementById('profile').src = user.profile; 
     }
     // rebuild all files
-    $('#files').empty();
+    $files = $('#files');
+    $files.empty();
     for(var i = 0; i < user.files.length; i++) {
       if (user.files[i].indexOf('.mp4') !== -1) { // append vine
-        $('#files').append('<object data="'+user.files[i]+'" />');
+        $files.append('<object data="'+user.files[i]+'" />');
       } else { // append image
-        $('#files').append('<img src="'+user.files[i]+'" />');
+        $files.append('<img src="'+user.files[i]+'" />');
       }
     }
   }
+
   return module;
 };
 
@@ -42,6 +47,7 @@ var DebugMode = function() {
 var EnterMode = function() {
   var module = new Mode();
   var timeline = {};
+
   module.init = function(user) {
     // the browser can barely handle this at 60fps, maybe should be webgl
     if(screenId == 0) {
@@ -56,22 +62,29 @@ var EnterMode = function() {
       $('body').append('<div class="fullscreen blackbg text#word " id="color"></div>');
     }
   }
+  module.exit = function() {
+    timeline.kill();
+  }
+
   return module;
 };
 
 var AllImagesMode = function() {
   var module = new Mode();
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
     var n = 5 * 8; // enough images to fill the screen at 240x240 each
+    var gridHtml = "";
     for(var i = 0; i < n; i++) {
       if(Math.random() < .5) {
-        $('#container').append('<div class="wrapper"><img src="../images/placeholder.png"/></div>');
+        gridHtml += ('<div class="wrapper larger"><img src="../images/placeholder.png"/></div>');
       } else {
-        $('#container').append(
-          '<div class="wrapper">'+
+        gridHtml += (
+          '<div class="wrapper larger">'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
@@ -79,13 +92,21 @@ var AllImagesMode = function() {
           '</div>');
       }
     }
+    $('#container').append(gridHtml);
     module.timeout.start(function() {
       if(user.files.length) {
         $('img').each(function(){
           if(Math.random() < .1) {
             this.src=randomChoice(user.files);
-            // could add some more randomization of positions here
-            // so they're not all top-left aligned
+            this.onload = function(img) {
+              var $img = $(img);
+              var width = img.width;
+              var height = img.height;
+              var parentSize = $img.parent().width();
+              var scale = Math.max(parentSize / width, parentSize / height);
+              img.width = (width * scale);
+              img.height = (height * scale);
+            }(this);
           }
         })
       }
@@ -93,9 +114,11 @@ var AllImagesMode = function() {
     500); // subject
     // 30); // mentor
   }
+
   module.exit = function() {
     module.timeout.stop();
   }
+
   return module;
 }
 
@@ -104,16 +127,19 @@ var AllImagesMode = function() {
 var TweetMode = function() {
   var module = new Mode();
   var timeline = {};
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet"></span></div></div></div>');
     timeline = new TimelineMax();
+    $tweet = $('#tweet');
     module.timeout.start(function() {
-      $('#tweet').hide();
-      $('#tweet').text(randomChoice(user.tweets).text);
-      $('#tweet').css({fontFamily: randomChoice(fonts)});
-      $('#tweet').show();
+      $tweet.hide();
+      $tweet.text(randomChoice(user.tweets).text);
+      $tweet.css({fontFamily: randomChoice(fonts)});
+      $tweet.show();
       timeline
         .clear()
         .set('#tweet', {opacity:1})
@@ -122,9 +148,12 @@ var TweetMode = function() {
     5000 + (screenId * 500)); // subject
     // 5000 - (screenId * 500)); // mentor
   }
+
   module.exit = function() {
     module.timeout.stop();
+    timeline.kill();
   }
+
   return module;
 };
 
@@ -134,10 +163,12 @@ var CenteredTextMode = function() {
   var module = new Mode();
   var salientWords = [];
   var ctx = {};
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
-    $('body').append('<canvas id="centeredTextCanvas"></canvas>');
-    $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
+    $('body').append('<canvas id="centeredTextCanvas"></canvas>'+
+      '<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
 
     // replace this with backend salient words
     if (user.tweets) {
@@ -154,9 +185,7 @@ var CenteredTextMode = function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx = canvas.getContext('2d');
-    ctx.mozImageSmoothingEnabled = false;
     ctx.webkitImageSmoothingEnabled = false;
-    ctx.msImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
   
     module.timeout.start(function() {
@@ -179,25 +208,62 @@ var CenteredTextMode = function() {
           ctx.drawImage(img, 0, 0, scale * width, scale * height);
           var clusters = user.getPalette(img);
           clusters = _.shuffle(clusters);
-          $('#word').hide();
-          $('#word').text(randomChoice(salientWords));
-          $('#word').css({
+          $word = $('#word');
+          $word.text(randomChoice(salientWords));
+          $word.css({
             fontFamily: randomChoice(fonts),
             backgroundColor: rgb(clusters[0]),
             color: rgb(clusters[1])
           });
-          $('#word').show();
+          $word.show();
         }
       }
     },
     1000 - (screenId * 80)); // subject-side
     // 16 + (screenId * 5));
   }
+
   module.exit = function() {
     module.timeout.stop();
   }
+
   return module;
 };
+
+// the break should be quick pulsing of the whole space
+// ideally in sync, or starting out of sync and coming into sync
+var BridgeMode = function() {
+  var module = new Mode();
+  var timeline = {};
+
+  module.init = function() {
+    $('body').append('<div class="fullscreen whitebg" id="color"></div>');
+    timeline = new TimelineMax();
+    timeline
+      .set("#color", {opacity:1})
+      .to("#color", (Math.random() * .2) + .5, {opacity:0, ease:Power2.easeIn})
+      .repeat(-1);
+  }
+
+  return module;
+};
+
+// exit is just white on all screens
+var ExitMode = function() {
+  var module = new Mode();
+
+  module.init = function(user) {
+    if(screenId == 0) {
+      // show name
+      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
+    } else { 
+      $('body').append('<div class="fullscreen whitebg"></div>');
+    }
+  };
+
+  return module;
+};
+
 
 var ThreeMode = function() {
   var module = new Mode();
@@ -238,12 +304,14 @@ var ThreeMode = function() {
     uniforms.time.value += .05;// Math.floor(Date.now()) / 1000.;
     renderer.render( scene, camera );    
   }
+  
   return module;
 }
 
 // easy way to display the username, need to work on this
 var TextillateMode = function() {
   var module = new Mode();
+
   module.init = function(user) {
     console.log(user);
     $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
@@ -271,36 +339,6 @@ var TextillateMode = function() {
       callback: function () {}
     });
   }
+
   return module;
 }
-
-// the break should be quick pulsing of the whole space
-// ideally in sync, or starting out of sync and coming into sync
-var BreakMode = function() {
-  var module = new Mode();
-  var timeline = {};
-  module.init = function() {
-    $('body').append('<div class="fullscreen whitebg" id="color"></div>');
-    timeline = new TimelineMax();
-    timeline
-      .set("#color", {opacity:1})
-      .to("#color", (Math.random() * .2) + .5, {opacity:0, ease:Power2.easeIn})
-      .repeat(-1);
-  }
-  return module;
-};
-
-// exit is just white on all screens
-var ExitMode = function() {
-  var module = new Mode();
-  module.init = function(user) {
-    if(screenId == 0) {
-      // show name
-      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
-    } else { 
-      $('body').append('<div class="fullscreen whitebg"></div>');
-    }
-  };
-  return module;
-};
-

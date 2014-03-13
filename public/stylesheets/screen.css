@@ -91,13 +91,15 @@ body, html {
 
 }
 .allImages .wrapper {
-  width: 240px;
-  height: 240px;
   margin:0;
   padding:0;
   overflow: hidden;
   float: left;
   clear: none;
+}
+.allImages .wrapper.larger {
+  width: 240px;
+  height: 240px;
 }
 .allImages .wrapper.smaller {
   width: 120px;
