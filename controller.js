@@ -165,9 +165,11 @@ module.exports = function(config, io) {
     if (!opts.init) {
       var msg_name = opts.is_mentor ? 'mentor' : 'trigger';
 
+      if (is_new) data = get_clean(data); // only clean if new
+
       controller.io.sockets.emit(msg_name, {
         'user':opts.user,
-        'tweets':get_clean(data),
+        'tweets':data,
         'salient':get_salient(data),
         'remaining': controller.getRemaining()
       }); 
@@ -362,14 +364,15 @@ module.exports = function(config, io) {
     var salient = [];
     for (var i=0; i<data.length; i++) {
       var tweet = data[i].text;
+      
       tweet = tweet.replace(/['…,.():;|{}_=+<>~"`/[/]/g, '').replace(/[-–/]/g, ' ');
+
       var tokens = tweet.split(' ');
-      for (var j=0; j<tokens.length; j++) {
-        if (tokens[j].length > 4 && tokens[j].length < 12 && 
-          tokens[j].indexOf('http') === -1) {
-          salient.push(tokens[j]);
+      tokens.forEach(function(tok) {
+        if (tok.length > 4 && tok.length < 12) {
+          salient.push(tok);
         }
-      }
+      });
     }
     
     return salient;
@@ -405,10 +408,9 @@ module.exports = function(config, io) {
   }
 
   function sendEndTweet(user, name) {
-    twit.updateStatus('@'+user+' your social soulmate is @'+name,
-      function(err) {console.log(err); });
+    var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://delta.com.';
+    twit.updateStatus(status, function(err) {console.log(err); });
   }
-
 
 
   return controller;
