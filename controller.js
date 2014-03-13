@@ -408,10 +408,9 @@ module.exports = function(config, io) {
   }
 
   function sendEndTweet(user, name) {
-    twit.updateStatus('@'+user+' your social soulmate is @'+name,
-      function(err) {console.log(err); });
+    var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://delta.com.';
+    twit.updateStatus(status, function(err) {console.log(err); });
   }
-
 
 
   return controller;
