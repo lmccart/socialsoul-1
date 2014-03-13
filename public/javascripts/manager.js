@@ -62,9 +62,20 @@ var Manager = function() {
 
     tts.init(data.tweets);
 
-    module.goToMode(0);
+    // setup playlist
+    var totalDuration = 0;
+    for(var i = 0; i < settings.playlist.length; i++) {
+      settings.playlist[i].timeout =
+        setTimeout((function(index){
+          return function() {
+            console.log("calling setPlaylistPosition " + index);
+            module.setPlaylistPosition(index);
+          }
+        })(i), totalDuration * 1000);
+      console.log("function setPlaylistPosition " + i + " @ " + totalDuration);
+      totalDuration += settings.playlist[i].duration;
+    }
     triggerTime = ServerTime.now();
-    playing = true;
   };
 
   module.addAsset = function(data) {
@@ -86,33 +97,7 @@ var Manager = function() {
     }
   };
 
-  module.update = function() {
-    if(playing) {
-      var elapsed = ServerTime.now() - triggerTime;
-      var currentPosition = 0;
-      var minimumTime = 0;
-      for(var i = 0; i < settings.playlist.length; i++) {
-        currentPosition = i;
-        minimumTime += settings.playlist[i].duration * 1000;
-        if(minimumTime > elapsed) {
-          break;
-        }
-      }
-      if(currentPosition != playlistPosition) {
-        module.goToMode(currentPosition);
-      }
-      getCurrentMode().update(getCurrentUser());
-    }
-
-    // an idea for speeding up/slowing down the timeout
-    // var timeout = module.modes[module.cur_mode].timeout;
-    // if(timeout) {
-    //   timeout.timeoutLength *= (1-.001); // subject-side
-    //   timeout.timeoutLength *= (1+.002); // mentor-side
-    // }
-  }
-
-  module.goToMode = function(index) {
+  module.setPlaylistPosition = function(index) {
     if (index >= 0 && index < settings.playlist.length) {
       if(playing) {
         console.info('exit mode ' + getCurrentModeName());

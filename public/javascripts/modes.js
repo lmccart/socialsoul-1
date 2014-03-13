@@ -56,7 +56,6 @@ var EnterMode = function() {
       timeline = new TimelineMax();
       timeline
         .set("#color", {opacity:1})
-        .addCallback(function() {console.log("animating")})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
         .repeat(-1);
     } else {
@@ -82,10 +81,10 @@ var AllImagesMode = function() {
     var gridHtml = "";
     for(var i = 0; i < n; i++) {
       if(Math.random() < .5) {
-        gridHtml += ('<div class="wrapper"><img src="../images/placeholder.png"/></div>');
+        gridHtml += ('<div class="wrapper larger"><img src="../images/placeholder.png"/></div>');
       } else {
         gridHtml += (
-          '<div class="wrapper">'+
+          '<div class="wrapper larger">'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
           '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
@@ -99,8 +98,15 @@ var AllImagesMode = function() {
         $('img').each(function(){
           if(Math.random() < .1) {
             this.src=randomChoice(user.files);
-            // could add some more randomization of positions here
-            // so they're not all top-left aligned
+            this.onload = function(img) {
+              var $img = $(img);
+              var width = img.width;
+              var height = img.height;
+              var parentSize = $img.parent().width();
+              var scale = Math.max(parentSize / width, parentSize / height);
+              img.width = (width * scale);
+              img.height = (height * scale);
+            }(this);
           }
         })
       }

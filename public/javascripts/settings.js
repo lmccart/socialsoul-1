@@ -1,23 +1,23 @@
 settings = {
 	playlist: [
-		{
-			mode: 'enter',
-			duration: 3,
-			user: 'subject'
-		},
-		{
-			mode: 'tweet',
-			duration: 20,
-			user: 'subject'
-		},
+		// {
+		// 	mode: 'enter',
+		// 	duration: 10,
+		// 	user: 'subject'
+		// },
+		// {
+		// 	mode: 'tweet',
+		// 	duration: 10,
+		// 	user: 'subject'
+		// },
 		{
 			mode: 'allImages',
-			duration: 20,
+			duration: 100,
 			user: 'subject'
 		},
 		{
 			mode: 'centeredText',
-			duration: 20,
+			duration: 10,
 			user: 'subject'
 		},
 		{

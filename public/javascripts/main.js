@@ -44,10 +44,5 @@ window.onload = function() {
     console.info('reconnect');
     location.reload();
   });
-
-  // animation loop for modes
-  (function animloop(){
-    requestAnimationFrame(animloop);
-    manager.update();
-  })();
+  
 }
