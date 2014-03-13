@@ -3,14 +3,22 @@ body {
   font: 25px 'AppleSDGothicNeo-Thin', sans-serif;
   color: white;
   padding: 0;
+  margin: 75px 0;
+  text-align: center;
 }
 
+
 #controller {
-  margin: 100px;
+  margin: 30px auto;
+  width: 422px;
 }
 
 #controller div {
   margin-bottom: 30px;
+}
+
+#time_status, #user_status {
+  height: 30px;
 }
 
 .button {
@@ -21,13 +29,21 @@ body {
   cursor: pointer;
 }
 
-.button, #user {
+.button{
   margin: 0 15px 15px 0;
   padding: 12px 9px 9px 9px;
+  float: left;
+  text-align: left;
 }
 
-.trigger {
-  width: 300px;
+#user{
+  margin: 0 15px 15px 0;
+  padding: 13px 9px 10px 9px;
+}
+
+.trigger, input {
+  width: 300px !important;
+  padding-left: 20px !important;
 }
 
 .button:hover, .button.selected, #queue_user, .button.remove {
@@ -40,8 +56,9 @@ body {
 }
 
 input {
-  font: 25px sans-serif;
+  font: 25px 'AppleSDGothicNeo-Thin', sans-serif;
   color:black;
+  background: rgb(122, 122, 122);
   border:0 !important;
   display: inline-block;
   -webkit-box-shadow: none;
@@ -51,7 +68,7 @@ input {
   -moz-appearance:none;
   appearance:none;
   cursor:pointer;
-  width: 300px;
+  margin: 0;
   float: left;
 }
 
@@ -59,4 +76,8 @@ ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+.highlight {
+  color: red;
 }

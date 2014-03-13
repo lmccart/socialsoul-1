@@ -7,25 +7,26 @@
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
-  <body id="controller">
-    <div style="font-size:1.5em">Social Soul Controller</div>
+  <body>
+    <div id="controller">
+      <div style="font-size:1.5em">Social Soul Controller</div>
 
-    <div id="error_status"></div>
+      <div id="error_status"></div>
 
 
-    <div id="user_status"></div>
-    <div id="time_status"></div>
+      <div id="user_status"></div>
+      <div id="time_status"><span class="highlight">Not connected to server.</span></div>
 
-    <div>
-      <ul id="users">
-      </ul>
+      <div>
+        <ul id="users">
+        </ul>
+      </div>
+
+      <div>
+        <input id="user" name="user" /> 
+        <span id='queue_user' class='button'>add</span>
+    	</div>
+
     </div>
-
-    <div>
-      <input id="user" name="user" /> 
-      <span id='queue_user' class='button'>queue user</span>
-  	</div>
-
-
   </body>
 </html>
