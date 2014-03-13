@@ -33,8 +33,12 @@ var Manager = function() {
   }
   reset();
 
+  function getCurrentModeName() {
+    return settings.playlist[playlistPosition].mode;
+  }
+
   function getCurrentMode() {
-    return modes[settings.playlist[playlistPosition].mode];
+    return modes[getCurrentModeName()];
   }
 
   function getCurrentDuration() {
@@ -51,8 +55,6 @@ var Manager = function() {
 
   module.trigger = function(data) {
     reset();
-
-    console.log("trigger " + data.user);
 
     users.subject.user = data.user;
     users.subject.tweets = data.tweets;
@@ -113,12 +115,13 @@ var Manager = function() {
   module.goToMode = function(index) {
     if (index >= 0 && index < settings.playlist.length) {
       if(playing) {
-        getCurrentMode().exit(); 
+        console.info('exit mode ' + getCurrentModeName());
+        getCurrentMode().exit();
       }
       $('body').empty();
       playlistPosition = index;
       getCurrentMode().init(getCurrentUser());
-      console.log('init mode '+settings.playlist[playlistPosition].mode);
+      console.info('init mode ' + getCurrentModeName());
     }
   }
 

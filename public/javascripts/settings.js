@@ -2,7 +2,7 @@ settings = {
 	playlist: [
 		{
 			mode: 'enter',
-			duration: 30,
+			duration: 3,
 			user: 'subject'
 		},
 		{
