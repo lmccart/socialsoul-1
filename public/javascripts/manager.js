@@ -52,6 +52,8 @@ var Manager = function() {
   module.trigger = function(data) {
     reset();
 
+    console.log("trigger " + data.user);
+
     users.subject.user = data.user;
     users.subject.tweets = data.tweets;
     users.subject.cleanTweets();
@@ -83,18 +85,22 @@ var Manager = function() {
   };
 
   module.update = function() {
-    var elapsed = ServerTime.now() - triggerTime;
-    var currentPosition = 0;
-    var minimumTime = 0;
-    for(var i = 0; i < settings.playlist; i++) {
-      currentPosition = i;
-      minimumTime += settings.playlist[i].duration;
-      if(elapsed > minimumTime) {
-        break;
+    if(playing) {
+      var elapsed = ServerTime.now() - triggerTime;
+      var currentPosition = 0;
+      var minimumTime = 0;
+      for(var i = 0; i < settings.playlist.length; i++) {
+        currentPosition = i;
+        minimumTime += settings.playlist[i].duration * 1000;
+        if(minimumTime > elapsed) {
+          break;
+        }
       }
+      if(currentPosition != playlistPosition) {
+        module.goToMode(currentPosition);
+      }
+      getCurrentMode().update(getCurrentUser());
     }
-    module.goToMode(currentPosition);
-    getCurrentMode().update(getCurrentUser());
 
     // an idea for speeding up/slowing down the timeout
     // var timeout = module.modes[module.cur_mode].timeout;
@@ -105,7 +111,7 @@ var Manager = function() {
   }
 
   module.goToMode = function(index) {
-    if (index != playlistPosition && index >= 0 && index < settings.playlist.length) {
+    if (index >= 0 && index < settings.playlist.length) {
       if(playing) {
         getCurrentMode().exit(); 
       }

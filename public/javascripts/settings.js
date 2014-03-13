@@ -2,22 +2,22 @@ settings = {
 	playlist: [
 		{
 			mode: 'enter',
-			duration: 10,
+			duration: 30,
 			user: 'subject'
 		},
 		{
 			mode: 'tweet',
-			duration: 10,
+			duration: 20,
 			user: 'subject'
 		},
 		{
 			mode: 'allImages',
-			duration: 10,
+			duration: 20,
 			user: 'subject'
 		},
 		{
 			mode: 'centeredText',
-			duration: 10,
+			duration: 20,
 			user: 'subject'
 		},
 		{
@@ -27,17 +27,17 @@ settings = {
 		},
 		{
 			mode: 'centeredText',
-			duration: 10,
+			duration: 20,
 			user: 'mentor'
 		},
 		{
 			mode: 'allImages',
-			duration: 10,
+			duration: 20,
 			user: 'mentor'
 		},
 		{
 			mode: 'tweet',
-			duration: 10,
+			duration: 20,
 			user: 'mentor'
 		},
 		{
