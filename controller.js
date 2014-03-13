@@ -19,7 +19,7 @@ var requests = [];
 
 module.exports = function(config, io) {
  
-  var default_user = '*DEFAULT*';
+  var default_user = 'Random speaker';
 
   var controller = {
     io: io,

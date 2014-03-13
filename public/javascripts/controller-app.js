@@ -20,6 +20,11 @@ window.onload = function() {
     startTimer(data.remaining/1000);
   });
 
+  socket.on('disconnect', function(data) {
+    $('#user_status').html('');
+    $('#time_status').html('<span class="highlight">Not connected to server.</span>');
+  });
+
   socket.on('error', function(data) {
     $('#error_status').html(data.msg);
     $('#user_status').html('');
@@ -34,12 +39,13 @@ window.onload = function() {
       startTimer(data.remaining/1000);
     } else {
       $('#user_status').html('');
-      $('#time_status').html('Ready for next visitor!');
+      $('#time_status').html('<span class="highlight">Ready for next visitor!</span>');
     }
     
     $('#users').empty();
-    for (var i=0; i<data.users.length; i++) {
-      $('#users').append("<li><span id='"+data.users[i]+"' class='button trigger'>"+data.users[i]+"</span><span id='"+data.users[i]+"' class='button remove'>x</span></li>");
+    for (var i=data.users.length; i>0; i--) {
+      var k = (i === data.users.length) ? 0 : i;
+      $('#users').append("<li><span id='"+data.users[k]+"' class='button trigger'>"+data.users[k]+"</span><span id='"+data.users[k]+"' class='button remove'>x</span></li>");
     }
 
     $('.trigger').click(function(e){
