@@ -1,15 +1,16 @@
 settings = {
 	playlist: [
-		// {
-		// 	mode: 'enter',
-		// 	duration: 10,
-		// 	user: 'subject'
-		// },
-		// {
-		// 	mode: 'tweet',
-		// 	duration: 10,
-		// 	user: 'subject'
-		// },
+		// {mode:'debug',duration:0,user:'subject'}
+		{
+			mode: 'enter',
+			duration: 10,
+			user: 'subject'
+		},
+		{
+			mode: 'tweet',
+			duration: 10,
+			user: 'subject'
+		},
 		{
 			mode: 'allImages',
 			duration: 100,

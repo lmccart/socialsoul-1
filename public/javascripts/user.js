@@ -3,7 +3,6 @@
 
 var User = function() {
 	var module = {
-		// backend
 		user: "",
 		tweets: [],
 		salient: [],
@@ -11,9 +10,13 @@ var User = function() {
 		profile: "",
 		background: "",
 		files: [],
+		friends: []
 	};
 
-	module.cleanTweets = function() {
+	module.loadData = function(data) {
+		module.user = data.user;
+	    module.salient = data.salient;
+	    module.tweets = data.tweets;
 		for(var i = 0; i < module.tweets.length; i++) {
 			module.tweets[i].text = module.tweets[i].text.replace('&amp;', '&');
 		}
