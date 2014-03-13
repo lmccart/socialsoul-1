@@ -48,8 +48,11 @@ module.exports = function() {
     var r_options = options.request || { method: 'GET', uri: address + vine_id, headers: { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0' } };
     // send the request
     request(r_options, function(err, response, body) {
-      if(err) cb('error '+err);
-      if(response.statusCode === 404) {
+      if(err) {
+        cb('error '+err);
+        return;
+      }
+      else if(response.statusCode === 404) {
         cb('404 '+err);
         return;
       }
