@@ -1,3 +1,13 @@
+// show the screen number on startup
+var screenId = parseInt(window.location.search.substring(1), 10);
+document.title = screenId;
+document.write('<div class="debug" id="screenId">'+screenId+"</div>");
+
+// library objects
+var tts = new TTS();
+var colorThief = new ColorThief();
+
+// helper functions
 function randomChoice(list) {
   var randomIndex = Math.floor(Math.random() * list.length);
   return list[randomIndex];
@@ -11,14 +21,7 @@ function randomPowerOfTwo() {
   return Math.pow(2, 1 + Math.floor(Math.random() * 8));
 }
 
-var colorThief = new ColorThief();
-
-// show the screen number on startup
-var screenId = parseInt(window.location.search.substring(1), 10);
-document.title = screenId;
-
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
-
+// helper classes
 var VariableTimeout = function() {
   var module = {
     timeoutLength: 0

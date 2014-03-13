@@ -1,9 +1,7 @@
-
 var TTS = function() {
 
   var module = {
     tweets: [],
-    voices: speechSynthesis.getVoices(),
     playing: false,
     timeoutID: null
   };
@@ -22,15 +20,12 @@ var TTS = function() {
   }
 
   module.playTweet = function() {
-    var t = Math.floor(Math.random()*module.tweets.length);
-    var tweet = module.tweets[t].text;
+    var tweet = randomChoice(module.tweets).text;
     
-    //console.log(tweet);
-
-    var v = Math.floor(Math.random()*module.voices.length);
+    // console.log(tweet);
 
     var msg = new SpeechSynthesisUtterance(tweet);
-    msg.voice = module.voices[v];
+    msg.voice = randomChoice(speechSynthesis.getVoices());
     speechSynthesis.speak(msg);
 
     if (module.playing) {

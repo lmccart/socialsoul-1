@@ -10,6 +10,7 @@ var Mode = function() {
 
 var DebugMode = function() {
   var module = new Mode();
+
   module.init = function(user) {
     var tweetText = "";
     for(var i = 0; i < user.tweets.length; i++) {
@@ -20,6 +21,7 @@ var DebugMode = function() {
     $('body').append('<div class="debug">'+tweetText+'</div>');
     $('body').append('<div class="debug" id="files"></div>');
   }
+
   module.next = function(user) {
     if(user.profile) {
       document.getElementById('profile').src = user.profile; 
@@ -34,6 +36,7 @@ var DebugMode = function() {
       }
     }
   }
+
   return module;
 };
 
@@ -42,6 +45,7 @@ var DebugMode = function() {
 var EnterMode = function() {
   var module = new Mode();
   var timeline = {};
+
   module.init = function(user) {
     // the browser can barely handle this at 60fps, maybe should be webgl
     if(screenId == 0) {
@@ -56,12 +60,15 @@ var EnterMode = function() {
       $('body').append('<div class="fullscreen blackbg text#word " id="color"></div>');
     }
   }
+
   return module;
 };
 
 var AllImagesMode = function() {
   var module = new Mode();
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
@@ -93,9 +100,11 @@ var AllImagesMode = function() {
     500); // subject
     // 30); // mentor
   }
+
   module.exit = function() {
     module.timeout.stop();
   }
+
   return module;
 }
 
@@ -104,7 +113,9 @@ var AllImagesMode = function() {
 var TweetMode = function() {
   var module = new Mode();
   var timeline = {};
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="centered"><div class="middle"><div class="inner" style="text-align: left"><span class="text" id="tweet"></span></div></div></div>');
@@ -122,9 +133,11 @@ var TweetMode = function() {
     5000 + (screenId * 500)); // subject
     // 5000 - (screenId * 500)); // mentor
   }
+
   module.exit = function() {
     module.timeout.stop();
   }
+
   return module;
 };
 
@@ -134,7 +147,9 @@ var CenteredTextMode = function() {
   var module = new Mode();
   var salientWords = [];
   var ctx = {};
+
   module.timeout = new VariableTimeout();
+
   module.init = function(user) {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>');
     $('body').append('<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
@@ -193,11 +208,48 @@ var CenteredTextMode = function() {
     1000 - (screenId * 80)); // subject-side
     // 16 + (screenId * 5));
   }
+
   module.exit = function() {
     module.timeout.stop();
   }
+
   return module;
 };
+
+// the break should be quick pulsing of the whole space
+// ideally in sync, or starting out of sync and coming into sync
+var BridgeMode = function() {
+  var module = new Mode();
+  var timeline = {};
+
+  module.init = function() {
+    $('body').append('<div class="fullscreen whitebg" id="color"></div>');
+    timeline = new TimelineMax();
+    timeline
+      .set("#color", {opacity:1})
+      .to("#color", (Math.random() * .2) + .5, {opacity:0, ease:Power2.easeIn})
+      .repeat(-1);
+  }
+
+  return module;
+};
+
+// exit is just white on all screens
+var ExitMode = function() {
+  var module = new Mode();
+
+  module.init = function(user) {
+    if(screenId == 0) {
+      // show name
+      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
+    } else { 
+      $('body').append('<div class="fullscreen whitebg"></div>');
+    }
+  };
+
+  return module;
+};
+
 
 var ThreeMode = function() {
   var module = new Mode();
@@ -238,12 +290,14 @@ var ThreeMode = function() {
     uniforms.time.value += .05;// Math.floor(Date.now()) / 1000.;
     renderer.render( scene, camera );    
   }
+  
   return module;
 }
 
 // easy way to display the username, need to work on this
 var TextillateMode = function() {
   var module = new Mode();
+
   module.init = function(user) {
     console.log(user);
     $('body').append('<div class="centeredText"><span id="centeredWord"></span></div>');
@@ -271,36 +325,6 @@ var TextillateMode = function() {
       callback: function () {}
     });
   }
+
   return module;
 }
-
-// the break should be quick pulsing of the whole space
-// ideally in sync, or starting out of sync and coming into sync
-var BreakMode = function() {
-  var module = new Mode();
-  var timeline = {};
-  module.init = function() {
-    $('body').append('<div class="fullscreen whitebg" id="color"></div>');
-    timeline = new TimelineMax();
-    timeline
-      .set("#color", {opacity:1})
-      .to("#color", (Math.random() * .2) + .5, {opacity:0, ease:Power2.easeIn})
-      .repeat(-1);
-  }
-  return module;
-};
-
-// exit is just white on all screens
-var ExitMode = function() {
-  var module = new Mode();
-  module.init = function(user) {
-    if(screenId == 0) {
-      // show name
-      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
-    } else { 
-      $('body').append('<div class="fullscreen whitebg"></div>');
-    }
-  };
-  return module;
-};
-
