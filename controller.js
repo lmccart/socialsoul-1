@@ -35,7 +35,8 @@ module.exports = function(config, io) {
   
   fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
     if (err) console.log(err);
-    filtered = data.split('\n');
+    filtered  = new RegExp( data.split('\n').join("|") ,"gi");
+    console.log(filtered);
   });
 
   var twit = new twitter(config.creds);
@@ -382,10 +383,8 @@ module.exports = function(config, io) {
   function get_clean(data) {
     for (var i=0; i<data.length; i++) {
       data[i].text = data[i].text.replace(urlRegex, '');
-
-      for (var j=0; j<filtered.length; j++) {
-        data[i].text = data[i].text.replace(filtered[j], '');
-      }
+      data[i].text = data[i].text.replace(filtered, '');
+      console.log(data[i].text);
     }
 
     return data;
