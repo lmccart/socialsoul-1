@@ -283,6 +283,8 @@ module.exports = function(config, io) {
     } 
     filename = filename.replace(':large', '');
     filename = filename.replace(/['&…,():;|{}_=+<>~"`/[/]/g, '');
+    var ind = Math.max(filename.length-20, 0);
+    filename = filename.substring(ind);
     filename = obj.dir+filename;
 
     fs.exists(filename, function(exists) {
