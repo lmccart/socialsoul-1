@@ -15,11 +15,18 @@ window.onload = function() {
     manager.sync();
   });
 
-  // new user available
+  // new subject available
   socket.on('trigger', function (data) {
     console.info('socket trigger');
     console.info(data);
     manager.trigger(data);
+  });
+
+  // subject's mentor available
+  socket.on('mentor', function (data) {
+    console.info('socket mentor');
+    console.info(data);
+    manager.mentor(data);
   });
 
   // new media available
@@ -44,5 +51,5 @@ window.onload = function() {
     console.info('reconnect');
     location.reload();
   });
-  
+
 }

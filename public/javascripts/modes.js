@@ -21,13 +21,13 @@ var DebugMode = function() {
     $body.append('<img class="debug" id="profile"/>')
     $body.append('<div class="debug">'+tweetText+'</div>');
     $body.append('<div class="debug" id="files"></div>');
+    module.next(user);
   }
 
   module.next = function(user) {
     if(user.profile) {
       document.getElementById('profile').src = user.profile; 
     }
-    // rebuild all files
     $files = $('#files');
     $files.empty();
     for(var i = 0; i < user.files.length; i++) {
@@ -161,7 +161,6 @@ var TweetMode = function() {
 // with the font randomly selected, and mosaic images in the background
 var CenteredTextMode = function() {
   var module = new Mode();
-  var salientWords = [];
   var ctx = {};
 
   module.timeout = new VariableTimeout();
@@ -169,17 +168,6 @@ var CenteredTextMode = function() {
   module.init = function(user) {
     $('body').append('<canvas id="centeredTextCanvas"></canvas>'+
       '<div class="centered"><div class="middle"><div class="inner"><span class="text" id="word"></span></div></div></div>');
-
-    // replace this with backend salient words
-    if (user.tweets) {
-      for(i in user.tweets) {
-        var tokens = user.tweets[i].text.split(' ');
-        for(j in tokens) {
-          if(tokens[j].length > 4 && tokens[j].length < 12)
-          salientWords.push(tokens[j]);
-        }
-      }
-    }
 
     var canvas = document.getElementById('centeredTextCanvas');
     canvas.width = window.innerWidth;
@@ -209,7 +197,7 @@ var CenteredTextMode = function() {
           var clusters = user.getPalette(img);
           clusters = _.shuffle(clusters);
           $word = $('#word');
-          $word.text(randomChoice(salientWords));
+          $word.text(randomChoice(user.salient));
           $word.css({
             fontFamily: randomChoice(fonts),
             backgroundColor: rgb(clusters[0]),
