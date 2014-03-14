@@ -5,14 +5,28 @@
 
 set files ""
 for {set i 0} {$i < 3} {incr i 1} { 
-  append files "test${i}.txt,"
+  #append files "test${i}.txt,"
 }
 puts $files
 
 
-
 for {set i 0} {$i < 6} {incr i 1} {
   spawn scp {*}[split $files ","] "socialsoul@socialsoul${i}.local:/home"
+  #######################
+  expect {
+    -re ".*es.*o.*" {
+      exp_send "yes\r"
+      exp_continue
+    }
+    -re ".*sword.*" {
+      exp_send "soulmate\r"
+    }
+  }
+}
+
+
+for {set i 0} {$i < 6} {incr i 1} {
+  spawn scp -r ../public/fonts "socialsoul@socialsoul${i}.local:/home"
   #######################
   expect {
     -re ".*es.*o.*" {
