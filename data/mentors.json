@@ -1,15 +1,15 @@
 [
-	{"user": "algore", "name": "Al Gore", "category" : "humanitarian"},
-	{"user": "CancerAntiquity", "name": "Palaeo-oncology", "category" : "humanitarian"},
-	{"user": "LaurierWinS", "name": "Women in Science", "category" : "humanitarian"},
-	{"user": "shubzsharma", "name": "Shubhendu Sharma", "category" : "humanitarian"},
-	{"user": "UntitledTitles", "name": "sergei lupashin", "category" : "humanitarian"},
-	{"user": "Seethisway", "name": "jorge manes rubio", "category" : "humanitarian"},
-	{"user": "dsengeh", "name": "David Moinina Sengeh", "category" : "humanitarian"},
-	{"user": "drsteveboyes", "name": "Steve Boyes", "category" : "humanitarian"},
-	{"user": "AuntBertha", "name": "Aunt Bertha", "category" : "humanitarian"},
-	{"user": "borabot", "name": "Bora Yoon", "category" : "humanitarian"},
-	{"user": "AzizAbuSarah", "name": "Aziz Abu Sarah", "category" : "humanitarian"},
-	{"user": "will_potter", "name": "Will Potter", "category" : "humanitarian"},
-	{"user": "orbitingfrog", "name": "Robert Simpson", "category" : "humanitarian"}
+	{"user": "algore", "name": "Al Gore", "ted" : true},
+	{"user": "CancerAntiquity", "name": "Palaeo-oncology", "ted" : true},
+	{"user": "LaurierWinS", "name": "Women in Science", "ted" : true},
+	{"user": "shubzsharma", "name": "Shubhendu Sharma", "ted" : true},
+	{"user": "UntitledTitles", "name": "sergei lupashin", "ted" : true},
+	{"user": "Seethisway", "name": "jorge manes rubio", "ted" : true},
+	{"user": "dsengeh", "name": "David Moinina Sengeh", "ted" : true},
+	{"user": "drsteveboyes", "name": "Steve Boyes", "ted" : true},
+	{"user": "AuntBertha", "name": "Aunt Bertha", "ted" : true},
+	{"user": "borabot", "name": "Bora Yoon", "ted" : true},
+	{"user": "AzizAbuSarah", "name": "Aziz Abu Sarah", "ted" : true},
+	{"user": "will_potter", "name": "Will Potter", "ted" : true},
+	{"user": "orbitingfrog", "name": "Robert Simpson", "ted" : true}
 ]
