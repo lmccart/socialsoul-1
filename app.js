@@ -20,10 +20,10 @@ app.use(app.router);
 var io = require('socket.io').listen(app.get('port'));
 var controller = require('./controller')(config, io);
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+// // development only
+// if ('development' == app.get('env')) {
+//   app.use(express.errorHandler());
+// }
 
 
 io.sockets.on('connection', function (socket) {

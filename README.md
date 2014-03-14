@@ -19,6 +19,7 @@ http://www.mongodb.org/
 0. [install mongodb](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) `brew install mongodb`
 0. [install nginx](http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/) `brew install nginx`
 0. configure nginx `open -t /usr/local/etc/nginx/nginx.conf`, change `listen 8080` to `listen 3000`, change `location root html` to `location root /socialsoul/public`
+0. install forever `[sudo] npm install forever -g`
 0. install node modules `cd /socialsoul && npm install`
 0. check out the modified version of the twitter module `git checkout HEAD node_modules/ntwitter/lib/twitter.js`
 
