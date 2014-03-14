@@ -71,21 +71,25 @@ var ServerTime = (function() {
 }());
 
 var fonts = [
-  "Lato",
+  // google open fonts
   "Arvo",
-  "Playfair Display",
-  "BenchNine",
-  "Lora",
+  "BenchNine-Light",
   "Bitter",
-  "Kreon",
-  "Crete Round",
   "Droid Serif",
-  "Oswald",
-  "Open Sans Condensed",
-  "Montserrat",
-  "Raleway",
-  "Roboto+Slab",
   "Inconsolata",
-  "Signika",
-  "Old Standard TT"
+  "Kreon-Light",
+  "Lato-Light",
+  "Lora",
+  "Montserrat",
+  "OpenSans-CondensedLight",
+  "Oswald-Light",
+  "Playfair Display",
+  "RobotoSlab-Light",
+  "Signika-Light",
+
+  // built in fonts
+  "AppleGothic",
+  "AppleSDGothicNeo-Thin",
+  "Helvetica",
+  "Letter Gothic Std"
 ];

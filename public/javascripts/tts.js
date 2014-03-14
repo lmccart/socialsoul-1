@@ -6,17 +6,26 @@ var TTS = function() {
     timeoutID: null
   };
 
+  var voicesReady = false;
+
   module.init = function(tweets) {
     module.tweets = tweets;
     module.playing = true;
+    speechSynthesis.onvoiceschanged = function() {
+      console.info("voices changed");
+      voicesReady = true;
+    }
+    speechSynthesis.getVoices();
     module.playTweet();
   };
 
-  module.playTweet = function() {
-    var tweet = randomChoice(module.tweets).text;
-    console.info("playTweet: " + tweet);
-
-    var msg = new SpeechSynthesisUtterance(tweet);
+  function speak(text) {
+    if(!voicesReady) {
+      console.log("voices not ready, waiting 500ms");
+      setTimeout(function() {speak(text)}, 500);
+      return;
+    }
+    var msg = new SpeechSynthesisUtterance(text);
     var goodVoices = [
       0, // us male
       1, // uk male
@@ -45,9 +54,18 @@ var TTS = function() {
       console.info("speech synthesis end");
       console.info(event)
     };
+    if(speechSynthesis.speaking) {
+      console.info('already speaking, cancelling');
+      speechSynthesis.cancel();
+    }
     console.info('calling speechSynthesis.speak');
     speechSynthesis.speak(msg);
+  }
 
+  module.playTweet = function() {
+    var tweet = randomChoice(module.tweets).text;
+    console.info("playTweet: " + tweet);
+    speak(tweet);
     if (module.playing) {
       // module.timeoutID = setTimeout(module.playTweet, 8000);
     }

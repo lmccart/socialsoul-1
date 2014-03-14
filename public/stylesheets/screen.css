@@ -1,8 +1,6 @@
-@import url(http://fonts.googleapis.com/css?family=Lato|Arvo|Playfair+Display|BenchNine|Lora|Bitter|Kreon|Crete+Round|Droid+Serif|Oswald:300|Open+Sans+Condensed:300|Montserrat|Raleway|Roboto+Slab|Inconsolata|Signika|Old+Standard+TT);
-
 body {
   background-color: black;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Oswald-Light', sans-serif;
   color: white;
   padding: 0;
   margin: 0;
@@ -38,10 +36,10 @@ body, html {
 }
 
 .debug#screenId {
+  font-family: 'Oswald-Light';
   font-size: 600px;
   margin: 0;
   padding: 0;
-  font-family: 'Oswald';
   width: 100%;
   text-align: center;
 }

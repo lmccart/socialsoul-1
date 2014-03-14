@@ -17,6 +17,11 @@ var DebugMode = function() {
       tweetText += '<div class="tweet">' + user.tweets[i].text + '</div>';
     }
     $body = $('body');
+    $body.append('<div id="fonts" style="width:500px"></div>');
+    for(var i = 0; i < fonts.length; i++) {
+      var font = fonts[i];
+      $('#fonts').append('<span style="font-family:'+font+'">'+font+'</span> ');
+    }
     $body.append('<div class="debug" id="info">'+screenId+':'+user.user+'</div>');
     $body.append('<img class="debug" id="profile"/>')
     $body.append('<div class="debug">'+tweetText+'</div>');
@@ -98,15 +103,19 @@ var AllImagesMode = function() {
         $('img').each(function(){
           if(Math.random() < .1) {
             this.src=randomChoice(user.files);
-            this.onload = function(img) {
-              var $img = $(img);
-              var width = img.width;
-              var height = img.height;
-              var parentSize = $img.parent().width();
-              var scale = Math.max(parentSize / width, parentSize / height);
-              img.width = (width * scale);
-              img.height = (height * scale);
-            }(this);
+            // this.onload = function(img) {
+            //   var $img = $(img);
+            //   var width = img.width;
+            //   var height = img.height;
+            //   var parentSize = $img.parent().width();
+            //   if(width < height) {
+            //     img.width = parentSize;
+            //     // img.height = parentSize * (height / width);
+            //   } else {
+            //     // img.width = parentSize * (width / height);
+            //     img.height = parentSize;
+            //   }
+            // }(this);
           }
         })
       }
