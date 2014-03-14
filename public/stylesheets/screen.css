@@ -123,3 +123,14 @@ body, html {
 .blackbg {
   background-color: black;
 }
+
+/* exit screen */
+
+#handle {
+  font-size:160px;
+}
+
+#subtitle {
+  margin-top: 60px;
+  font-size:60px;
+}

@@ -20,9 +20,16 @@
 
     <script type="text/javascript">
       window.onload = function () {
-        var screenId = parseInt(window.location.search.substring(1), 10);
+        var screenId = window.location.search.substring(1);
+        var screenSrc;
+        if (screenId === 'exit') {
+          screenSrc = '../exit.html';
+        } else {
+          screenId = parseInt(screenId, 10);
+          screenSrc = '../screen.html?'+screenId;
+        }
         document.title = screenId;
-        document.body.innerHTML = '<iframe class="scaled-frame" src="../screen.html?'+screenId+'"></iframe>';
+        document.body.innerHTML = '<iframe class="scaled-frame" src="'+screenSrc+'"></iframe>';
       };
     </script>
 
