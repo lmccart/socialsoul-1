@@ -33,6 +33,7 @@ window.onload = function() {
   socket.on('error', function(data) {
     $('#error_status').html(data.msg);
     $('#user_status').html('');
+    $('#time_status').html('');
   });
 
   // update controller
@@ -46,6 +47,7 @@ window.onload = function() {
       $('#user_status').html('');
       $('#time_status').html('<span class="highlight">Ready for next visitor!</span>');
     }
+    $('#error_status').html('');
     
     $('#users').empty();
     for (var i=data.users.length; i>0; i--) {
