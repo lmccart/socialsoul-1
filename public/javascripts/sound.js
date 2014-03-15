@@ -1,13 +1,44 @@
-var soundEffects = new Howl({
-  urls: ['../sound/soundEffects.wav'],
-  sprite: {
-    gong: [0, 11458],
-    swipe: [11458, 1639],
-    drone: [13219, 34658],
-    noise: [48343, 6235],
-    silence: [54536, 8249]
-  },
-  onload: function() {
-  	console.log('loaded sound effects');
-  }
-});
+function loaded() {
+  console.log('loaded '+this._src);
+}
+
+var sounds = {
+  gong: new Howl({
+    urls: ['../sound/gong.ogg'],
+    onload: loaded
+  }),
+  swipe: new Howl({
+    urls: ['../sound/swipe.ogg'],
+    onload: loaded
+  }),
+  drone: new Howl({
+    urls: ['../sound/drone.ogg'],
+    loop: true,
+    onload: loaded
+  }),
+  boop: new Howl({
+    urls: ['../sound/boop.ogg'],
+    onload: loaded
+  }),
+
+  texture0: new Howl({
+    urls: ['../sound/texture0.ogg'],
+    onload: loaded
+  }),
+  texture1: new Howl({
+    urls: ['../sound/texture1.ogg'],
+    onload: loaded
+  }),
+  texture2: new Howl({
+    urls: ['../sound/texture2.ogg'],
+    onload: loaded
+  }),
+  texture3: new Howl({
+    urls: ['../sound/texture3.ogg'],
+    onload: loaded
+  }),
+  texture4: new Howl({
+    urls: ['../sound/texture4.ogg'],
+    onload: loaded
+  }),
+};

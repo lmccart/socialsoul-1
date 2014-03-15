@@ -101,12 +101,19 @@ var AllImagesMode = function() {
       this.src = '../images/placeholder.png';
     });
     module.timeout.start(function() {
-      if(user.files.length && user.friends.length) {
+      var toChoose = [];
+      if(user.files.length) {
+        toChoose.push(user.files);
+      }
+      if(user.friends.length) {
+        toChoose.push(user.friends);
+      }
+      if(toChoose.length) {
         var $img = $('img');
         for(var j = 0; j < module.replaceCount; j++) {
           var cur = randomChoice($img);
           if(cur) {
-            cur.src = randomChoice(randomChoice([user.files, user.friends]));
+            cur.src = randomChoice(randomChoice(toChoose));
           }
         }
       }
@@ -141,6 +148,7 @@ var TweetMode = function() {
       $tweet.show();
       timeline
         .clear()
+        .addCallback(function() {sounds.boop.play()})
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
     },
@@ -176,9 +184,15 @@ var CenteredTextMode = function() {
     ctx.imageSmoothingEnabled = false;
   
     module.timeout.start(function() {
-      if(user.files.length > 0) {
+      var images = user.files;
+      if(user.files.length) {
+        images = user.files;
+      } else {
+        images = user.friends;
+      }
+      if(images.length) {
         var img = new Image();
-        img.src = randomChoice(user.files);
+        img.src = randomChoice(images);
         img.onload = function() {
           var width = img.width;
           var height = img.height;
@@ -259,7 +273,7 @@ var EnterMode = function() {
         '</div>');
       timeline = new TimelineMax();
       timeline
-        .addCallback(function() {soundEffects.play('gong')})
+        .addCallback(function() {sounds.gong.play()})
         .set("#color", {opacity:1})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
         .repeat(-1);
