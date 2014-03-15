@@ -17,6 +17,11 @@ var DebugMode = function() {
       tweetText += '<div class="tweet">' + user.tweets[i].text + '</div>';
     }
     $body = $('body');
+    $body.append('<div id="fonts" style="width:500px"></div>');
+    for(var i = 0; i < fonts.length; i++) {
+      var font = fonts[i];
+      $('#fonts').append('<span style="font-family:'+font+'">'+font+'</span> ');
+    }
     $body.append('<div class="debug" id="info">'+screenId+':'+user.user+'</div>');
     $body.append('<img class="debug" id="profile"/>')
     $body.append('<div class="debug">'+tweetText+'</div>');
@@ -73,6 +78,8 @@ var AllImagesMode = function() {
   var module = new Mode();
 
   module.timeout = new VariableTimeout();
+  module.timeout.timeoutLength = 0;
+  module.replaceCount = 3;
 
   module.init = function(user) {
     alive = true;
@@ -81,37 +88,45 @@ var AllImagesMode = function() {
     var gridHtml = "";
     for(var i = 0; i < n; i++) {
       if(Math.random() < .5) {
-        gridHtml += ('<div class="wrapper larger"><img src="../images/placeholder.png"/></div>');
+        gridHtml += ('<div class="wrapper larger"><img/></div>');
       } else {
         gridHtml += (
           '<div class="wrapper larger">'+
-          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
-          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
-          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
-          '<div class="wrapper smaller"><img src="../images/placeholder.png"/></div>'+
+          '<div class="wrapper smaller"><img/></div>'+
+          '<div class="wrapper smaller"><img/></div>'+
+          '<div class="wrapper smaller"><img/></div>'+
+          '<div class="wrapper smaller"><img/></div>'+
           '</div>');
       }
     }
     $('#container').append(gridHtml);
+    // resize all images onload
+    $('img').each(function() {
+      this.onload = function() {
+        var parentSize = $(this).parent().width();
+        if(this.naturalWidth < this.naturalHeight) {
+          this.width = parentSize;
+          this.height = parentSize * (this.naturalHeight / this.naturalWidth);
+        } else {
+          this.width = parentSize * (this.naturalWidth / this.naturalHeight);
+          this.height = parentSize;
+        }
+      }
+      // pick another image if it fails to load
+      this.onerror = function() {
+        this.src = '../images/placeholder.png';
+      }
+      this.src = '../images/placeholder.png';
+    });
     module.timeout.start(function() {
       if(user.files.length) {
-        $('img').each(function(){
-          if(Math.random() < .1) {
-            this.src=randomChoice(user.files);
-            this.onload = function(img) {
-              var $img = $(img);
-              var width = img.width;
-              var height = img.height;
-              var parentSize = $img.parent().width();
-              var scale = Math.max(parentSize / width, parentSize / height);
-              img.width = (width * scale);
-              img.height = (height * scale);
-            }(this);
-          }
-        })
+        var $img = $('img');
+        for(var j = 0; j < module.replaceCount; j++) {
+          var cur = randomChoice($img);
+          cur.src = randomChoice(user.files);
+        }
       }
-    },
-    500); // subject
+    }); // subject
     // 30); // mentor
   }
 
@@ -183,14 +198,15 @@ var CenteredTextMode = function() {
         img.onload = function() {
           var width = img.width;
           var height = img.height;
-          var fullscreen = Math.random() < .2;
+          var fullscreen = true; //Math.random() < .5;
           var scale;
           if(fullscreen) {
             var widthScale = window.innerWidth / width;
             var heightScale = window.innerHeight / height;
             scale = Math.max(widthScale, heightScale);
           } else {
-            var pixelCount = randomPowerOfTwo();
+            // this mode shows some pixellated images
+            var pixelCount = Math.min(randomPowerOfTwo(4, 6), width);
             scale = window.innerWidth / pixelCount;
           }
           ctx.drawImage(img, 0, 0, scale * width, scale * height);

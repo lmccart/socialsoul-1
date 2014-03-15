@@ -103,7 +103,11 @@ ul {
 }
 
 .highlight {
-  color: red;
+  color: #ff5;
+}
+
+.error {
+  color: #f55;
 }
 
 #restart {

@@ -31,19 +31,11 @@ window.onload = function() {
 
   // new media available
   socket.on('asset', function (data) {
-    console.info('socket asset');
-    console.info(data);
+    // console.info('socket asset');
+    // console.info(data);
     // convert from backend to frontend directory
     data.file = data.file.replace(/.+public/, "..");
     manager.addAsset(data);
-  });
-
-  // mentor chosen
-  socket.on('mentor', function (data) {
-    console.info('mentor');
-    console.info(data);
-    // need to everything into a user object
-    // console.log(data);
   });
 
   // refresh the page when node restarts

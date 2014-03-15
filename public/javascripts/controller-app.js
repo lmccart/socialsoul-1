@@ -5,7 +5,7 @@ window.onload = function() {
 
   function displayDisconnect() {
     $('#user_status').html('');
-    $('#time_status').html('<span class="highlight">Not connected to server.</span>');
+    $('#time_status').html('<span class="error">Not connected to server.</span>');
     $('#users').empty();
   }
 

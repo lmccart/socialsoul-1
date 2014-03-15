@@ -8,8 +8,6 @@ var tts = new TTS();
 var colorThief = new ColorThief();
 
 // helper functions
-console.debug
-
 function randomChoice(list) {
   var randomIndex = Math.floor(Math.random() * list.length);
   return list[randomIndex];
@@ -19,8 +17,8 @@ function rgb(c) {
   return "rgba(" + (0|c[0]) + "," + (0|c[1]) + "," + (0|c[2]) + ", 255)";
 }
 
-function randomPowerOfTwo() {
-  return Math.pow(2, 1 + Math.floor(Math.random() * 8));
+function randomPowerOfTwo(minPower, maxPower) {
+  return Math.pow(2, minPower + Math.floor(Math.random() * (maxPower - minPower)));
 }
 
 // helper classes
@@ -71,21 +69,24 @@ var ServerTime = (function() {
 }());
 
 var fonts = [
-  "Lato",
+  // google open fonts
   "Arvo",
-  "Playfair Display",
-  "BenchNine",
-  "Lora",
+  "BenchNine-Light",
   "Bitter",
-  "Kreon",
-  "Crete Round",
   "Droid Serif",
-  "Oswald",
-  "Open Sans Condensed",
-  "Montserrat",
-  "Raleway",
-  "Roboto+Slab",
   "Inconsolata",
-  "Signika",
-  "Old Standard TT"
+  "Kreon-Light",
+  "Lato-Light",
+  "Lora",
+  "Montserrat",
+  "OpenSans-CondensedLight",
+  "Oswald-Light",
+  "Playfair Display",
+  "RobotoSlab-Light",
+  "Signika-Light",
+
+  // built in fonts
+  "AppleGothic",
+  "AppleSDGothicNeo-Thin",
+  "Letter Gothic Std"
 ];
