@@ -33,6 +33,7 @@ http://www.mongodb.org/
 * ```/screen.html?id``` -- view for screen (id = int or "exit")
 * ```/index.html``` -- BA controller page
 * ```/index.html?build_db``` -- rebuild the cached mentor db / data
+* ```/index.html?test_algo``` -- test the secret algorithm
 
 
 

@@ -69,7 +69,10 @@ io.sockets.on('connection', function (socket) {
     } else if (data.action === 'restart') {
       console.log('RESTARTING SERVER');
       restartClients(function() {process.exit(1);});
-    }
+    } else if (data.action === 'test_algo') {
+      console.log('testing secret algorithm');
+      controller.testAlgo();
+    } 
   });
 
   function sync() {

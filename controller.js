@@ -19,12 +19,26 @@ d.on('error', function(err) {
 
 var verbose = false;
 
-var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+// load word lists and regex
+var url_regex = /(https?:\/\/[^\s]+)/g;
+var filtered_regex;  
+fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
+  if (err) console.log(err);
+  filtered_regex = new RegExp( data.split('\n').join("|") ,"gi");
+});
+var common_words = [];
+fs.readFile(__dirname +'/data/common.txt', 'utf8', function(err, data) {
+  if (err) console.log(err);
+  common_words = data.split('\n');
+});
+
 
 var magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
 var assets_root = __dirname +'/public/assets/';
 var requests = [];
+
 
 module.exports = function(config, io) {
  
@@ -40,12 +54,6 @@ module.exports = function(config, io) {
     error: null // for status ping
   };
 
-  var filtered = [];
-  
-  fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
-    if (err) console.log(err);
-    filtered  = new RegExp( data.split('\n').join("|") ,"gi");
-  });
 
   var twit = new twitter(config.creds);
 
@@ -122,6 +130,14 @@ module.exports = function(config, io) {
         });
       });
     });
+  };  
+
+  controller.testAlgo = function() {
+    controller.storage.all(function(err, people) {
+      people.forEach(function(p) {
+        findMentor(p.user, p.text, false, true);
+      });
+    });
   };
 
   controller.getRemaining = function() {
@@ -163,14 +179,10 @@ module.exports = function(config, io) {
 
     // insert text in db
     console.log('inserting '+opts.user+' in db');
-    
-    if (data.length < 200) {
-      console.log(opts.user+' ONLY '+data.length+' tweets!');
-    }
-
+    var salient = get_salient(data);
     var obj = { 
       user: opts.user,
-      text: concat_tweets(data),
+      text: normalize(salient.join(' ')),
       name: data[0].user.name
     };
     controller.storage.insert(obj);
@@ -186,7 +198,7 @@ module.exports = function(config, io) {
         'user':opts.user,
         'name':obj.name,
         'tweets':data,
-        'salient':get_salient(data),
+        'salient':salient,
         'remaining': controller.getRemaining()
       }); 
 
@@ -196,7 +208,7 @@ module.exports = function(config, io) {
       fs.mkdirs(dir, function() {
 
         // save salient // test pend
-        if (is_new) fs.outputFile(dir+'salient.txt', get_salient(data).join('\r\n'), function(e){ if (e) console.log(e); });
+        if (is_new) fs.outputFile(dir+'salient.txt', salient.join('\r\n'), function(e){ if (e) console.log(e); });
 
         // save json
         if (is_new) fs.outputJson(dir+'timeline.json', data, function(e){ if (e) console.log(e); });
@@ -350,7 +362,7 @@ module.exports = function(config, io) {
     }
   };
 
-  function findMentor(user, text, send_tweet) {
+  function findMentor(user, text, send_tweet, test) {
 
     // pick related mentor
     var low = 0, lowKey = '';
@@ -372,12 +384,15 @@ module.exports = function(config, io) {
         }
       }
       if (verbose) console.log(highKey + " similarity " + high);
-      getPerson({user:highKey, is_mentor:true, get_media:true});
+      
+      // for testing algo
+      if (test) console.log('match for '+user+': '+highKey+' ('+high+')'); 
+      else getPerson({user:highKey, is_mentor:true, get_media:true}); 
+      
       if (send_tweet) {
        //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
       }
     });
-
   }
 
   function get_salient(data) {
@@ -390,32 +405,30 @@ module.exports = function(config, io) {
       var tokens = tweet.split(' ');
       tokens.forEach(function(tok) {
         if (tok.length > 4 && tok.length < 12) {
-          salient.push(tok);
+          var common = false;
+          for (var i=0; i<common_words.length; i++) {
+            if (common_words[i] == tok.toLowerCase()) {
+              common = true;
+              break;
+            }
+          }
+          if (!common) {
+            salient.push(tok);
+          }
         }
       });
     }
-    
     return salient;
   }
 
   // removes urls and banned words
   function get_clean(data) {
     for (var i=0; i<data.length; i++) {
-      data[i].text = data[i].text.replace(urlRegex, '');
-      data[i].text = data[i].text.replace(filtered, '');
+      data[i].text = data[i].text.replace(url_regex, '');
+      data[i].text = data[i].text.replace(filtered_regex, '');
     }
 
     return data;
-  }
-
-
-  function concat_tweets(data) {
-    var text = '';
-    for (var i=0; i<data.length; i++) {
-      text += data[i].text+' ';
-    }
-    text = normalize(text);
-    return text;
   }
 
   function normalize(text) {
