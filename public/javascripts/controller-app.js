@@ -60,8 +60,31 @@ window.onload = function() {
       socket.emit('controller', { action:'remove', user:e.target.id });
     });
 
-  });
+    $('#restart').click(function(e){ 
+      $("#overlay").show();
+      $("#dialog").dialog({
+        buttons : {
+          "confirm" : function() {
+            console.log('restart');
+            socket.emit('controller', { action: 'restart' });
+            $(this).dialog("close");
+            $("#overlay").hide();
+          },
+          "cancel" : function() {
+            $(this).dialog("close");
+            $("#overlay").hide();
+          }
+        }
+      });
+      $("#dialog").dialog("open");
+    });
 
+  });
+  
+  $("#dialog").dialog({
+    autoOpen: false,
+    modal: true
+  });
 
   $('#queue_user').click(function(e){
     console.log('hi')

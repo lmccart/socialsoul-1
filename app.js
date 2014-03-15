@@ -49,6 +49,9 @@ io.sockets.on('connection', function (socket) {
     } else if (data.action === 'build_db') {
       console.log('building db');
       controller.buildDb();
+    } else if (data.action === 'restart') {
+      console.log('RESTARTING SERVER');
+      process.exit(1);
     }
   });
 
