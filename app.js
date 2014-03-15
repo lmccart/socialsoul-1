@@ -33,6 +33,8 @@ function restartClients(cb) {
 }
 
 var io = require('socket.io').listen(app.get('port'));
+io.set('log level', 1);
+
 var controller = require('./controller')(config, io);
 
 // // development only

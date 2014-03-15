@@ -14,8 +14,10 @@ var _ = require('underscore')
 // uncaught error handling
 var d = domain.create();
 d.on('error', function(err) {
-  console.error('d '+err);
+  console.error('DOMAIN ERROR caught and handled: '+err);
 });
+
+var verbose = false;
 
 var urlRegex = /(https?:\/\/[^\s]+)/g;
 
@@ -58,7 +60,6 @@ module.exports = function(config, io) {
   controller.queueUser = function(user) {
 
     var match = _.filter(controller.queued_users, function(u) { return ~u.toLowerCase().indexOf(user.toLowerCase())});
-    console.log(match);
     if (!match.length > 0) {
       controller.queued_users.push(user);
       console.log('queueing user '+user);
@@ -76,10 +77,9 @@ module.exports = function(config, io) {
 
     var is_def = user === default_user;
     if (is_def) {
-      console.log(controller.storage);
       var defs = controller.storage.default_users;
       user = defs[Math.floor(Math.random()*defs.length)];
-      console.log('choosing default user: '+user);
+      if (verbose) console.log('choosing default user: '+user);
     }
       
     // CLEANUP
@@ -210,7 +210,7 @@ module.exports = function(config, io) {
         });
 
         downloadMedia(dir, data, opts.is_mentor, function(res) { 
-          console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
+          if (verbose) console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
           if (opts.cb) opts.cb();
         });
 
@@ -269,7 +269,7 @@ module.exports = function(config, io) {
   function scrape(dir, uri, is_mentor, callback, timeline) {
     scraper.scrape(uri, function(err, imgs){
       if (err) console.log('b err', uri);
-      console.log(imgs);
+      if (verbose) console.log(imgs);
       if (imgs) {
         for (var i=0; i<imgs.length; i++) {
           queue.push({dir:dir, url:imgs[i], is_mentor: is_mentor}, callback);
@@ -322,7 +322,7 @@ module.exports = function(config, io) {
             requests.push(req);
           } 
         } else {
-          console.log(filename+' exists');
+          if (verbose) console.log(filename+' exists');
           controller.io.sockets.emit('asset', {
             'file':filename,
             'tag':obj.tag,
@@ -337,7 +337,7 @@ module.exports = function(config, io) {
   //When the queue is emptied we want to check if we're done
   queue.drain = function() {
     if (queue.length() == 0 ) { //&& listObjectsDone) {
-      console.log('ALL files have been downloaded');
+      if (verbose) console.log('ALL files have been downloaded');
     }
   };
 
@@ -351,7 +351,7 @@ module.exports = function(config, io) {
       for (var i=0; i<data.length; i++) {
         if (data[i].user != user) {
           var rating = similarity.tokenCosineSimilarity(text, data[i].text);
-          console.log(data[i].user+' '+rating);
+          if (verbose) console.log(data[i].user+' '+rating);
           if(low == 0 || rating < low) {
             low = rating;
             lowKey = data[i].user;
@@ -362,7 +362,7 @@ module.exports = function(config, io) {
           }
         }
       }
-      console.log(highKey + " similarity " + high);
+      if (verbose) console.log(highKey + " similarity " + high);
       getPerson({user:highKey, is_mentor:true, get_media:true});
       if (send_tweet) {
        //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
@@ -394,7 +394,6 @@ module.exports = function(config, io) {
     for (var i=0; i<data.length; i++) {
       data[i].text = data[i].text.replace(urlRegex, '');
       data[i].text = data[i].text.replace(filtered, '');
-      console.log(data[i].text);
     }
 
     return data;
@@ -418,7 +417,7 @@ module.exports = function(config, io) {
 
   function sendEndTweet(user, name) {
     var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://delta.com.';
-    twit.updateStatus(status, function(err) {console.log(err); });
+    twit.updateStatus(status, function(err) { console.log(err); });
   }
 
 

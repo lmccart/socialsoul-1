@@ -1,7 +1,7 @@
 var request = require('request')
   , cheerio = require('cheerio');
 
-
+var verbose = false;
 
 module.exports = function() {
 
@@ -129,7 +129,7 @@ function scrapeImages(response, timeline) {
       }
     }
   }
-  console.log(images);
+  if (verbose) console.log(images);
   return images;
 }
 
