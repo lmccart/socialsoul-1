@@ -36,7 +36,6 @@ module.exports = function(config, io) {
   fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
     if (err) console.log(err);
     filtered  = new RegExp( data.split('\n').join("|") ,"gi");
-    console.log(filtered);
   });
 
   var twit = new twitter(config.creds);
