@@ -49,7 +49,7 @@ module.exports = function(config, io) {
 
   var twit = new twitter(config.creds);
 
-  twit.stream('statuses/filter', {track:'#sstest'}, function(stream) {
+  twit.stream('statuses/filter', {track:'#socialsoul'}, function(stream) {
     stream.on('data', function (data) {
       controller.queued_users.push(data.user.screen_name);
       console.log('queueing user '+data.user.screen_name);

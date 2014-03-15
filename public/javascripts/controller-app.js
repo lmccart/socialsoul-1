@@ -4,6 +4,7 @@ var count, counter;
 window.onload = function() {
 
   function displayDisconnect() {
+    $('#error_status').html('');
     $('#user_status').html('');
     $('#time_status').html('<span class="error">Not connected to server.</span>');
     $('#users').empty();
