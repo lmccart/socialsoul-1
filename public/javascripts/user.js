@@ -4,6 +4,7 @@
 var User = function() {
 	var module = {
 		user: "",
+		name: "",
 		tweets: [],
 		salient: [],
 
@@ -15,6 +16,7 @@ var User = function() {
 
 	module.loadData = function(data) {
 		module.user = data.user;
+		module.name = data.name;
 	    module.salient = data.salient;
 	    module.tweets = data.tweets;
 		for(var i = 0; i < module.tweets.length; i++) {

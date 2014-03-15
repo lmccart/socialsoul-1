@@ -76,6 +76,14 @@ body, html {
   background-color: white;
 }
 
+.text#name {
+  font-size: 260px;
+}
+.text#username {
+  font-size: 150px;
+  color: gray;
+  clear: both;
+}
 .text#word {
   font-size:300px;
 }
