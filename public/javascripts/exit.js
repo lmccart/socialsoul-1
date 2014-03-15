@@ -12,7 +12,7 @@ window.onload = function() {
 
   // new user available
   socket.on('mentor', function (data) {
-    $('#handle').html('Your social soulmate is @'+data.user+'.');
+    $('#handle').html('Your social soulmate is <br>'+data.name+' <span class="username">@'+data.user+'</span>');
   });
 
 }

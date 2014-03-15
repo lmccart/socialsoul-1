@@ -24,8 +24,8 @@ body {
   margin-bottom: 30px;
 }
 
-#time_status, #user_status {
-  height: 30px;
+#status {
+  height: 90px;
 }
 
 .button, .ui-button {
