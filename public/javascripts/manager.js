@@ -35,8 +35,12 @@ var Manager = function() {
   }
   reset();
 
+  function getCurrentScene() {
+    return settings.playlist[playlistPosition];
+  }
+
   function getCurrentModeName() {
-    return settings.playlist[playlistPosition].mode;
+    return getCurrentScene().mode;
   }
 
   function getCurrentMode() {
@@ -44,11 +48,11 @@ var Manager = function() {
   }
 
   function getCurrentDuration() {
-    return settings.playlist[playlistPosition].duration;
+    return getCurrentScene().duration;
   }
 
   function getCurrentUser() {
-    return users[settings.playlist[playlistPosition].user];
+    return users[getCurrentScene().user];
   }
 
   // any pre-user setup goes here
@@ -110,6 +114,9 @@ var Manager = function() {
       $('body').empty();
       playlistPosition = index;
       getCurrentMode().init(getCurrentUser());
+      if(getCurrentScene().callback) {
+        getCurrentScene().callback();
+      }
       playing = true;
       console.info('init mode ' + getCurrentModeName());
     }

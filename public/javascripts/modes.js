@@ -60,6 +60,7 @@ var EnterMode = function() {
       $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
       timeline = new TimelineMax();
       timeline
+        .addCallback(function() {soundEffects.play('gong')})
         .set("#color", {opacity:1})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
         .repeat(-1);
@@ -84,20 +85,29 @@ var AllImagesMode = function() {
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
-    var n = 5 * 8; // enough images to fill the screen at 240x240 each
+    var n = 3 * 4; // enough images to fill the screen at 240x240 each
     var gridHtml = "";
+    var smallestHtml = 
+      '<div class="wrapper smaller"><img/></div>'+
+      '<div class="wrapper smaller"><img/></div>'+
+      '<div class="wrapper smaller"><img/></div>'+
+      '<div class="wrapper smaller"><img/></div>';
     for(var i = 0; i < n; i++) {
+      gridHtml += '<div class="wrapper largest">';
       if(Math.random() < .5) {
-        gridHtml += ('<div class="wrapper larger"><img/></div>');
+        gridHtml += '<img/>';
       } else {
-        gridHtml += (
-          '<div class="wrapper larger">'+
-          '<div class="wrapper smaller"><img/></div>'+
-          '<div class="wrapper smaller"><img/></div>'+
-          '<div class="wrapper smaller"><img/></div>'+
-          '<div class="wrapper smaller"><img/></div>'+
-          '</div>');
+        if(Math.random() < .5) {
+          gridHtml += smallestHtml;
+        } else {
+          gridHtml +=
+            '<div class="wrapper smaller">'+smallestHtml+'</div>'+
+            '<div class="wrapper smaller">'+smallestHtml+'</div>'+
+            '<div class="wrapper smaller">'+smallestHtml+'</div>'+
+            '<div class="wrapper smaller">'+smallestHtml+'</div>';
+        }
       }
+      gridHtml += '</div>';
     }
     $('#container').append(gridHtml);
     // resize all images onload
@@ -119,7 +129,7 @@ var AllImagesMode = function() {
       this.src = '../images/placeholder.png';
     });
     module.timeout.start(function() {
-      if(user.files.length) {
+      if(user.files.length && user.friends.length) {
         var $img = $('img');
         for(var j = 0; j < module.replaceCount; j++) {
           var cur = randomChoice($img);

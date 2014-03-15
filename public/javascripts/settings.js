@@ -9,7 +9,12 @@ settings = {
 		// {
 		// 	mode: 'tweet',
 		// 	duration: 10,
-		// 	user: 'subject'
+		// 	user: 'subject',
+		// 	callback: function() {
+		// 		console.log('playing swipe');
+		// 		soundEffects.play('swipe');
+		// 		soundEffects.play('drone');
+		// 	}
 		// },
 		{
 			mode: 'allImages',
