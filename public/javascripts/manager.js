@@ -63,14 +63,15 @@ var Manager = function() {
     // setup playlist
     var totalDuration = 0;
     for(var i = 0; i < settings.playlist.length; i++) {
+      if(settings.playlist[i].timeout) {
+        clearTimeout(settings.playlist[i].timeout);
+      }
       settings.playlist[i].timeout =
         setTimeout((function(index){
           return function() {
-            console.log("calling setPlaylistPosition " + index);
             module.setPlaylistPosition(index);
           }
         })(i), totalDuration * 1000);
-      console.log("function setPlaylistPosition " + i + " @ " + totalDuration);
       totalDuration += settings.playlist[i].duration;
     }
     triggerTime = ServerTime.now();
