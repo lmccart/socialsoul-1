@@ -26,7 +26,7 @@ http://www.mongodb.org/
 ### to run
 0. open terminal and start mongo `mongod`
 0. open a new terminal tab and start nginx `nginx`
-0. nginx will return immediately, then start node `node app`
+0. nginx will return immediately, then start node `forever start app.js`
 
 ### endpoints
 

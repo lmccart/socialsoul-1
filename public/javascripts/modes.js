@@ -123,7 +123,9 @@ var AllImagesMode = function() {
         var $img = $('img');
         for(var j = 0; j < module.replaceCount; j++) {
           var cur = randomChoice($img);
-          cur.src = randomChoice(user.files);
+          if(cur) {
+            cur.src = randomChoice(user.files);
+          }
         }
       }
     }); // subject
