@@ -1,5 +1,6 @@
 
 var _ = require('underscore')
+  , domain = require('domain')
   , twitter = require('ntwitter')
   , request = require('request')
   , fs = require('fs-extra')
@@ -9,6 +10,12 @@ var _ = require('underscore')
   , natural = require('natural')
   , similarity = require('./similarity')
   , scraper = require('./scraper');
+
+// uncaught error handling
+var d = domain.create();
+d.on('error', function(err) {
+  console.error('d '+err);
+});
 
 var urlRegex = /(https?:\/\/[^\s]+)/g;
 
@@ -36,7 +43,6 @@ module.exports = function(config, io) {
   fs.readFile(__dirname +'/data/filtered.txt', 'utf8', function(err, data) {
     if (err) console.log(err);
     filtered  = new RegExp( data.split('\n').join("|") ,"gi");
-    console.log(filtered);
   });
 
   var twit = new twitter(config.creds);
@@ -273,58 +279,60 @@ module.exports = function(config, io) {
   }
 
   //Set up our queue
-  var queue = async.queue(function(obj, callback) {
+  var queue = async.queue(function(obj, callback) {queue_run(obj, callback);}, 10); //Only allow 1 request at a time
 
-    var filename = obj.url.substring(obj.url.lastIndexOf('/')+1);
+  var queue_run = function(obj, callback) {
+    d.run(function() {
+      var filename = obj.url.substring(obj.url.lastIndexOf('/')+1);
 
-    var ind = filename.indexOf('proxy.jpg?t=');
-    if (ind !== -1) { // media timeline imgs are f'd
-      filename = filename.substring(ind+12)+'.jpg';
-    } 
-    filename = filename.replace(':large', '');
-    filename = filename.replace(/['&…,():;|{}_=+<>~"`/[/]/g, '');
-    var ind = Math.max(filename.length-20, 0);
-    filename = filename.substring(ind);
-    filename = obj.dir+filename;
+      var ind = filename.indexOf('proxy.jpg?t=');
+      if (ind !== -1) { // media timeline imgs are f'd
+        filename = filename.substring(ind+12)+'.jpg';
+      } 
+      filename = filename.replace(':large', '');
+      filename = filename.replace(/['&…,():;|{}_=+<>~"`/[/]/g, '');
+      var ind = Math.max(filename.length-20, 0);
+      filename = filename.substring(ind);
+      filename = obj.dir+filename;
 
-    fs.exists(filename, function(exists) {
-      if (!exists) {
-        if (obj.url.indexOf('vine.co') != -1) {
-          var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
-          scraper.getVine(vine_id, {dir: obj.dir, success: callback});
+      fs.exists(filename, function(exists) {
+        if (!exists) {
+          if (obj.url.indexOf('vine.co') != -1) {
+            var vine_id = obj.url.substring(obj.url.lastIndexOf('/')+1);  
+            scraper.getVine(vine_id, {dir: obj.dir, success: callback});
+          } else {
+            var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
+              if (req.bytesWritten > 4000) { // only send if bigger than 4kb
+                magic.detectFile(filename, function(err, res) {
+                  if (err) { console.log("Error caught and ignored "+err) 
+                  } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
+                    controller.io.sockets.emit('asset', {
+                      'file':filename,
+                      'tag':obj.tag,
+                      'is_mentor':obj.is_mentor
+                    }); 
+                  }
+                });
+              } 
+              callback(filename);
+            }).on('error', function(err) {
+              console.log('Error caught and ignored: ' +err);
+              callback(filename);
+            });
+            requests.push(req);
+          } 
         } else {
-          var req = request(obj.url).pipe(fs.createWriteStream(filename)).on('close', function(err) {
-            if (req.bytesWritten > 4000) { // only send if bigger than 4kb
-              magic.detectFile(filename, function(err, res) {
-                if (err) {
-                  console.log("MAGIC ERR") 
-                } else if (res == 'image/jpeg' || res == 'image/png' || res == 'image/gif') {
-                  controller.io.sockets.emit('asset', {
-                    'file':filename,
-                    'tag':obj.tag,
-                    'is_mentor':obj.is_mentor
-                  }); 
-                }
-              });
-            } 
-            callback(filename);
-          }).on('error', function(err) {
-            console.log('Error caught and ignored: ' +err);
-            callback(filename);
-          });
-          requests.push(req);
-        } 
-      } else {
-        console.log(filename+' exists');
-        controller.io.sockets.emit('asset', {
-          'file':filename,
-          'tag':obj.tag,
-          'is_mentor':obj.is_mentor
-        }); 
-        callback(filename);
-      }
+          console.log(filename+' exists');
+          controller.io.sockets.emit('asset', {
+            'file':filename,
+            'tag':obj.tag,
+            'is_mentor':obj.is_mentor
+          }); 
+          callback(filename);
+        }
+      });
     });
-  }, 10); //Only allow 1 request at a time
+  };
 
   //When the queue is emptied we want to check if we're done
   queue.drain = function() {

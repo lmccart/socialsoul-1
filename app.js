@@ -4,7 +4,9 @@
  */
 
 var express = require('express')
-  , config = require('./data/config');
+  , config = require('./data/config')
+  , util = require('util'),
+    exec = require('child_process').exec;
 
 var app = express();
 
@@ -16,6 +18,19 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 
+
+function restartClients(cb) {
+  var restart_file = './extra/start_all.exp';
+  exec(restart_file, // command line argument directly in string
+    function (error, stdout, stderr) {      // one easy function to capture data/errors
+      console.log('stdout: ' + stdout);
+      console.log('stderr: ' + stderr);
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      if (cb) cb();
+  });
+}
 
 var io = require('socket.io').listen(app.get('port'));
 var controller = require('./controller')(config, io);
@@ -49,6 +64,9 @@ io.sockets.on('connection', function (socket) {
     } else if (data.action === 'build_db') {
       console.log('building db');
       controller.buildDb();
+    } else if (data.action === 'restart') {
+      console.log('RESTARTING SERVER');
+      restartClients(function() {process.exit(1);});
     }
   });
 

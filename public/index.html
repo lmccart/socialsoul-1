@@ -4,6 +4,7 @@
     <title>social soul controller</title>
     <link rel='stylesheet' href='/stylesheets/controller.css' />
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
+    <script type='text/javascript' src='javascripts/libs/jquery-ui-1.10.4.custom.min.js'></script>
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
@@ -26,7 +27,13 @@
         <input id="user" name="user" /> 
         <span id='queue_user' class='button'>add</span>
     	</div>
-
     </div>
+
+
+    <div id="overlay"></div>
+    <div id="dialog" >
+      Are you sure you want to restart?
+    </div>
+    <div class="button" id="restart">restart</div>
   </body>
 </html>

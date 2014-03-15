@@ -26,7 +26,8 @@ for {set i 0} {$i < 6} {incr i 1} {
 
 
 for {set i 0} {$i < 6} {incr i 1} {
-  spawn scp -r ../public/fonts "socialsoul@socialsoul${i}.local:/home"
+  spawn scp ../extra/fonts/* "socialsoul@socialsoul${i}.local:/Volumes/Macintosh\ HD/Library/Fonts/
+"
   #######################
   expect {
     -re ".*es.*o.*" {

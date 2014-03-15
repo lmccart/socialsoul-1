@@ -3,6 +3,12 @@ var count, counter;
 
 window.onload = function() {
 
+  function displayDisconnect() {
+    $('#user_status').html('');
+    $('#time_status').html('<span class="highlight">Not connected to server.</span>');
+    $('#users').empty();
+  }
+
   // socket stuff
 
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
@@ -21,8 +27,7 @@ window.onload = function() {
   });
 
   socket.on('disconnect', function(data) {
-    $('#user_status').html('');
-    $('#time_status').html('<span class="highlight">Not connected to server.</span>');
+    displayDisconnect();
   });
 
   socket.on('error', function(data) {
@@ -60,8 +65,32 @@ window.onload = function() {
       socket.emit('controller', { action:'remove', user:e.target.id });
     });
 
-  });
+    $('#restart').click(function(e){ 
+      $("#overlay").show();
+      $("#dialog").dialog({
+        buttons : {
+          "confirm" : function() {
+            console.log('restart');
+            socket.emit('controller', { action: 'restart' });
+            displayDisconnect();
+            $(this).dialog("close");
+            $("#overlay").hide();
+          },
+          "cancel" : function() {
+            $(this).dialog("close");
+            $("#overlay").hide();
+          }
+        }
+      });
+      $("#dialog").dialog("open");
+    });
 
+  });
+  
+  $("#dialog").dialog({
+    autoOpen: false,
+    modal: true
+  });
 
   $('#queue_user').click(function(e){
     console.log('hi')

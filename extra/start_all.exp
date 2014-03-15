@@ -4,7 +4,7 @@ for {set i 0} {$i < 6} {incr i 1} {
   spawn ssh socialsoul@socialsoul${i}.local
   expect "assword:"
   send "soulmate\r"
-  expect "$ " 
+  expect "$ "
   send "osascript ~/Desktop/start-social-soul-screen.scpt &\r" 
   expect "$ " 
   send "exit\r"
