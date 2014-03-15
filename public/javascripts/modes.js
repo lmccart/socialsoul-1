@@ -124,7 +124,7 @@ var AllImagesMode = function() {
         for(var j = 0; j < module.replaceCount; j++) {
           var cur = randomChoice($img);
           if(cur) {
-            cur.src = randomChoice(user.files);
+            cur.src = randomChoice(randomChoice([user.files, user.friends]));
           }
         }
       }
