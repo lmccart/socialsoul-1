@@ -210,6 +210,7 @@ module.exports = function(config, io) {
         });
 
         downloadMedia(dir, data, opts.is_mentor, function(res) { 
+          console.log('downloading media for '+opts.user);
           if (verbose) console.log('downloaded '+res+' remaining: '+queue.length()+' reqs: '+requests.length); 
           if (opts.cb) opts.cb();
         });
