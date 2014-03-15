@@ -47,34 +47,6 @@ var DebugMode = function() {
   return module;
 };
 
-// the entrance is pulsing white to black on the centermost two screens
-// everything else is black
-var EnterMode = function() {
-  var module = new Mode();
-  var timeline = {};
-
-  module.init = function(user) {
-    // the browser can barely handle this at 60fps, maybe should be webgl
-    if(screenId == 0) {
-      // flash name
-      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
-      timeline = new TimelineMax();
-      timeline
-        .addCallback(function() {soundEffects.play('gong')})
-        .set("#color", {opacity:1})
-        .to("#color", 3, {opacity:0, ease:Power2.easeIn})
-        .repeat(-1);
-    } else {
-      $('body').append('<div class="fullscreen blackbg text#word " id="color"></div>');
-    }
-  }
-  module.exit = function() {
-    timeline.kill();
-  }
-
-  return module;
-};
-
 var AllImagesMode = function() {
   var module = new Mode();
 
@@ -85,7 +57,7 @@ var AllImagesMode = function() {
   module.init = function(user) {
     alive = true;
     $('body').append('<div class="allImages" id="container"></div>');
-    var n = 3 * 4; // enough images to fill the screen at 240x240 each
+    var n = 3 * 4; // enough images to fill the screen at 480x480 each
     var gridHtml = "";
     var smallestHtml = 
       '<div class="wrapper smaller"><img/></div>'+
@@ -264,6 +236,44 @@ var BridgeMode = function() {
   return module;
 };
 
+// the entrance is pulsing white to black on the centermost two screens
+// everything else is black
+var EnterMode = function() {
+  var module = new Mode();
+  var timeline = {};
+
+  module.init = function(user) {
+    // the browser can barely handle this at 60fps, maybe should be webgl
+    if(screenId == 0) {
+      // flash name
+      $('body').append(
+        '<div class="fullscreen whitebg" id="color">'+
+          '<div class="centered">'+
+            '<div class="middle">'+
+              '<div class="inner">'+
+                '<div class="text" id="name">'+user.name+'</div>'+
+                '<div class="text" id="username">@'+user.user+'</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>');
+      timeline = new TimelineMax();
+      timeline
+        .addCallback(function() {soundEffects.play('gong')})
+        .set("#color", {opacity:1})
+        .to("#color", 3, {opacity:0, ease:Power2.easeIn})
+        .repeat(-1);
+    } else {
+      $('body').append('<div class="fullscreen blackbg text#word " id="color"></div>');
+    }
+  }
+  module.exit = function() {
+    timeline.kill();
+  }
+
+  return module;
+};
+
 // exit is just white on all screens
 var ExitMode = function() {
   var module = new Mode();
@@ -271,7 +281,17 @@ var ExitMode = function() {
   module.init = function(user) {
     if(screenId == 0) {
       // show name
-      $('body').append('<div class="fullscreen whitebg" id="color"><div class="centered"><div class="middle"><div class="inner"><span class="text" id="word">'+user.user+'</span></div></div></div></div>');
+      $('body').append(
+        '<div class="fullscreen whitebg" id="color">'+
+          '<div class="centered">'+
+            '<div class="middle">'+
+              '<div class="inner">'+
+                '<div class="text" id="name">'+user.name+'</div>'+
+                '<div class="text" id="username">@'+user.user+'</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>');
     } else { 
       $('body').append('<div class="fullscreen whitebg"></div>');
     }
