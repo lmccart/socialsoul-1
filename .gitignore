@@ -4,3 +4,4 @@ config.js
 assets/
 logs/*.log
 public/phantomjs/render/*
+sound/
