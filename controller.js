@@ -108,10 +108,13 @@ module.exports = function(config, io) {
   controller.buildDb = function() {
 
     fs.remove(assets_root+'mentors/', function(err) {
-      fs.readJson(__dirname +'/data/mentors.json', function(err, data) {
+
+      fs.readFile(__dirname +'/data/mentors.txt', 'utf8', function(err, data) {
+        if (err) console.log(err);
+        data = data.split('\n');
         controller.storage.reset(function() {
           async.eachSeries(data, function(mentor, cb) {
-            getPerson({user:mentor.user, init:true, cb:cb});
+            getPerson({user:mentor, init:true, cb:cb});
           }, function () {
             controller.storage.updateDefaultUsers();
             console.log('downloaded ');
@@ -119,7 +122,6 @@ module.exports = function(config, io) {
         });
       });
     });
-
   };
 
   controller.getRemaining = function() {
@@ -162,12 +164,18 @@ module.exports = function(config, io) {
     // insert text in db
     console.log('inserting '+opts.user+' in db');
     
+    if (data.length < 200) {
+      console.log(opts.user+' ONLY '+data.length+' tweets!');
+    }
+
     var obj = { 
       user: opts.user,
       text: concat_tweets(data),
       name: data[0].user.name
     };
     controller.storage.insert(obj);
+
+
 
     if (!opts.init) {
       var msg_name = opts.is_mentor ? 'mentor' : 'trigger';

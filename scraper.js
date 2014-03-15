@@ -81,7 +81,7 @@ module.exports = function() {
 }();
 
 function scrapeImages(response, timeline) {
-
+  
   var images = [];
 
   var uri = response.request.uri;

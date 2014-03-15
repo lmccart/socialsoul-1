@@ -31,8 +31,8 @@ http://www.mongodb.org/
 ### endpoints
 
 * ```/screen.html?id``` -- view for screen (id = int or "exit")
-* ```/controller.html``` -- BA controller page
-* ```/controller.html?build_db``` -- rebuild the cached mentor db / data
+* ```/index.html``` -- BA controller page
+* ```/index.html?build_db``` -- rebuild the cached mentor db / data
 
 
 

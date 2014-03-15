@@ -110,7 +110,7 @@ window.onload = function() {
   if (command == 'build_db') {
     socket.emit('controller', {action: 'build_db'});
     // redirect
-    setTimeout(function(){window.location = 'http://localhost:3000/controller.html';}, 1000);
+    setTimeout(function(){window.location = 'http://localhost:3000';}, 1000);
   }
 
 }

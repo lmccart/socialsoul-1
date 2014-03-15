@@ -41,7 +41,6 @@ module.exports = function(config) {
         // initialize default options
         storage.all(function(err, data) {
           storage.default_users = _.map(data, function(obj) { return obj.user; });
-          //console.log(storage.default_users);
         });
       };
 
