@@ -449,7 +449,7 @@ module.exports = function(config, io) {
 
   function sendEndTweet(user, name) {
     var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://www.deltainnovationclass.com';
-    twit.updateStatus(status, function(err) { console.log(err); });
+    // twit.updateStatus(status, function(err) { console.log(err); });
   }
 
 
