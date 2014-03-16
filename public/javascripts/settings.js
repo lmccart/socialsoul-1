@@ -7,12 +7,15 @@ var playlist = [
 	// {mode:'debug',duration:0,user:'subject'}
 	{
 		mode: 'enter',
-		duration: 20,
+		duration: 24,
 		user: 'subject'
+		callback: function() {
+			TTS.stop();
+		}
 	},
 	{
 		mode: 'tweet',
-		duration: 20,
+		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
 			sounds.drone.stop();
@@ -33,7 +36,7 @@ var playlist = [
 	},
 	{
 		mode: 'allImages',
-		duration: 20,
+		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
 			sounds.silenceglitch.fadeIn(1, 100);
@@ -46,7 +49,7 @@ var playlist = [
 	},
 	{
 		mode: 'centeredText',
-		duration: 20,
+		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
 			sounds.texture0.fadeIn(1, 500);
@@ -59,7 +62,7 @@ var playlist = [
 	},
 	{
 		mode: 'bridge',
-		duration: 10,
+		duration: 8,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.drone.fadeOut(0, 5000);
@@ -71,7 +74,7 @@ var playlist = [
 	},
 	{
 		mode: 'centeredText',
-		duration: 20,
+		duration: 8,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture0.fadeOut(0, 1000);
@@ -86,7 +89,7 @@ var playlist = [
 	},
 	{
 		mode: 'allImages',
-		duration: 20,
+		duration: 8,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture2.fadeIn(1, 500);
@@ -94,7 +97,7 @@ var playlist = [
 	},
 	{
 		mode: 'tweet',
-		duration: 20,
+		duration: 8,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture3.fadeIn(1, 500);
