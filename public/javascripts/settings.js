@@ -76,7 +76,7 @@ var playlist = [
 		soundtrack: function() {
 			sounds.texture0.fadeOut(0, 1000);
 			sounds.texture1.fadeIn(1, 30);
-			sounds.texture4.fadeIn(1, 30);
+			sounds.drone.fadeIn(1, 500);
 		},
 		callback: function() {
 			if(screenId == 2 || screenId == 4 || screenId == 6 || screenId == 8) {
@@ -100,7 +100,7 @@ var playlist = [
 			sounds.texture3.fadeIn(1, 500);
 		},
 		callback: function() {
-			if(screenId == 2 || screenId == 6) {
+			if(screenId == 4 || screenId == 8) {
 				TTS.stop();
 			}
 		}
@@ -114,11 +114,11 @@ var playlist = [
 			sounds.texture1.fadeOut(0, 30);
 			sounds.texture2.fadeOut(0, 30);
 			sounds.texture3.fadeOut(0, 30);
-			sounds.texture4.fadeOut(0, 30);
 			sounds.beep433.fadeOut(0, 30);
+			sounds.drone.fadeOut(0, 30);
 		},
 		callback: function() {
-			TTS.stop();
+			TTS.stop(); // stop 2 and 6
 		}
 	}
 ];
