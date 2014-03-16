@@ -59,8 +59,20 @@ module.exports = function(config, io) {
 
   twit.stream('statuses/filter', {track:'#socialsoul'}, function(stream) {
     stream.on('data', function (data) {
-      controller.queued_users.push(data.user.screen_name);
-      console.log('queueing user '+data.user.screen_name);
+      var new_user = data.user.screen_name;
+      var found = false;
+      for (var i=0; i<controller.queued_users.length; i++) {
+        if (controller.queued_users[i].toLowerCase() === new_user.toLowerCase()) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        controller.queued_users.push(new_user);
+        console.log('queueing user '+new_user);
+      } else {
+        console.log('user '+new_user+' already in queue');
+      }
       controller.sync();
     });
   });
@@ -449,7 +461,7 @@ module.exports = function(config, io) {
   }
 
   function sendEndTweet(user, name) {
-    var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://delta.com.';
+    var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://www.deltainnovationclass.com.';
     twit.updateStatus(status, function(err) { console.log(err); });
   }
 
