@@ -32,9 +32,13 @@ window.onload = function() {
   });
 
   socket.on('error', function(data) {
-    $('#error_status').html(data.msg);
-    $('#user_status').html('');
-    $('#time_status').html('');
+    if (data.msg) {
+      $('#error_status').html(data.msg);
+      $('#user_status').html('');
+      $('#time_status').html('');
+    } else {
+      displayDisconnect();
+    }
   });
 
   // update controller
@@ -102,7 +106,6 @@ window.onload = function() {
       $('#user').val('');
     }
   });
-
 
 
   // build db
