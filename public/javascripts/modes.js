@@ -148,7 +148,12 @@ var TweetMode = function() {
       $tweet.show();
       timeline
         .clear()
-        .addCallback(function() {sounds.boop.play()})
+        .addCallback(function() {
+          if(screenId == 0) {
+            sounds.boop.play();
+            sounds.beep433.play();
+          }
+        })
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
     },
@@ -273,7 +278,11 @@ var EnterMode = function() {
         '</div>');
       timeline = new TimelineMax();
       timeline
-        .addCallback(function() {sounds.gong.play()})
+        .addCallback(function() {
+          if(screenId == 0) {
+            sounds.gong.play();
+          }
+        })
         .set("#color", {opacity:1})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
         .repeat(-1);
