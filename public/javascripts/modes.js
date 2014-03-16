@@ -132,7 +132,7 @@ var AllImagesMode = function() {
 // a single large tweet with black background
 var TweetMode = function() {
   var module = new Mode();
-  var timeline = {};
+  var timeline;
 
   module.timeout = new VariableTimeout();
 
@@ -158,7 +158,7 @@ var TweetMode = function() {
 
   module.exit = function() {
     module.timeout.stop();
-    timeline.kill();
+    if (timeline) timeline.kill();
   }
 
   return module;
@@ -236,7 +236,7 @@ var CenteredTextMode = function() {
 // ideally in sync, or starting out of sync and coming into sync
 var BridgeMode = function() {
   var module = new Mode();
-  var timeline = {};
+  var timeline;
 
   module.init = function() {
     $('body').append('<div class="fullscreen whitebg" id="color"></div>');
@@ -254,7 +254,7 @@ var BridgeMode = function() {
 // everything else is black
 var EnterMode = function() {
   var module = new Mode();
-  var timeline = {};
+  var timeline;
 
   module.init = function(user) {
     // the browser can barely handle this at 60fps, maybe should be webgl
@@ -282,7 +282,7 @@ var EnterMode = function() {
     }
   }
   module.exit = function() {
-    timeline.kill();
+    if (timeline) timeline.kill();
   }
 
   return module;
