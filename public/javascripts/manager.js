@@ -62,8 +62,7 @@ var Manager = function() {
   module.trigger = function(data) {
     reset();
     users.subject.loadData(data);
-    tts.init(data.tweets);
-
+    
     // setup playlist
     var totalDuration = 0;
     for(var i = 0; i < playlist.length; i++) {
@@ -114,8 +113,11 @@ var Manager = function() {
       $('body').empty();
       playlistPosition = index;
       getCurrentMode().init(getCurrentUser());
-      if(getCurrentScene().callback && screenId == 0) {
+      if(getCurrentScene().callback) {
         getCurrentScene().callback();
+      }
+      if(getCurrentScene().soundtrack && screenId == 0) {
+        getCurrentScene().soundtrack();
       }
       playing = true;
       console.info('init mode ' + getCurrentModeName());

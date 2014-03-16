@@ -1,5 +1,4 @@
 // library objects
-var tts = new TTS();
 var colorThief = new ColorThief();
 
 // helper functions
@@ -15,16 +14,6 @@ function rgb(c) {
 function randomPowerOfTwo(minPower, maxPower) {
   return Math.pow(2, minPower + Math.floor(Math.random() * (maxPower - minPower)));
 }
-
-function once(func) {
-    var run = false;
-    return function() {
-        if(!run) {
-            run = true;
-            func();
-        }
-    }
-};
 
 // helper classes
 var VariableTimeout = function() {

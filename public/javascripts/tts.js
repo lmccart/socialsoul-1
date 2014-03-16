@@ -23,13 +23,13 @@ var Speech = (function() {
       }
       var msg = new SpeechSynthesisUtterance(settings.text);
       msg.onstart = function() {
-        console.log('onstart');
+        // console.log('onstart');
         if(settings.onstart) {
           settings.onstart();
         }
       }
       var endOnce = once(function() {
-        console.log('onend');
+        // console.log('onend');
         if(settings.onend) {
           // bug: if you try to talk right after speaking,
           // the tts engine isn't ready yet. timeout fixes it.
@@ -38,7 +38,7 @@ var Speech = (function() {
       });
       msg.onend = endOnce;
       var speakOnce = once(function() {
-        console.log('speak');
+        // console.log('speak');
         // wait to assign the voice until it's ready
         if(settings.voice != undefined) {
           msg.voice = voices[settings.voice];
@@ -48,10 +48,12 @@ var Speech = (function() {
       // bug: if you try to talk before onvoiceschanged
       // the tts engine can crash
       speechSynthesis.onvoiceschanged = function() {
-        console.log('onvoiceschanged');
+        // console.log('onvoiceschanged');
         voices = speechSynthesis.getVoices();
         setTimeout(speakOnce, 0);
       }
+      // bug: voices don't load themselves
+      speechSynthesis.getVoices();
       if(voices) {
         speakOnce();
       }
@@ -68,12 +70,7 @@ var Speech = (function() {
   }
 })();
 
-var TTS = function() {
-
-  var module = {
-    tweets: [],
-    playing: false
-  };
+var TTS = (function() {
 
   var goodVoices = [
     0, // us male
@@ -89,6 +86,11 @@ var TTS = function() {
     31 // victoria
   ];
 
+  var module = {
+    tweets: [],
+    playing: false
+  };
+
   module.init = function(tweets) {
     module.tweets = tweets;
     module.playing = true;
@@ -98,7 +100,7 @@ var TTS = function() {
   module.playTweet = function() {
     if(module.playing) {
       var tweet = randomChoice(module.tweets).text
-        .replace(/RT/g, ' retweet ')
+        .replace(/RT/g, ' retweet: ')
         .replace(/#/g, ' hashtag ')
         .replace(/@/g, '');
       console.info("playTweet: " + tweet);
@@ -111,9 +113,11 @@ var TTS = function() {
   };
 
   module.stop = function() {
-    module.playing = false;
-    Speech.cancel();
+    if(module.playing) {
+      module.playing = false;
+      Speech.cancel();
+    }
   }
 
   return module;
-};
+})();

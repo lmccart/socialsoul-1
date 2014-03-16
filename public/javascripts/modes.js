@@ -271,20 +271,27 @@ var EnterMode = function() {
             '<div class="middle">'+
               '<div class="inner">'+
                 '<div class="text" id="name">'+user.name+'</div>'+
-                '<div class="text" id="username">@'+user.user+'</div>'+
               '</div>'+
             '</div>'+
           '</div>'+
         '</div>');
+      $name = $('#name');
       timeline = new TimelineMax();
       timeline
         .addCallback(function() {
-          if(screenId == 0) {
-            sounds.gong.play();
-          }
+          sounds.gong.play();
+          $name.text(user.name);
         })
         .set("#color", {opacity:1})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
+
+        .addCallback(function() {
+          sounds.gong.play();
+          $name.text('@' + user.user);
+        })
+        .set("#color", {opacity:1})
+        .to("#color", 3, {opacity:0, ease:Power2.easeIn})
+
         .repeat(-1);
     } else {
       $('body').append('<div class="fullscreen blackbg text#word " id="color"></div>');
