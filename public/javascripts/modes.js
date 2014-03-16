@@ -149,8 +149,8 @@ var TweetMode = function() {
       timeline
         .clear()
         .addCallback(function() {
+          sounds.boop.play();
           if(screenId == 0) {
-            sounds.boop.play();
             sounds.beep433.play();
           }
         })

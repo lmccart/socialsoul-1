@@ -36,7 +36,7 @@ var Manager = function() {
   reset();
 
   function getCurrentScene() {
-    return settings.playlist[playlistPosition];
+    return playlist[playlistPosition];
   }
 
   function getCurrentModeName() {
@@ -66,17 +66,17 @@ var Manager = function() {
 
     // setup playlist
     var totalDuration = 0;
-    for(var i = 0; i < settings.playlist.length; i++) {
-      if(settings.playlist[i].timeout) {
-        clearTimeout(settings.playlist[i].timeout);
+    for(var i = 0; i < playlist.length; i++) {
+      if(playlist[i].timeout) {
+        clearTimeout(playlist[i].timeout);
       }
-      settings.playlist[i].timeout =
+      playlist[i].timeout =
         setTimeout((function(index){
           return function() {
             module.setPlaylistPosition(index);
           }
         })(i), totalDuration * 1000);
-      totalDuration += settings.playlist[i].duration;
+      totalDuration += playlist[i].duration;
     }
     triggerTime = ServerTime.now();
   };
@@ -106,7 +106,7 @@ var Manager = function() {
   };
 
   module.setPlaylistPosition = function(index) {
-    if (index >= 0 && index < settings.playlist.length) {
+    if (index >= 0 && index < playlist.length) {
       if(playing) {
         console.info('exit mode ' + getCurrentModeName());
         getCurrentMode().exit();

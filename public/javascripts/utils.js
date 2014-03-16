@@ -1,8 +1,3 @@
-// show the screen number on startup
-var screenId = parseInt(window.location.search.substring(1), 10);
-document.title = screenId;
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
-
 // library objects
 var tts = new TTS();
 var colorThief = new ColorThief();
@@ -20,6 +15,16 @@ function rgb(c) {
 function randomPowerOfTwo(minPower, maxPower) {
   return Math.pow(2, minPower + Math.floor(Math.random() * (maxPower - minPower)));
 }
+
+function once(func) {
+    var run = false;
+    return function() {
+        if(!run) {
+            run = true;
+            func();
+        }
+    }
+};
 
 // helper classes
 var VariableTimeout = function() {
