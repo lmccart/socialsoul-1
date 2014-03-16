@@ -1,12 +1,14 @@
 // main just handles the routing of socket.io messages
 
 window.onload = function() {
-
-  if (screenId%2 == 1) {
-    $('body').addClass('flip180');
-  } 
-  if ((screenId+1)%2 == 1) {
+  if (screenId%4 == 0) {
+  } else if (screenId%4 == 1) {
     $('body').addClass('mirrorX');
+  } else if (screenId%4 == 2) {
+    $('body').addClass('flip180');
+  } else if (screenId%4 == 3) {
+    $('body').addClass('mirrorX');
+    $('body').addClass('flip180');
   }
 
   var manager = new Manager();
