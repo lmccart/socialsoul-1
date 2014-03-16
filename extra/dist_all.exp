@@ -3,21 +3,16 @@
 # connect via scp
 
 
-set files ""
+set files "/Users/socialsoulserver/socialsoul/extra/com.tabalive.plist"
 puts $files
 
 
 
 
 for {set i 0} {$i < 6} {incr i 1} {
-  spawn scp ../extra/fonts/* "socialsoul@socialsoul${i}.local:/Volumes/Macintosh\ HD/Library/Fonts/
-"
+  spawn scp $files "socialsoul@socialsoul${i}.local:/Users/socialsoul/Library/LaunchAgents/"
   #######################
   expect {
-    -re ".*es.*o.*" {
-      exp_send "yes\r"
-      exp_continue
-    }
     -re ".*sword.*" {
       exp_send "soulmate\r"
     }
