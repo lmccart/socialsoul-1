@@ -282,16 +282,16 @@ module.exports = function(config, io) {
           queue.push({dir:dir, url:media[j].media_url, is_mentor:is_mentor}, callback);
         }
       }
-      var urls = data[i].entities.urls;
-      if (urls) {
-        for (var j=0; j<urls.length; j++) {
-          if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
-            queue.push({dir:dir, url:urls[j].expanded_url, is_mentor:is_mentor}, callback);
-          } else {
-            //scrape(dir, urls[j].expanded_url, is_mentor, callback, false);
-          }
-        }
-      }
+      // var urls = data[i].entities.urls;
+      // if (urls) {
+      //   for (var j=0; j<urls.length; j++) {
+      //     if (urls[j].expanded_url.indexOf('vine.co') !== -1) {
+      //       queue.push({dir:dir, url:urls[j].expanded_url, is_mentor:is_mentor}, callback);
+      //     } else {
+      //       //scrape(dir, urls[j].expanded_url, is_mentor, callback, false);
+      //     }
+      //   }
+      // }
     }
   }
 
