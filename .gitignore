@@ -5,3 +5,4 @@ assets/
 logs/*.log
 public/phantomjs/render/*
 sound/
+*.app

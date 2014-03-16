@@ -12,7 +12,7 @@ window.onload = function() {
 
   // socket stuff
 
-  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
+  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://192.168.1.100:3030';
   var socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });
