@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tabalive</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>osascript</string>
+        <string>/Users/lmccart/Desktop/keep-tab-alive.scpt</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>5</integer> <!-- every 5 seconds -->
+</dict>
+</plist>
