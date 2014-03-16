@@ -114,7 +114,7 @@ var Manager = function() {
       $('body').empty();
       playlistPosition = index;
       getCurrentMode().init(getCurrentUser());
-      if(getCurrentScene().callback) {
+      if(getCurrentScene().callback && screenId == 0) {
         getCurrentScene().callback();
       }
       playing = true;
