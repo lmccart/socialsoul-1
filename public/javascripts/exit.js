@@ -1,5 +1,8 @@
 // main just handles the routing of socket.io messages
 
+var showing_user = false;
+setInterval(swapExit, 3000);
+
 window.onload = function() {
 
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
@@ -12,7 +15,18 @@ window.onload = function() {
 
   // new user available
   socket.on('mentor', function (data) {
-    $('#handle').html('Your social soulmate is <br>'+data.name+' <span class="username">@'+data.user+'</span>');
+    $('#name').html('Your social soulmate is <br>'+data.name);
+    $('#user').html('@'+data.user);
   });
 
+}
+
+function swapExit() {
+  var cur = showing_user ? $('#exit_user') : $('#exit_name');
+  var next = showing_user ? $('#exit_name') : $('#exit_user');
+
+  showing_user = !showing_user;
+
+  cur.fadeOut();
+  next.fadeIn();
 }

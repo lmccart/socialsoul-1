@@ -137,11 +137,18 @@ body, html {
 }
 
 /* exit screen */
+#exit_name, #exit_user {
+  display: none;
+}
 
-
-#handle {
+#exit_name {
   font-size:160px;
 }
+
+#exit_user {
+  font-size: 200px;
+}
+
 
 #subtitle {
   margin-top: 60px;
