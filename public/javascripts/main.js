@@ -2,6 +2,13 @@
 
 window.onload = function() {
 
+  if (screenId%2 == 1) {
+    $('body').addClass('flip180');
+  } 
+  if ((screenId+1)%2 == 1) {
+    $('body').addClass('mirrorX');
+  }
+
   var manager = new Manager();
 
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
