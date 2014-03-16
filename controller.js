@@ -47,10 +47,10 @@ module.exports = function(config, io) {
   var controller = {
     io: io,
     cur_user: null,
-    queued_users: [default_user, 'kcimc', 'FunnyVines', 'laurmccarthy'], // pend temp for testing
+    queued_users: [default_user], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
-    run_time: 60*1000, // pend temp
+    run_time: 2*60*1000, // pend temp
     error: null // for status ping
   };
 
@@ -61,8 +61,19 @@ module.exports = function(config, io) {
     stream.on('data', function (data) {
       controller.queued_users.push(data.user.screen_name);
       console.log('queueing user '+data.user.screen_name);
+      controller.sync();
     });
   });
+
+  controller.sync = function() {
+    io.sockets.emit('sync', {
+      cur_user: controller.cur_user, 
+      users: controller.queued_users, 
+      remaining: controller.getRemaining(),
+      error: controller.error,
+      serverTime: Date.now()
+    });
+  };
 
   // manual override of next user, triggered by controller app
   controller.queueUser = function(user) {
@@ -108,7 +119,7 @@ module.exports = function(config, io) {
     controller.cur_user = user;
     controller.queued_users = _.without(controller.queued_users, user); 
 
-    getPerson({user:user, get_media:true, is_def:true, cb:function(){}});
+    getPerson({user:user, get_media:true, send_tweet:!is_def, cb:function(){}});
 
   }
 
@@ -144,7 +155,7 @@ module.exports = function(config, io) {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
   };
 
-  // opts -- user, get_media, send_tweet, is_def, is_mentor, cb, init
+  // opts -- user, get_media, send_tweet, is_mentor, cb, init
   function getPerson(opts) {
 
     var dir = assets_root+'mentors/'+opts.user+'/';
@@ -390,7 +401,7 @@ module.exports = function(config, io) {
       else getPerson({user:highKey, is_mentor:true, get_media:true}); 
       
       if (send_tweet) {
-       //setTimeout(function(){ sendEndTweet(user, highKey); }, 120*1000); //pend: out for now until launch
+       setTimeout(function(){ sendEndTweet(user, highKey); }, controller.run_time); 
       }
     });
   }
