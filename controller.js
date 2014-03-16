@@ -59,20 +59,7 @@ module.exports = function(config, io) {
 
   twit.stream('statuses/filter', {track:'#socialsoul'}, function(stream) {
     stream.on('data', function (data) {
-      var new_user = data.user.screen_name;
-      var found = false;
-      for (var i=0; i<controller.queued_users.length; i++) {
-        if (controller.queued_users[i].toLowerCase() === new_user.toLowerCase()) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        controller.queued_users.push(new_user);
-        console.log('queueing user '+new_user);
-      } else {
-        console.log('user '+new_user+' already in queue');
-      }
+      controller.queueUser(data.user.screen_name);
       controller.sync();
     });
   });
