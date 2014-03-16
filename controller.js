@@ -380,7 +380,7 @@ module.exports = function(config, io) {
 
     controller.storage.all(function(err, data) {
       for (var i=0; i<data.length; i++) {
-        if (data[i].user != user) {
+        if (data[i].user.toLowerCase() != user.toLowerCase()) {
           var rating = similarity.tokenCosineSimilarity(text, data[i].text);
           if (verbose) console.log(data[i].user+' '+rating);
           if(low == 0 || rating < low) {

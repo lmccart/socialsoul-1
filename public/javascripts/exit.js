@@ -11,10 +11,12 @@ window.onload = function() {
   socket.emit('send', { message: 'hello from frontend' });
 
   socket.on('sync', function (data) {
+    console.log(data);
   });
 
   // new user available
   socket.on('mentor', function (data) {
+    console.log(data);
     $('#name').html('Your social soulmate is <br>'+data.name);
     $('#user').html('@'+data.user);
   });
