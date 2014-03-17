@@ -78,6 +78,9 @@ module.exports = function(config, io) {
   // manual override of next user, triggered by controller app
   controller.queueUser = function(user) {
 
+    user = user.replace(/\s/g, ''); // strip white space
+    user = user.replace('@', ''); // strip @ symbol
+
     var match = _.filter(controller.queued_users, function(u) { return ~u.toLowerCase().indexOf(user.toLowerCase())});
     if (!match.length > 0) {
       controller.queued_users.push(user);
