@@ -453,7 +453,7 @@ module.exports = function(config, io) {
     // uncomment this next line to enable tweeting
     // after uncommenting it, be sure to restart 
     // from the controller app
-    // twit.updateStatus(status, function(err) { console.log(err); });
+    twit.updateStatus(status, function(err) { console.log(err); });
   }
 
 
