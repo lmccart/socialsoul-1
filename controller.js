@@ -9,7 +9,8 @@ var _ = require('underscore')
   , mmm = require('mmmagic')
   , natural = require('natural')
   , similarity = require('./similarity')
-  , scraper = require('./scraper');
+  , scraper = require('./scraper')
+  , settings = require('./public/javascripts/settings');
 
 // uncaught error handling
 var d = domain.create();
@@ -41,7 +42,7 @@ var requests = [];
 
 
 module.exports = function(config, io) {
- 
+
   var default_user = 'Random speaker';
 
   var controller = {
@@ -50,7 +51,7 @@ module.exports = function(config, io) {
     queued_users: [default_user], // pend temp for testing
     storage: require('./storage')(),
     start_time: 0,
-    run_time: 2*60*1000, // pend temp
+    run_time: settings.getPlaylistDuration()*1000,
     error: null // for status ping
   };
 

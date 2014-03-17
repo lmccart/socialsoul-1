@@ -1,65 +1,68 @@
-// show the screen number on startup
-var screenId = parseInt(window.location.search.substring(1), 10);
-document.title = screenId;
-document.write('<div class="debug" id="screenId">'+screenId+"</div>");
+function getPlaylistDuration() {
+	var duration = 0;
+	for(var i = 0; i < playlist.length; i++) {
+		duration += playlist[i].duration;
+	}
+	return duration;
+}
 
 var playlist = [
 	// {mode:'debug',duration:0,user:'subject'}
-	{
-		mode: 'enter',
-		duration: 24,
-		user: 'subject'
-		callback: function() {
-			TTS.stop();
-		}
-	},
-	{
-		mode: 'tweet',
-		duration: 16,
-		user: 'subject',
-		soundtrack: function() {
-			sounds.drone.stop();
-			sounds.silenceglitch.stop();	
-			sounds.texture0.stop();
-			sounds.texture1.stop();
-			sounds.texture2.stop();
-			sounds.texture3.stop();
+	// {
+	// 	mode: 'enter',
+	// 	duration: 16,
+	// 	user: 'subject',
+	// 	callback: function() {
+	// 		TTS.stop();
+	// 	}
+	// },
+	// {
+	// 	mode: 'tweet',
+	// 	duration: 12,
+	// 	user: 'subject',
+	// 	soundtrack: function() {
+	// 		sounds.drone.stop();
+	// 		sounds.silenceglitch.stop();	
+	// 		sounds.texture0.stop();
+	// 		sounds.texture1.stop();
+	// 		sounds.texture2.stop();
+	// 		sounds.texture3.stop();
 
-			sounds.swipe.play();
-			sounds.drone.fadeIn(1, 500);
-		},
-		callback: function() {
-			if(screenId == 2) {
-				TTS.init(users.subject.tweets);
-			}
-		}
-	},
-	{
-		mode: 'allImages',
-		duration: 16,
-		user: 'subject',
-		soundtrack: function() {
-			sounds.silenceglitch.fadeIn(1, 100);
-		},
-		callback: function() {
-			if(screenId == 4) {
-				TTS.init(users.subject.tweets);
-			}
-		}
-	},
-	{
-		mode: 'centeredText',
-		duration: 16,
-		user: 'subject',
-		soundtrack: function() {
-			sounds.texture0.fadeIn(1, 500);
-		},
-		callback: function() {
-			if(screenId == 6 || screenId == 8) {
-				TTS.init(users.subject.tweets);
-			}
-		}
-	},
+	// 		sounds.swipe.play();
+	// 		sounds.drone.fadeIn(1, 500);
+	// 	},
+	// 	callback: function() {
+	// 		if(screenId == 2) {
+	// 			TTS.init(users.subject.tweets);
+	// 		}
+	// 	}
+	// },
+	// {
+	// 	mode: 'allImages',
+	// 	duration: 16,
+	// 	user: 'subject',
+	// 	soundtrack: function() {
+	// 		sounds.silenceglitch.fadeIn(1, 100);
+	// 	},
+	// 	callback: function() {
+	// 		if(screenId == 4) {
+	// 			TTS.init(users.subject.tweets);
+	// 		}
+	// 	}
+	// },
+	// {
+	// 	mode: 'centeredText',
+	// 	duration: 16,
+	// 	user: 'subject',
+	// 	soundtrack: function() {
+	// 		sounds.texture0.fadeIn(1, 500);
+	// 	},
+	// 	callback: function() {
+	// 		if(screenId == 6 || screenId == 8) {
+	// 			TTS.init(users.subject.tweets);
+	// 		}
+	// 	}
+	// },
 	{
 		mode: 'bridge',
 		duration: 8,
@@ -97,7 +100,7 @@ var playlist = [
 	},
 	{
 		mode: 'tweet',
-		duration: 8,
+		duration: 4,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture3.fadeIn(1, 500);
@@ -110,7 +113,7 @@ var playlist = [
 	},
 	{
 		mode: 'exit',
-		duration: 10,
+		duration: 6,
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture0.fadeOut(0, 30);
@@ -125,3 +128,11 @@ var playlist = [
 		}
 	}
 ];
+
+try {
+	module.exports = {
+		getPlaylistDuration: getPlaylistDuration
+	}
+} catch (err) {
+
+}

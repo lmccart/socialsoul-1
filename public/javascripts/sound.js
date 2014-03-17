@@ -48,8 +48,4 @@ if(screenId == 0) {
     urls: ['../sound/texture3.ogg'],
     onload: loaded
   });
-  sounds.texture4 = new Howl({
-    urls: ['../sound/texture4.ogg'],
-    onload: loaded
-  });
 }
