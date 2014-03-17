@@ -8,61 +8,61 @@ function getPlaylistDuration() {
 
 var playlist = [
 	// {mode:'debug',duration:0,user:'subject'}
-	// {
-	// 	mode: 'enter',
-	// 	duration: 16,
-	// 	user: 'subject',
-	// 	callback: function() {
-	// 		TTS.stop();
-	// 	}
-	// },
-	// {
-	// 	mode: 'tweet',
-	// 	duration: 12,
-	// 	user: 'subject',
-	// 	soundtrack: function() {
-	// 		sounds.drone.stop();
-	// 		sounds.silenceglitch.stop();	
-	// 		sounds.texture0.stop();
-	// 		sounds.texture1.stop();
-	// 		sounds.texture2.stop();
-	// 		sounds.texture3.stop();
+	{
+		mode: 'enter',
+		duration: 16,
+		user: 'subject',
+		callback: function() {
+			TTS.stop();
+		}
+	},
+	{
+		mode: 'tweet',
+		duration: 12,
+		user: 'subject',
+		soundtrack: function() {
+			sounds.drone.stop();
+			sounds.silenceglitch.stop();	
+			sounds.texture0.stop();
+			sounds.texture1.stop();
+			sounds.texture2.stop();
+			sounds.texture3.stop();
 
-	// 		sounds.swipe.play();
-	// 		sounds.drone.fadeIn(1, 500);
-	// 	},
-	// 	callback: function() {
-	// 		if(screenId == 2) {
-	// 			TTS.init(users.subject.tweets);
-	// 		}
-	// 	}
-	// },
-	// {
-	// 	mode: 'allImages',
-	// 	duration: 16,
-	// 	user: 'subject',
-	// 	soundtrack: function() {
-	// 		sounds.silenceglitch.fadeIn(1, 100);
-	// 	},
-	// 	callback: function() {
-	// 		if(screenId == 4) {
-	// 			TTS.init(users.subject.tweets);
-	// 		}
-	// 	}
-	// },
-	// {
-	// 	mode: 'centeredText',
-	// 	duration: 16,
-	// 	user: 'subject',
-	// 	soundtrack: function() {
-	// 		sounds.texture0.fadeIn(1, 500);
-	// 	},
-	// 	callback: function() {
-	// 		if(screenId == 6 || screenId == 8) {
-	// 			TTS.init(users.subject.tweets);
-	// 		}
-	// 	}
-	// },
+			sounds.swipe.play();
+			sounds.drone.fadeIn(1, 500);
+		},
+		callback: function() {
+			if(screenId == 2) {
+				TTS.init(users.subject.tweets);
+			}
+		}
+	},
+	{
+		mode: 'allImages',
+		duration: 16,
+		user: 'subject',
+		soundtrack: function() {
+			sounds.silenceglitch.fadeIn(1, 100);
+		},
+		callback: function() {
+			if(screenId == 4) {
+				TTS.init(users.subject.tweets);
+			}
+		}
+	},
+	{
+		mode: 'centeredText',
+		duration: 16,
+		user: 'subject',
+		soundtrack: function() {
+			sounds.texture0.fadeIn(1, 500);
+		},
+		callback: function() {
+			if(screenId == 6 || screenId == 8) {
+				TTS.init(users.subject.tweets);
+			}
+		}
+	},
 	{
 		mode: 'bridge',
 		duration: 8,
