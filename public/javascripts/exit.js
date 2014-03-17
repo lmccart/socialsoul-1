@@ -1,6 +1,7 @@
 // main just handles the routing of socket.io messages
 
 var showing_user = false;
+var playlistDuration = getPlaylistDuration();
 setInterval(swapExit, 3000);
 
 window.onload = function() {
@@ -17,8 +18,10 @@ window.onload = function() {
   // new user available
   socket.on('mentor', function (data) {
     console.log(data);
-    $('#name').html('Your social soulmate is <br>'+data.name);
-    $('#user').html('@'+data.user);
+    setTimeout(function() {
+      $('#name').html('Your social soulmate is <br>'+data.name);
+      $('#user').html('@'+data.user);    
+    }, 1000 * playlistDuration / 2);
   });
 
 }
