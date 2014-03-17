@@ -16,6 +16,6 @@ spawn ssh socialsoulserver.local
 expect "assword:"
 send "soulmate\r"
 expect "$ " 
-send "osascript ~/Desktop/start-social-soul-exit.scpt &\r" 
+send "osascript ~/socialsoul/extra/start-social-soul-exit.scpt &\r" 
 expect "$ " 
 send "exit\r"

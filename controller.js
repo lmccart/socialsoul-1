@@ -450,6 +450,9 @@ module.exports = function(config, io) {
 
   function sendEndTweet(user, name) {
     var status = '@'+user+' your social soulmate is @'+name+'. To make more connections, explore Innovation Class http://www.deltainnovationclass.com';
+    // uncomment this next line to enable tweeting
+    // after uncommenting it, be sure to restart 
+    // from the controller app
     // twit.updateStatus(status, function(err) { console.log(err); });
   }
 
