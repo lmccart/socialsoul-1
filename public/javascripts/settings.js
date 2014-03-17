@@ -122,6 +122,7 @@ var playlist = [
 			sounds.texture3.fadeOut(0, 30);
 			sounds.beep433.fadeOut(0, 30);
 			sounds.drone.fadeOut(0, 30);
+			sounds.gong.play();
 		},
 		callback: function() {
 			TTS.stop(); // stop 2 and 6
