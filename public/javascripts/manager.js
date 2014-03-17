@@ -13,7 +13,7 @@ var Manager = function() {
     tweet: new TweetMode(),
     allImages: new AllImagesMode(),
     centeredText: new CenteredTextMode(),
-    bridge: new BridgeMode(),
+    bridge: new ThreeMode(),
     exit: new ExitMode()
 
     // new ThreeMode(),

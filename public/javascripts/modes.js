@@ -333,42 +333,68 @@ var ExitMode = function() {
 
 var ThreeMode = function() {
   var module = new Mode();
-  
+
   var container;
   var camera, scene, renderer;
   var uniforms, material, mesh;
-  var mouseX = 0, mouseY = 0,
-  lat = 0, lon = 0, phy = 0, theta = 0;
+
   var windowHalfX = window.innerWidth / 2;
   var windowHalfY = window.innerHeight / 2;
 
+  var running = false;
+
+  function render() {
+    var elapsedMilliseconds = ServerTime.now() - startTime;
+    var elapsedSeconds = elapsedMilliseconds / 1000.;
+    uniforms.iGlobalTime.value = elapsedSeconds;
+    renderer.render( scene, camera );
+  }
+
+  function animate() {
+    if(running) {
+      requestAnimationFrame( animate );
+      render();
+    }
+  }
+
   module.init = function() {
-    container = document.body;
+    $('body').append('<div id="container"></div>');
+
+    container = document.getElementById( 'container' );
+
     camera = new THREE.Camera();
     camera.position.z = 1;
     scene = new THREE.Scene();
+
     uniforms = {
-      time: { type: "f", value: 1.0 },
-      resolution: { type: "v2", value: new THREE.Vector2() }
+      iGlobalTime: { type: "f", value: 1.0 },
+      iResolution: { type: "v2", value: new THREE.Vector2() }
     };
+
     material = new THREE.ShaderMaterial( {
       uniforms: uniforms,
       vertexShader: document.getElementById( 'vertexShader' ).textContent,
       fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-    } );
+    });
+
     mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), material );
     scene.add( mesh );
+
     renderer = new THREE.WebGLRenderer();
     container.appendChild( renderer.domElement );
-    
-    uniforms.resolution.value.x = window.innerWidth;
-    uniforms.resolution.value.y = window.innerHeight;
+
+    uniforms.iResolution.value.x = window.innerWidth;
+    uniforms.iResolution.value.y = window.innerHeight;
     renderer.setSize( window.innerWidth, window.innerHeight );
+
+    startTime = ServerTime.now();
+
+    running = true;
+    animate();
   }
 
-  module.update = function() {
-    uniforms.time.value += .05;// Math.floor(Date.now()) / 1000.;
-    renderer.render( scene, camera );    
+  module.exit = function() {
+    running = false;
   }
   
   return module;

@@ -5,6 +5,77 @@
     <link rel='stylesheet' href='../stylesheets/screen.css' />
     <link rel='stylesheet' href='../stylesheets/animate.min.css' />
 
+    <script id="vertexShader" type="x-shader/x-vertex">
+        uniform float iGlobalTime;
+        uniform vec2 iResolution;
+
+        varying vec2 center;
+        varying float angle, sawTime, direction;
+
+        const float qpi =.78539816;
+        const float directionTime = 1.;
+        const float switchTime = 2.;
+        const float switchSharpness = 50.;
+        const float displacementSharpness = 500.;
+        const float pulseLength = 2.;
+
+        float sigmoid(float val, float sharpness) {
+            val = 1./(1. + exp(-1.*(sharpness)*(val - 0.5)));
+            val = clamp(val, 0., 1.);
+            return val;
+        }
+
+        float sigsin(float val, float sharpness) {
+            val = .5+.5*sin(val);
+            return sigmoid(val, sharpness)*2.-1.;
+        }
+
+        void main() {
+            // these can all go in a vertex shader
+            center = vec2(-(iResolution.x / (2. * iResolution.y)), -.5);
+            angle = qpi+qpi*sigsin(iGlobalTime * switchTime, switchSharpness);
+            sawTime = 2.*(.5-(mod(iGlobalTime, pulseLength)/pulseLength));
+            direction = sigsin(iGlobalTime * directionTime, displacementSharpness);
+
+            gl_Position = vec4( position, 1.0 );
+        }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        uniform float iGlobalTime;
+        uniform vec2 iResolution;
+
+        varying vec2 center;
+        varying float angle, sawTime, direction;
+
+        float sigmoid(float val, float sharpness) {
+            val = 1./(1. + exp(-1.*(sharpness)*(val - 0.5)));
+            val = clamp(val, 0., 1.);
+            return val;
+        }
+
+        float sigsin(float val, float sharpness) {
+            val = .5+.5*sin(val);
+            return sigmoid(val, sharpness)*2.-1.;
+        }
+
+        const float qpi =.78539816;
+        const float frequency = 4.;
+        const float speed = 1.;
+        const float bwSharpness = 200.;
+
+        void main(void)
+        {
+            vec2 uv = gl_FragCoord.xy / iResolution.y;
+            
+            // have to stay in the fragment shder 
+            float brightness = .5+.5*sin(((sin(angle)*(uv.x+center.x)+cos(angle)*(uv.y+center.y)) + iGlobalTime * speed * direction) * frequency);
+            brightness = sigmoid(brightness, bwSharpness);
+            brightness *= sawTime;
+            gl_FragColor = vec4(vec3(brightness),1.0);
+        }
+    </script>
+
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
     <script type='text/javascript' src='../javascripts/libs/underscore-min.js'></script>    
 
