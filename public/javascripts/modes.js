@@ -358,6 +358,8 @@ var ThreeMode = function() {
   }
 
   module.init = function() {
+    removeMirroring();
+
     $('body').append('<div id="container"></div>');
 
     container = document.getElementById( 'container' );
@@ -395,6 +397,7 @@ var ThreeMode = function() {
 
   module.exit = function() {
     running = false;
+    addMirroring();
   }
   
   return module;

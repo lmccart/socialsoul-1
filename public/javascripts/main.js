@@ -1,6 +1,6 @@
 // main just handles the routing of socket.io messages
 
-window.onload = function() {
+function addMirroring() {
   if (screenId%4 == 0) {
   } else if (screenId%4 == 1) {
     $('body').addClass('mirrorX');
@@ -10,6 +10,15 @@ window.onload = function() {
     $('body').addClass('mirrorX');
     $('body').addClass('flip180');
   }
+}
+
+function removeMirroring() {
+  $('body').removeClass('mirrorX');
+  $('body').removeClass('flip180');
+}
+
+window.onload = function() {
+  addMirroring();
 
   var manager = new Manager();
 
