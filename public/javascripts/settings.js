@@ -29,6 +29,8 @@ var playlist = [
 		duration: 12,
 		user: 'subject',
 		soundtrack: function() {
+			sounds.swipe.volume(1);
+			sounds.drone.volume(1);
 			sounds.swipe.play();
 			sounds.drone.play();
 		},
@@ -43,6 +45,7 @@ var playlist = [
 		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
+			sounds.silenceglitch.volume(1);
 			sounds.silenceglitch.play();
 		},
 		callback: function() {
@@ -56,6 +59,7 @@ var playlist = [
 		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
+			sounds.texture0.volume(1);
 			sounds.texture0.play();
 		},
 		callback: function() {
@@ -82,6 +86,8 @@ var playlist = [
 		user: 'mentor',
 		soundtrack: function() {
 			sounds.texture0.fadeOut(0, 1000);
+			sounds.texture1.volume(1);
+			sounds.drone.volume(1);
 			sounds.texture1.play();
 			sounds.drone.play();
 		},
@@ -96,6 +102,7 @@ var playlist = [
 		duration: 8,
 		user: 'mentor',
 		soundtrack: function() {
+			sounds.texture2.volume(1);
 			sounds.texture2.play();
 		}
 	},
@@ -104,6 +111,7 @@ var playlist = [
 		duration: 4,
 		user: 'mentor',
 		soundtrack: function() {
+			sounds.texture3.volume(1);
 			sounds.texture3.play();
 		},
 		callback: function() {
@@ -123,6 +131,7 @@ var playlist = [
 			sounds.texture3.fadeOut(0, 30);
 			sounds.beep433.fadeOut(0, 30);
 			sounds.drone.fadeOut(0, 30);
+			sounds.gong.volume(1);
 			sounds.gong.play();
 		},
 		callback: function() {
