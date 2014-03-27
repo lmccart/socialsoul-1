@@ -41,7 +41,7 @@ var Speech = (function() {
         // console.log('speak');
         // wait to assign the voice until it's ready
         if(settings.voice != undefined) {
-          msg.voice = voices[settings.voice];
+          msg.voice = _.findWhere(voices, {name: settings.voice});
         }
         speechSynthesis.speak(msg);
       });
@@ -73,17 +73,14 @@ var Speech = (function() {
 var TTS = (function() {
 
   var goodVoices = [
-    0, // us male
-    1, // uk male
-    2, // uk female
-    10, // alex
-    11, // agnes
-    17, // bruce
-    21, // fred
-    25, // kathy
-    28, // ralph
-    30, // vicki
-    31 // victoria
+    "Alex", // alex
+    "Agnes", // agnes
+    "Bruce", // bruce
+    "Fred", // fred
+    "Kathy", // kathy
+    "Ralph", // ralph
+    "Vicki", // vicki
+    "Victoria" // victoria
   ];
 
   var module = {
