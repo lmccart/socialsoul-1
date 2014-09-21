@@ -6,3 +6,5 @@ logs/*.log
 public/phantomjs/render/*
 sound/
 *.app
+data/config.js
+data/end-tweet-template.ejs
