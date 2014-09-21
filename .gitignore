@@ -7,4 +7,4 @@ public/phantomjs/render/*
 sound/
 *.app
 data/config.js
-data/end-tweet-template.ejs
+data/end-tweet-template.mustache

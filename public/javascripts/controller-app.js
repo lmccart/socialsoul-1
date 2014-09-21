@@ -52,6 +52,30 @@ window.onload = function() {
       $('#user_status').html('');
       $('#time_status').html('<span class="highlight">Ready for next visitor!</span>');
     }
+
+    var orig;
+    switch(data.reason) {
+      case 'added_mentor':
+        break;
+      case 'removed_mentor':
+        break;
+      case 'cleared_mentors':
+        break;
+      case 'updated_end_tweet_template':
+        orig = $('#time_status').html();
+        $("#time_status").html('<span class="highlight">Successfuly updated end tweet template.</span>')
+        break;
+    }
+
+    // means there was an update worth calling
+    // the attention of the user to
+    if (orig) {
+      $('html, body').animate({
+        scrollTop: $("html").offset().top
+      });
+      setTimeout(function () { $('#time_status').html(orig); }, 2000);
+    }
+
     $('#error_status').html('');
     
     $('#users').empty();
@@ -72,35 +96,79 @@ window.onload = function() {
       socket.emit('controller', { action:'remove', user:e.target.id });
     });
 
-    $('#restart').click(function(e){ 
+    function dialog(selector, confirm, cancel) {
+      var buttons = {};
       $("#overlay").show();
-      $("#dialog").dialog({
-        buttons : {
-          "confirm" : function() {
-            console.log('restart');
-            socket.emit('controller', { action: 'restart' });
-            displayDisconnect();
-            $(this).dialog("close");
-            $("#overlay").hide();
-          },
-          "cancel" : function() {
+      buttons.confirm = wrap(confirm) || wrap(noop);
+      if (cancel) buttons.cancel = wrap(cancel);
+      $(selector).dialog({buttons: buttons});
+      $(selector).dialog("open");
+
+      function noop() {}
+      function wrap(fn) {
+        return function () {
+          try { fn(); } finally {
             $(this).dialog("close");
             $("#overlay").hide();
           }
+        };
+      }
+    }
+
+    // try not to override user input
+    if (!$('#end_tweet_template').is(':focus')) {
+      $('#end_tweet_template').val(data.end_tweet_template || '');
+    }
+
+    $('#update_end_tweet_template').click(function (e) {
+      var template = ($("#end_tweet_template").val() || '').trim();
+	    $("#action_status").html('');
+      try {
+        if (!/{{user}}/.test(template)) {
+          return error('Template must contain the text <em>{{user}}</em> to indicate where the user\'s twitter handle should appear.');
         }
-      });
-      $("#dialog").dialog("open");
+
+        if (!/{{mate}}/.test(template)) {
+          return error('Template must contain the text <em>{{mate}}</em> to indicate where the soul mate\'s twitter handle should appear.');
+        }
+
+        socket.emit('controller', { action: 'update_end_tweet_template', template: template }, function (err, result) {
+          if (err) {
+            error('Failed to update end tweet template.');
+          } else {
+            $("#overlay").hide();
+          }
+        });
+
+        function error(msg) {
+          $("#update_end_tweet_template_result").html('<span>' + msg + '</span>');
+          dialog("#update_end_tweet_template_result", function () { /* NO-OP placeholder */ });
+        }
+      } catch (err) {
+        error('<span>Encountered unknown error updating end tweet template.</span>');
+      }
+    });
+
+    $('#restart').click(function(e){
+      dialog(
+        "#restart_dialog",
+        function() {
+          console.log('restart');
+          socket.emit('controller', { action: 'restart' });
+          displayDisconnect();
+        },
+        function() { /* NO-OP placeholder */ }
+      );
     });
 
   });
   
-  $("#dialog").dialog({
+  $(".dialog").dialog({
     autoOpen: false,
     modal: true
   });
 
   $('#queue_user').click(function(e){
-    console.log('hi')
     if ($('#user').val().length > 0) {
       socket.emit('controller', { action:'queue_user', user: $('#user').val() });
       $('#user').val('');
@@ -122,9 +190,9 @@ window.onload = function() {
 }
 
 function startTimer(val) {
-	clearInterval(counter);
-	count = val;
-	counter = setInterval(timer, 1000);
+  clearInterval(counter);
+  count = val;
+  counter = setInterval(timer, 1000);
 }
 
 function timer() {
@@ -136,7 +204,7 @@ function timer() {
      $('#time_status').html("Ready for next visitor!");
      return;
   } else {
-  	$('#cur_time').html(Math.round(count));
+    $('#cur_time').html(Math.round(count));
   }
 }
 

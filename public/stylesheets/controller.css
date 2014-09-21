@@ -67,7 +67,7 @@ body {
   padding: 12px 0;
 }
 
-#user{
+#user, #mentor{
   margin: 0 15px 15px 0;
   padding: 13px 9px 10px 9px;
 }
@@ -77,7 +77,7 @@ body {
   padding-left: 20px !important;
 }
 
-.button.active, .button.hover, #queue_user, .button.remove {
+.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, .button.remove {
   background: rgb(41, 41, 41);
   color: white;
 }
@@ -86,7 +86,7 @@ body {
   padding: 12px 15px 9px 15px;
 }
 
-input {
+input, textarea {
   font: 25px 'AppleSDGothicNeo-Thin', sans-serif;
   color:black;
   background: rgb(122, 122, 122);
@@ -115,6 +115,18 @@ ul {
 
 .error {
   color: #f55;
+}
+
+#download_mentors {
+  position: fixed;
+  right: 10px;
+  bottom: 160px;
+}
+
+#upload_mentors {
+  position: fixed;
+  right: 10px;
+  bottom: 80px;
 }
 
 #restart {

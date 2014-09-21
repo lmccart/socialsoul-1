@@ -32,7 +32,14 @@ module.exports = function(config) {
         });
       };
 
-      //insert person
+      storage.allMentors = function (callback) {
+        var collection = storage.db.collection('mentors');
+        collection.find().toArray(function (err, arr) {
+          callback(err, arr);
+        });
+      };
+
+      //reset people collection
       storage.reset = function(callback) {
         storage.db.dropCollection('people', callback);
       };

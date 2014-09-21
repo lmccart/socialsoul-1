@@ -12,7 +12,7 @@ var _ = require('underscore')
   , scraper = require('./scraper')
   , settings = require('./public/javascripts/settings')
   , path = require('path')
-  , ejs = require('ejs');
+  , mustache = require('mustache');
 
 // uncaught error handling
 var d = domain.create();
@@ -22,7 +22,10 @@ d.on('error', function(err) {
 
 var verbose = false;
 
-var endTweetTemplate = fs.readFileSync(path.join(__dirname, 'data', 'end-tweet-template.ejs'), 'utf8');
+var END_TWEET_TEMPLATE_FILE = path.join(__dirname, 'data', 'end-tweet-template.mustache')
+  , endTweetTemplate;
+// initial load
+loadEndTweetTemplate();
 
 // load word lists and regex
 var url_regex = /(https?:\/\/[^\s]+)/g;
@@ -68,13 +71,15 @@ module.exports = function(config, io) {
     });
   });
 
-  controller.sync = function() {
+  controller.sync = function(reason) {
     io.sockets.emit('sync', {
       cur_user: controller.cur_user, 
       users: controller.queued_users, 
       remaining: controller.getRemaining(),
       error: controller.error,
-      serverTime: Date.now()
+      serverTime: Date.now(),
+      reason: reason,
+      end_tweet_template: endTweetTemplate
     });
   };
 
@@ -134,11 +139,15 @@ module.exports = function(config, io) {
 
     fs.remove(assets_root+'mentors/', function(err) {
 
-      fs.readFile(__dirname +'/data/mentors.txt', 'utf8', function(err, data) {
-        if (err) console.log(err);
-        data = data.split('\n');
+      // TODO change so that mentors are initially loaded from mongo
+      // this file is then generated based only on the database
+      controller.storage.allMentors(function (err, mentors) {
+        if (err) {
+          io.sockets.emit('error', { msg: 'unable to load mentors database'});
+          return console.log(err);
+        }
         controller.storage.reset(function() {
-          async.eachSeries(data, function(mentor, cb) {
+          async.eachSeries(mentors, function(mentor, cb) {
             getPerson({user:mentor, init:true, cb:cb});
           }, function () {
             controller.storage.updateDefaultUsers();
@@ -159,6 +168,20 @@ module.exports = function(config, io) {
 
   controller.getRemaining = function() {
     return Math.max(0, controller.run_time - (new Date() - controller.start_time));
+  };
+
+  controller.updateEndTweetTemplate = function (template, callback) {
+	  fs.writeFile(END_TWEET_TEMPLATE_FILE, template, 'utf8', function (err) {
+		  if (!err) {
+			try {
+				loadEndTweetTemplate();
+			} catch (err0) {
+				err = err0;
+			}
+		  }
+		  callback(!!err, 'Successfully updated end tweet template');
+		  controller.sync('updated_end_tweet_template');
+	  });
   };
 
   // opts -- user, get_media, send_tweet, is_mentor, cb, init
@@ -455,7 +478,7 @@ module.exports = function(config, io) {
   }
 
   function sendEndTweet(user, mate) {
-    var status = ejs.render(endTweetTemplate, {user: user, mate: mate});
+    var status = mustache.render(endTweetTemplate, {user: '@' + user, mate: '@' + mate});
     // uncomment this next line to enable tweeting
     // after uncommenting it, be sure to restart 
     // from the controller app
@@ -465,3 +488,9 @@ module.exports = function(config, io) {
 
   return controller;
 };
+
+function loadEndTweetTemplate() {
+	fs.readFile(END_TWEET_TEMPLATE_FILE, 'utf8', function (err, template) {
+		endTweetTemplate = template;
+	});
+}

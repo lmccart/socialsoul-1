@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
     console.log(data);
   });
 
-  socket.on('controller', function(data) {
+  socket.on('controller', function(data, callback) {
     if (data.action === 'update') {
       controller.sync();
     } else if (data.action === 'queue_user') {
@@ -72,7 +72,11 @@ io.sockets.on('connection', function (socket) {
     } else if (data.action === 'test_algo') {
       console.log('testing secret algorithm');
       controller.testAlgo();
-    } 
+    } else if (data.action == 'update_end_tweet_template') {
+	  console.log('updating end tweet template')
+	  console.dir(data);
+	  controller.updateEndTweetTemplate(data.template, callback);
+	}
   });
 
 });

@@ -23,16 +23,38 @@
       </div>
 
       <div>
-        <input id="user" name="user" /> 
-        <span id='queue_user' class='button'>add</span>
+        <input id="user" name="user" placeholder="Add Users" /> 
+        <span id='queue_user' class='button'>add user</span>
+	  </div>
+
+      <div>
+        <input id="mentor" name="mentor" placeholder="Search/Add Mentors"/> 
+        <span id='mentor_button' class='button'>add mentor</span>
+	  </div>
+
+	  <div>
+		  <textarea id="end_tweet_template"> </textarea>
+		  <div id="end_tweet_template_error" class="error"></div>
+		  <span id="update_end_tweet_template" class="button">update end tweet template</span>
 	  </div>
     </div>
 
 
     <div id="overlay"></div>
-    <div id="dialog" >
+
+    <div id="restart_dialog" class="dialog" >
       Are you sure you want to restart?
     </div>
+
+	<div id="update_end_tweet_template_result" class="dialog">
+	</div>
+
+	<div class="button" id="download_mentors">
+		<a href='/mentors.txt' download>
+			download mentors
+		</a>
+	</div>
+    <div class="button" id="upload_mentors">upload mentors</div>
     <div class="button" id="restart">restart</div>
   </body>
 </html>
