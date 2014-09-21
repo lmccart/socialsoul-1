@@ -10,7 +10,9 @@ var _ = require('underscore')
   , natural = require('natural')
   , similarity = require('./similarity')
   , scraper = require('./scraper')
-  , settings = require('./public/javascripts/settings');
+  , settings = require('./public/javascripts/settings')
+  , path = require('path')
+  , ejs = require('ejs');
 
 // uncaught error handling
 var d = domain.create();
@@ -20,6 +22,7 @@ d.on('error', function(err) {
 
 var verbose = false;
 
+var endTweetTemplate = fs.readFileSync(path.join(__dirname, 'data', 'end-tweet-template.ejs'), 'utf8');
 
 // load word lists and regex
 var url_regex = /(https?:\/\/[^\s]+)/g;
@@ -452,7 +455,7 @@ module.exports = function(config, io) {
   }
 
   function sendEndTweet(user, mate) {
-    var status = '@'+user+' your social soulmate is @'+mate+'. To make more connections, explore Innovation Class http://www.deltainnovationclass.com';
+    var status = ejs.render(endTweetTemplate, {user: user, mate: mate});
     // uncomment this next line to enable tweeting
     // after uncommenting it, be sure to restart 
     // from the controller app
