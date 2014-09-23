@@ -67,6 +67,16 @@ body {
   padding: 12px 0;
 }
 
+/* make sure autocomplete list shows up properly */
+.ui-autocomplete {
+  position: absolute;
+}
+
+/* make annoying autocomplete status from jquery UI go away */
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
 #user, #mentor{
   margin: 0 15px 15px 0;
   padding: 13px 9px 10px 9px;

@@ -5,8 +5,9 @@
 
 var express = require('express')
   , config = require('./data/config')
-  , util = require('util'),
-    exec = require('child_process').exec;
+  , util = require('util')
+  , exec = require('child_process').exec
+  , fs = require('fs');
 
 var app = express();
 
@@ -35,15 +36,15 @@ function restartClients(cb) {
 var io = require('socket.io').listen(app.get('port'));
 io.set('log level', 1);
 
-var controller = require('./controller')(config, io);
+require('./controller')(config, io, function (controller) {
 
-// // development only
-// if ('development' == app.get('env')) {
-//   app.use(express.errorHandler());
-// }
+  // // development only
+  // if ('development' == app.get('env')) {
+  //   app.use(express.errorHandler());
+  // }
 
 
-io.sockets.on('connection', function (socket) {
+  io.sockets.on('connection', function (socket) {
 
   socket.emit('message', { message: 'hello from the backend'});
   controller.sync();
@@ -73,12 +74,17 @@ io.sockets.on('connection', function (socket) {
       console.log('testing secret algorithm');
       controller.testAlgo();
     } else if (data.action == 'update_end_tweet_template') {
-	  console.log('updating end tweet template')
-	  console.dir(data);
-	  controller.updateEndTweetTemplate(data.template, callback);
-	}
+      console.log('updating end tweet template')
+      controller.updateEndTweetTemplate(data.template, callback);
+    } else if (data.action == 'add_mentor') {
+      console.log('adding mentor');
+      controller.addMentor(data.user);
+    } else if (data.action == 'remove_mentor') {
+      console.log('removing mentor');
+      controller.removeMentor(data.user);
+    }
+  });
+
   });
 
 });
-
-

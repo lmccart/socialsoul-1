@@ -10,6 +10,8 @@ window.onload = function() {
     $('#users').empty();
   }
 
+  var downloadMentorsState = {generated: false, generating: false, tries: 0};
+
   // socket stuff
 
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://192.168.1.100:3030';
@@ -53,13 +55,16 @@ window.onload = function() {
       $('#time_status').html('<span class="highlight">Ready for next visitor!</span>');
     }
 
-    var orig;
-    switch(data.reason) {
+    var orig = $('#time_status').html();
+    switch(data.reason.code) {
       case 'added_mentor':
+        $("#time_status").html('<span class="highlight">Mentor <em>' + data.reason.data + '</em> added to database.</span>')
         break;
       case 'removed_mentor':
+        $("#time_status").html('<span class="highlight">Mentor <em>' + data.reason.data + '</em> removed from database.</span>')
         break;
-      case 'cleared_mentors':
+      case 'rebuilt_db':
+        $("#time_status").html('<span class="highlight">People database has been rebuilt.</span>')
         break;
       case 'updated_end_tweet_template':
         orig = $('#time_status').html();
@@ -69,7 +74,7 @@ window.onload = function() {
 
     // means there was an update worth calling
     // the attention of the user to
-    if (orig) {
+    if (data.reason.code) {
       $('html, body').animate({
         scrollTop: $("html").offset().top
       });
@@ -120,35 +125,6 @@ window.onload = function() {
       $('#end_tweet_template').val(data.end_tweet_template || '');
     }
 
-    $('#update_end_tweet_template').click(function (e) {
-      var template = ($("#end_tweet_template").val() || '').trim();
-	    $("#action_status").html('');
-      try {
-        if (!/{{user}}/.test(template)) {
-          return error('Template must contain the text <em>{{user}}</em> to indicate where the user\'s twitter handle should appear.');
-        }
-
-        if (!/{{mate}}/.test(template)) {
-          return error('Template must contain the text <em>{{mate}}</em> to indicate where the soul mate\'s twitter handle should appear.');
-        }
-
-        socket.emit('controller', { action: 'update_end_tweet_template', template: template }, function (err, result) {
-          if (err) {
-            error('Failed to update end tweet template.');
-          } else {
-            $("#overlay").hide();
-          }
-        });
-
-        function error(msg) {
-          $("#update_end_tweet_template_result").html('<span>' + msg + '</span>');
-          dialog("#update_end_tweet_template_result", function () { /* NO-OP placeholder */ });
-        }
-      } catch (err) {
-        error('<span>Encountered unknown error updating end tweet template.</span>');
-      }
-    });
-
     $('#restart').click(function(e){
       dialog(
         "#restart_dialog",
@@ -160,6 +136,15 @@ window.onload = function() {
         function() { /* NO-OP placeholder */ }
       );
     });
+
+    if (data.mentors) {
+      $("#mentor").autocomplete({
+        source: data.mentors,
+        select: function (e, ui) {
+          $("#mentor_button").text("remove mentor");
+        }
+      });
+    }
 
   });
   
@@ -175,6 +160,66 @@ window.onload = function() {
     }
   });
 
+  // change on text entry
+  $("#mentor").on("keypress", function (e) {
+    $("#mentor_button").text('add mentor');
+  });
+
+  // change on backspace
+  $("#mentor").on("keydown", function (e) {
+    var code = e.which;
+    if (
+      code == 8 // bacskpace
+        || code == 46 // delete
+    ) {
+      $("#mentor_button").text('add mentor');
+    }
+  });
+
+  $("#mentor_button").click(function (e) {
+    var action = $(this).text().split(' ')[0],
+        user = $("#mentor").val().trim();
+    if (!user) return;
+    switch (action) {
+      case 'add':
+        socket.emit('controller', { action: 'add_mentor', user: user });
+        $("#mentor_button").text('remove mentor');
+        break;
+      case 'remove':
+        socket.emit('controller', { action: 'remove_mentor', user: user });
+        $("#mentor_button").text('add mentor');
+        break;
+    }
+  });
+
+  $('#update_end_tweet_template').click(function (e) {
+    var template = $("#end_tweet_template").val().trim();
+    $("#action_status").html('');
+    try {
+      if (!/{{user}}/.test(template)) {
+        return error('Template must contain the text <em>{{user}}</em> to indicate where the user\'s twitter handle should appear.');
+      }
+
+      if (!/{{mate}}/.test(template)) {
+        return error('Template must contain the text <em>{{mate}}</em> to indicate where the soul mate\'s twitter handle should appear.');
+      }
+
+      socket.emit('controller', { action: 'update_end_tweet_template', template: template }, function (err, result) {
+        if (err) {
+          error('Failed to update end tweet template.');
+        } else {
+          $("#overlay").hide();
+        }
+      });
+
+      function error(msg) {
+        $("#update_end_tweet_template_result").html('<span>' + msg + '</span>');
+        dialog("#update_end_tweet_template_result", function () { /* NO-OP placeholder */ });
+      }
+    } catch (err) {
+      error('<span>Encountered unknown error updating end tweet template.</span>');
+    }
+  });
 
   // build db
   var command = window.location.search.substring(1);
