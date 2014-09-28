@@ -74,13 +74,13 @@ require('./controller')(config, io, function (controller) {
       console.log('testing secret algorithm');
       controller.testAlgo();
     } else if (data.action == 'update_end_tweet_template') {
-      console.log('updating end tweet template')
+      console.log('updating end tweet template to %s', data.template)
       controller.updateEndTweetTemplate(data.template, callback);
     } else if (data.action == 'add_mentor') {
-      console.log('adding mentor');
+      console.log('adding mentor %s', data.user);
       controller.addMentor(data.user);
     } else if (data.action == 'remove_mentor') {
-      console.log('removing mentor');
+      console.log('removing mentor %s', data.user);
       controller.removeMentor(data.user);
     }
   });

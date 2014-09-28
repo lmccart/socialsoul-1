@@ -153,7 +153,7 @@ module.exports = function(config, io, callback) {
               getPerson({user:mentor.user, init:true, cb:cb});
             }, function () {
               controller.storage.updateDefaultUsers();
-        controller.sync('rebuilt_db');
+			  controller.sync('rebuilt_db');
               console.log('downloaded ');
             });
           });
@@ -189,13 +189,23 @@ module.exports = function(config, io, callback) {
 
     controller.addMentor = function (user) {
       controller.storage.addMentor(user, function (err) {
-        controller.sync('added_mentor', user);
+		  if (err) {
+			  console.error(err);
+		  } else {
+			  getPerson({user:user, init:true, cb:function () {
+				  controller.sync('added_mentor', user);
+			  }});
+		  }
       });
     };
 
     controller.removeMentor = function (user) {
       controller.storage.removeMentor(user, function (err) {
-        controller.sync('removed_mentor', user);
+		  if (err) {
+			  console.error(err);
+		  } else {
+			  controller.sync('removed_mentor', user);
+		  }
       });
     };
 
