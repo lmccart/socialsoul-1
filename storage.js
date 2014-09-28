@@ -102,9 +102,7 @@ module.exports = function(callback) {
 		}
 
 		storage.updateDefaultUsers();
-		fs.exists('./public/mentors.txt', function (exists) {
-			if (!exists) storage.generateMentorsTxt();
-		});
+		storage.generateMentorsTxt();
 
 		callback(storage);
 

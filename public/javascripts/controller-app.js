@@ -1,4 +1,8 @@
-var count, counter;
+var count, counter, socket;
+
+var syncState = {
+	mentors: []
+};
 
 
 window.onload = function() {
@@ -10,12 +14,10 @@ window.onload = function() {
     $('#users').empty();
   }
 
-  var downloadMentorsState = {generated: false, generating: false, tries: 0};
-
   // socket stuff
 
   var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://192.168.1.100:3030';
-  var socket = io.connect(host); 
+  socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });
   socket.emit('controller', { action: 'update' });
@@ -46,6 +48,7 @@ window.onload = function() {
   // update controller
   socket.on('sync', function (data) {
     console.log(data);
+	syncState = data;
     if (data.cur_user) {
       $('#user_status').html('Currently playing with '+data.cur_user);    
       $('#time_status').html('Time remaining: <span id="cur_time">'+Math.round(data.remaining/1000)+'</span>');
@@ -78,7 +81,7 @@ window.onload = function() {
       $('html, body').animate({
         scrollTop: $("html").offset().top
       });
-      setTimeout(function () { $('#time_status').html(orig); }, 2000);
+      setTimeout(function () { $('#time_status').html(orig); }, 10000);
     }
 
     $('#error_status').html('');
@@ -221,6 +224,10 @@ window.onload = function() {
     }
   });
 
+  $("#upload_mentors").click(function (e) {
+	  $("#upload_mentors_file").click();
+  });
+
   // build db
   var command = window.location.search.substring(1);
   if (command == 'build_db') {
@@ -254,3 +261,39 @@ function timer() {
 }
 
 
+function handleMentorsUpload(input) {
+	var file = input.files[0];
+	if (file) {
+		input.value = ""; // clear the input so they can uploa again
+		console.log('processing mentors upload ' + file.name);
+		var reader = new FileReader();
+		reader.onerror = function (err) { console.log(err); }
+		reader.onload = function (e) {
+			var newMentors = _.uniq(e.target.result.split("\n"));
+
+			// remove redundant entries in newMentors
+			// and remove existing members that are not in newMentors
+			syncState.mentors.forEach(function (mentor) {
+				var idx = newMentors.indexOf(mentor);
+				if (idx != -1) {
+					console.log('skipping already added mentor ' + mentor);
+					newMentors.splice(idx, 1); // already added, so skip
+				} else {
+					// not in newMentors, so we should remove from the system
+					console.log('removing mentor ' + mentor);
+					socket.emit('controller', { action: 'remove_mentor', user: mentor});
+				}
+			});
+
+			// what remains in newMentors is what should be added
+			newMentors.forEach(function (mentor) {
+				mentor = mentor.trim();
+				if (mentor) {
+					console.log('adding mentor ' + mentor);
+					socket.emit('controller', { action: 'add_mentor', user: mentor });
+				}
+			});
+		}
+		reader.readAsText(file);
+	}
+}

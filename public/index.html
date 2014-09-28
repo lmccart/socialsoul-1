@@ -6,6 +6,7 @@
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
     <script type='text/javascript' src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
+    <script type='text/javascript' src='javascripts/libs/underscore-min.js'></script>
     <script type='text/javascript' src='javascripts/settings.js'></script>
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
@@ -33,7 +34,7 @@
 	  </div>
 
 	  <div>
-		  <textarea id="end_tweet_template"> </textarea>
+		  <textarea rows=4 cols=20 id="end_tweet_template"> </textarea>
 		  <div id="end_tweet_template_error" class="error"></div>
 		  <span id="update_end_tweet_template" class="button">update end tweet template</span>
 	  </div>
@@ -54,7 +55,11 @@
 			download mentors
 		</a>
 	</div>
-    <div class="button" id="upload_mentors">upload mentors</div>
+
+	<span class="button" id="upload_mentors">upload mentors</span>
+
     <div class="button" id="restart">restart</div>
+
+	<div><input type="file" id="upload_mentors_file" onchange="handleMentorsUpload(this);" /></div>
   </body>
 </html>

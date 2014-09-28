@@ -161,3 +161,7 @@ ul {
 	color: black;
 	text-decoration: none;
 }
+
+#upload_mentors_file {
+	display: none;
+}
