@@ -70,6 +70,7 @@ body {
 /* make sure autocomplete list shows up properly */
 .ui-autocomplete {
   position: absolute;
+  background: gray;
 }
 
 /* make annoying autocomplete status from jquery UI go away */
