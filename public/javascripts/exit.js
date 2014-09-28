@@ -6,7 +6,7 @@ setInterval(swapExit, 3000);
 
 window.onload = function() {
 
-  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
+  var host = window.location.hostname + ':3030';
   var socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });

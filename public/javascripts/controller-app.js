@@ -16,7 +16,7 @@ window.onload = function() {
 
   // socket stuff
 
-  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://192.168.1.100:3030';
+  var host = 'http://' + window.location.hostname + ':3030';
   socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });

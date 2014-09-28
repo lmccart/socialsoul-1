@@ -22,7 +22,7 @@ window.onload = function() {
 
   var manager = new Manager();
 
-  var host = window.location.host.indexOf('localhost') !== -1 ? 'http://localhost:3030' : 'http://socialsoulserver.local:3030';
+  var host = 'http://' + window.location.hostname + ':3030';
   var socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });
