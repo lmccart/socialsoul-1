@@ -2,12 +2,8 @@
 
 # connect via scp
 
-
 set files "/Users/socialsoulserver/socialsoul/extra/com.tabalive.plist"
 puts $files
-
-
-
 
 for {set i 0} {$i < 6} {incr i 1} {
   spawn scp $files "socialsoul@socialsoul${i}.local:/Users/socialsoul/Library/LaunchAgents/"
