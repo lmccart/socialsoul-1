@@ -82,7 +82,10 @@ require('./controller')(config, io, function (controller) {
     } else if (data.action == 'remove_mentor') {
       console.log('removing mentor %s', data.user);
       controller.removeMentor(data.user);
-    }
+    } else if (data.action == 'update_hash_tag') {
+		console.log('updating hash tag to %s', data.hashTag);
+		controller.updateHashTag(data.hashTag, callback);
+	}
   });
 
   });

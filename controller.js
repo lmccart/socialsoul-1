@@ -23,9 +23,13 @@ d.on('error', function(err) {
 var verbose = false;
 
 var END_TWEET_TEMPLATE_FILE = path.join(__dirname, 'data', 'end-tweet-template.mustache')
-  , endTweetTemplate;
+  , endTweetTemplate
+  , HASH_TAG_FILE = path.join(__dirname, 'data', 'hashtag.txt')
+  , hashTag;
+
 // initial load
 loadEndTweetTemplate();
+loadHashTag();
 
 // load word lists and regex
 var url_regex = /(https?:\/\/[^\s]+)/g;
@@ -65,7 +69,7 @@ module.exports = function(config, io, callback) {
 
     var twit = new twitter(config.creds);
 
-    twit.stream('statuses/filter', {track:'#socialsoul'}, function(stream) {
+    twit.stream('statuses/filter', {track: '#' + hashTag}, function(stream) {
       stream.on('data', function (data) {
         controller.queueUser(data.user.screen_name);
         controller.sync();
@@ -82,7 +86,8 @@ module.exports = function(config, io, callback) {
           error: controller.error,
           serverTime: Date.now(),
           reason: { code: reasonCode, data: reasonData},
-          end_tweet_template: endTweetTemplate
+          end_tweet_template: endTweetTemplate,
+		  hash_tag: hashTag
         });
       });
     };
@@ -186,6 +191,19 @@ module.exports = function(config, io, callback) {
         controller.sync('updated_end_tweet_template');
       });
     };
+
+	controller.updateHashTag = function (t, callback) {
+		fs.writeFile(HASH_TAG_FILE, t, 'utf8', function (err) {
+			if (!err) {
+				try {
+					loadHashTag();
+				} catch (err0) {
+					err = err0;
+				}
+				controller.sync('updated_hash_tag');
+			}
+		});
+	}
 
     controller.addMentor = function (user) {
       controller.storage.addMentor(user, function (err) {
@@ -518,5 +536,11 @@ module.exports = function(config, io, callback) {
 function loadEndTweetTemplate() {
 	fs.readFile(END_TWEET_TEMPLATE_FILE, 'utf8', function (err, template) {
 		endTweetTemplate = template;
+	});
+}
+
+function loadHashTag() {
+	fs.readFile(HASH_TAG_FILE, 'utf8', function (err, template) {
+		hashTag = template;
 	});
 }

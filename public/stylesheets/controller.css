@@ -78,7 +78,7 @@ body {
   display: none;
 }
 
-#user, #mentor{
+#user, #mentor, #hash_tag {
   margin: 0 15px 15px 0;
   padding: 13px 9px 10px 9px;
 }
@@ -88,7 +88,7 @@ body {
   padding-left: 20px !important;
 }
 
-.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, .button.remove {
+.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, .button.remove {
   background: rgb(41, 41, 41);
   color: white;
 }

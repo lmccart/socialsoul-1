@@ -70,9 +70,11 @@ window.onload = function() {
         $("#time_status").html('<span class="highlight">People database has been rebuilt.</span>')
         break;
       case 'updated_end_tweet_template':
-        orig = $('#time_status').html();
         $("#time_status").html('<span class="highlight">Successfuly updated end tweet template.</span>')
         break;
+	  case 'updated_hash_tag':
+        $("#time_status").html('<span class="highlight">Successfuly updated hash tag.</span>')
+	  	break;
     }
 
     // means there was an update worth calling
@@ -126,6 +128,10 @@ window.onload = function() {
     // try not to override user input
     if (!$('#end_tweet_template').is(':focus')) {
       $('#end_tweet_template').val(data.end_tweet_template || '');
+    }
+
+    if (!$('#hash_tag').is(':focus')) {
+      $('#hash_tag').val(data.hash_tag || '');
     }
 
     $('#restart').click(function(e){
@@ -197,7 +203,6 @@ window.onload = function() {
 
   $('#update_end_tweet_template').click(function (e) {
     var template = $("#end_tweet_template").val().trim();
-    $("#action_status").html('');
     try {
       if (!/{{user}}/.test(template)) {
         return error('Template must contain the text <em>{{user}}</em> to indicate where the user\'s twitter handle should appear.');
@@ -222,6 +227,11 @@ window.onload = function() {
     } catch (err) {
       error('<span>Encountered unknown error updating end tweet template.</span>');
     }
+  });
+
+  $('#update_hash_tag').click(function (e) {
+	  var tag = $("#hash_tag").val().trim();
+	  socket.emit('controller', { action: 'update_hash_tag', hashTag: tag});
   });
 
   $("#upload_mentors").click(function (e) {
