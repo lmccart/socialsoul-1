@@ -2,7 +2,7 @@
 
 
 for {set i 0} {$i < 5} {incr i 1} {
-  spawn ssh socialsoul@socialsoul${i}.local
+  spawn ssh -o "StrictHostKeyChecking no" socialsoul@socialsoul${i}.local
   expect "assword:"
   send "soulmate\r"
   expect "$ " 
@@ -12,7 +12,7 @@ for {set i 0} {$i < 5} {incr i 1} {
 }
 
 
-spawn ssh socialsoulserver@socialsoulserver.local
+spawn ssh -o "StrictHostKeyChecking no" socialsoulserver@socialsoulserver.local
 expect "assword:"
 send "soulmate\r"
 expect "$ " 

@@ -6,7 +6,7 @@ set files "/Users/socialsoulserver/socialsoul/extra/com.tabalive.plist"
 puts $files
 
 for {set i 0} {$i < 5} {incr i 1} {
-  spawn scp $files "socialsoul@socialsoul${i}.local:/Users/socialsoul/Library/LaunchAgents/"
+  spawn scp -o "StrictHostKeyChecking no" $files "socialsoul@socialsoul${i}.local:/Users/socialsoul/Library/LaunchAgents/"
   #######################
   expect {
     -re ".*sword.*" {
