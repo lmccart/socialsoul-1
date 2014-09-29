@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
 
-for {set i 0} {$i < 6} {incr i 1} {
+for {set i 0} {$i < 5} {incr i 1} {
   spawn ssh socialsoul@socialsoul${i}.local
   expect "assword:"
   send "soulmate\r"
