@@ -31,7 +31,11 @@ http://www.mongodb.org/
 ### endpoints
 
 * ```/screen.html?id``` -- view for screen (id = int or "exit")
-* ```/index.html``` -- BA controller page
+	e.g. `/screen.html?0`, `/screen.html?1`, `/screen.html?exit`
+* ```/index.html``` -- BA controller page, where users can select
+	which twitter handle will be matched up next.
+* `/admin.html` -- controller page with the same functionality as index.html,
+	and several additional administrative features
 * ```/index.html?build_db``` -- rebuild the cached mentor db / data
 * ```/index.html?test_algo``` -- test the secret algorithm
 
