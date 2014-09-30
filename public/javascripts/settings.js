@@ -63,7 +63,7 @@ var playlist = [
 			sounds.texture0.play();
 		},
 		callback: function() {
-			if(screenId == 2) {
+			if(screenId == 1) {
 				TTS.init(users.subject.tweets);
 			}
 		}
@@ -92,7 +92,7 @@ var playlist = [
 			sounds.drone.play();
 		},
 		callback: function() {
-			if(screenId == 0 || screenId == 2) {
+			if(screenId == 0 || screenId == 1) {
 				TTS.init(users.mentor.tweets);
 			}
 		}
@@ -115,7 +115,7 @@ var playlist = [
 			sounds.texture3.play();
 		},
 		callback: function() {
-			if(screenId == 0 || screenId == 2) {
+			if(screenId == 0 || screenId == 1) {
 				TTS.stop();
 			}
 		}
