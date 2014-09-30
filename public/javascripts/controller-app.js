@@ -106,25 +106,6 @@ window.onload = function() {
       socket.emit('controller', { action:'remove', user:e.target.id });
     });
 
-    function dialog(selector, confirm, cancel) {
-      var buttons = {};
-      $("#overlay").show();
-      buttons.confirm = wrap(confirm) || wrap(noop);
-      if (cancel) buttons.cancel = wrap(cancel);
-      $(selector).dialog({buttons: buttons});
-      $(selector).dialog("open");
-
-      function noop() {}
-      function wrap(fn) {
-        return function () {
-          try { fn(); } finally {
-            $(this).dialog("close");
-            $("#overlay").hide();
-          }
-        };
-      }
-    }
-
     // try not to override user input
     if (!$('#end_tweet_template').is(':focus')) {
       $('#end_tweet_template').val(data.end_tweet_template || '');
@@ -307,3 +288,24 @@ function handleMentorsUpload(input) {
 		reader.readAsText(file);
 	}
 }
+
+function dialog(selector, confirm, cancel) {
+	var buttons = {};
+	$("#overlay").show();
+	buttons.confirm = wrap(confirm) || wrap(noop);
+	if (cancel) buttons.cancel = wrap(cancel);
+	$(selector).dialog({buttons: buttons});
+	$(selector).dialog("open");
+
+	function noop() {}
+	function wrap(fn) {
+		return function () {
+			try { fn(); } finally {
+			$(this).dialog("close");
+			$("#overlay").hide();
+			}
+		};
+	}
+}
+
+
