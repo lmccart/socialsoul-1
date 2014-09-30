@@ -48,6 +48,9 @@ for {set i 0} {$i < 5} {incr i 1} {
   send "sudo chown root /Library/LaunchDaemons/*\r"
 
   expect "$ "
+  send "sudo launchctl unload /Library/LaunchDaemons/*\r"
+
+  expect "$ "
   send "sudo launchctl load /Library/LaunchDaemons/*\r"
 
   expect "$ " 
