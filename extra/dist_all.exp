@@ -10,11 +10,37 @@ for {set i 0} {$i < 5} {incr i 1} {
     }
   }
 
+  spawn scp -o "StrictHostKeyChecking no" "/Users/socialsoulserver/socialsoul/extra/keep-tab-alive.scpt" "socialsoul@socialsoul${i}.local:/Users/socialsoul/Desktop/"
+  expect {
+    -re ".*sword.*" {
+      exp_send "soulmate\r"
+    }
+  }
+
   spawn scp -o "StrictHostKeyChecking no" "/Users/socialsoulserver/socialsoul/extra/start-social-soul-screen.scpt" "socialsoul@socialsoul${i}.local:/Users/socialsoul/Desktop/"
   expect {
     -re ".*sword.*" {
       exp_send "soulmate\r"
     }
   }
+
+  spawn ssh -o "StrictHostKeyChecking no" "socialsoul@socialsoul${i}.local"
+  expect "assword:"
+  send "soulmate\r"
+
+  expect "$ "
+  send "sudo mkdir -p /Library/LaunchDaemons/\r"
+
+  expect "$ "
+  send "sudo mv /Users/socialsoul/Library/LaunchAgents/com.tabalive.plist /Library/LaunchDaemons/\r"
+
+  expect "$ "
+  send "sudo chown root /Library/LaunchDaemons/*\r"
+
+  expect "$ "
+  send "sudo launchctl load /Library/LaunchDaemons/com.tabalive.plist\r"
+
+  expect "$ " 
+  send "exit\r"
 }
 interact
