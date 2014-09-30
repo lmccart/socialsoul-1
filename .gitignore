@@ -10,3 +10,5 @@ data/config.js
 data/end-tweet-template.mustache
 public/mentors.txt
 data/hashtag.txt
+*.swp
+*.swo
