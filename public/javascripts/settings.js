@@ -35,7 +35,7 @@ var playlist = [
 			sounds.drone.play();
 		},
 		callback: function() {
-			if(screenId == 0) {
+			if(screenId == 2) {
 				TTS.init(users.subject.tweets);
 			}
 		}
@@ -49,7 +49,7 @@ var playlist = [
 			sounds.silenceglitch.play();
 		},
 		callback: function() {
-			if(screenId == 0) {
+			if(screenId == 4) {
 				TTS.init(users.subject.tweets);
 			}
 		}
@@ -63,7 +63,7 @@ var playlist = [
 			sounds.texture0.play();
 		},
 		callback: function() {
-			if(screenId == 0) {
+			if(screenId == 6 || screenId == 8) {
 				TTS.init(users.subject.tweets);
 			}
 		}
@@ -92,7 +92,7 @@ var playlist = [
 			sounds.drone.play();
 		},
 		callback: function() {
-			if(screenId == 0) {
+			if(screenId == 2 || screenId == 4 || screenId == 6 || screenId == 8) {
 				TTS.init(users.mentor.tweets);
 			}
 		}
@@ -115,7 +115,7 @@ var playlist = [
 			sounds.texture3.play();
 		},
 		callback: function() {
-			if(screenId == 0) {
+			if(screenId == 4 || screenId == 8) {
 				TTS.stop();
 			}
 		}
