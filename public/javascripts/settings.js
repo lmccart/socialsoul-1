@@ -13,8 +13,10 @@ var playlist = [
 		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
-			sounds.mix.volume(1);
-			sounds.mix.play();
+			if (sounds.mix) {
+				sounds.mix.volume(1);
+				sounds.mix.play();
+			}
 		},
 		callback: function() {
 			TTS.stop();
