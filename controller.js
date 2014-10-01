@@ -550,19 +550,13 @@ module.exports = function(config, io, callback) {
 };
 
 function loadEndTweetTemplate() {
-	fs.readFile(END_TWEET_TEMPLATE_FILE, 'utf8', function (err, template) {
-		endTweetTemplate = template;
-	});
+	endTweetTemplate = fs.readFileSync(END_TWEET_TEMPLATE_FILE, 'utf8');
 }
 
 function loadHashTag() {
-	fs.readFile(HASH_TAG_FILE, 'utf8', function (err, template) {
-		hashTag = template;
-	});
+	hashTag = fs.readFileSync(HASH_TAG_FILE, 'utf8');
 }
 
 function loadExitText() {
-	fs.readFile(EXIT_TEXT_FILE, 'utf8', function (err, text) {
-		exitText = text;
-	});
+	exitText = fs.readFileSync(EXIT_TEXT_FILE, 'utf8');
 }
