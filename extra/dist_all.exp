@@ -7,6 +7,9 @@
 spawn sh
 
 expect "$ "
+send "pmset repeat wakeorpoweron MTWRF 05:59:00"
+
+expect "$ "
 send "sudo osascript -e 'set volume alert volume 0'\r"
 
 expect "$ "
@@ -73,6 +76,9 @@ for {set i 0} {$i < 5} {incr i 1} {
   spawn ssh -o "StrictHostKeyChecking no" "socialsoul@socialsoul${i}.local"
   expect "assword:"
   send "soulmate\r"
+
+  expect "$ "
+  send "pmset repeat wakeorpoweron MTWRF 06:00:00"
 
   expect "$ "
   send "sudo osascript -e 'set volume alert volume 0'\r"
