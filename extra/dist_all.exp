@@ -78,6 +78,9 @@ for {set i 0} {$i < 5} {incr i 1} {
   send "sudo osascript -e 'set volume alert volume 0'\r"
 
   expect "$ "
+  send "sudo osascript -e 'set volume output volume 100'\r"
+
+  expect "$ "
   send "sudo launchctl unload -w /Library/LaunchDaemons/*\r"
 
   expect "$ "
