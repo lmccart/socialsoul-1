@@ -7,7 +7,10 @@
 spawn sh
 
 expect "$ "
-send "sudo pmset repeat wakeorpoweron MTWRF 05:59:00 shutdown MTWRF 00:01:00\r"
+send "sudo pmset repeat cancel\r"
+
+expect "$ "
+send "sudo pmset repeat wakeorpoweron MTWRF 05:59:00 shutdown MTWRFSU 00:01:00\r"
 
 expect "$ "
 send "sudo osascript -e 'set volume alert volume 0'\r"
@@ -78,7 +81,10 @@ for {set i 0} {$i < 5} {incr i 1} {
   send "soulmate\r"
 
   expect "$ "
-  send "sudo pmset repeat wakeorpoweron MTWRF 06:00:00 shutdown MTWRF 00:00:00\r"
+  send "sudo pmset repeat cancel\r"
+
+  expect "$ "
+  send "sudo pmset repeat wakeorpoweron MTWRF 06:00:00 shutdown MTWRFSU 00:00:00\r"
 
   expect "$ "
   send "sudo osascript -e 'set volume alert volume 0'\r"
