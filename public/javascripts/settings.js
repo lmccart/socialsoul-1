@@ -13,6 +13,7 @@ var playlist = [
 		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
+			sounds.mix.volume(1);
 			sounds.mix.play();
 		},
 		callback: function() {
