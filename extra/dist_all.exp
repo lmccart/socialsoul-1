@@ -7,6 +7,9 @@
 spawn sh
 
 expect "$ "
+send "sudo osascript -e 'set volume alert volume 0'\r"
+
+expect "$ "
 send "sudo launchctl unload -w /Library/LaunchDaemons/*\r"
 
 expect "$ "
@@ -70,6 +73,9 @@ for {set i 0} {$i < 5} {incr i 1} {
   spawn ssh -o "StrictHostKeyChecking no" "socialsoul@socialsoul${i}.local"
   expect "assword:"
   send "soulmate\r"
+
+  expect "$ "
+  send "sudo osascript -e 'set volume alert volume 0'\r"
 
   expect "$ "
   send "sudo launchctl unload -w /Library/LaunchDaemons/*\r"
