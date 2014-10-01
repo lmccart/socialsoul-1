@@ -149,10 +149,6 @@ var TweetMode = function() {
       timeline
         .clear()
         .addCallback(function() {
-          sounds.boop.play();
-          if(screenId == 0) {
-            sounds.beep433.play();
-          }
         })
         .set('#tweet', {opacity:1})
         .to('#tweet', 4, {opacity:0, ease:Power2.easeIn});
@@ -279,14 +275,12 @@ var EnterMode = function() {
       timeline = new TimelineMax();
       timeline
         .addCallback(function() {
-          sounds.gong.play();
           $name.text(user.name);
         })
         .set("#color", {opacity:1})
         .to("#color", 3, {opacity:0, ease:Power2.easeIn})
 
         .addCallback(function() {
-          sounds.gong.play();
           $name.text('@' + user.user);
         })
         .set("#color", {opacity:1})
