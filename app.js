@@ -84,7 +84,10 @@ require('./controller')(config, io, function (controller) {
       controller.removeMentor(data.user);
     } else if (data.action == 'update_hash_tag') {
 		console.log('updating hash tag to %s', data.hashTag);
-		controller.updateHashTag(data.hashTag, callback);
+		controller.updateHashTag(data.hashTag);
+	} else if (data.action == 'update_exit_text') {
+		console.log('updating exit text to %s', data.exitText);
+		controller.updateExitText(data.exitText);
 	}
   });
 

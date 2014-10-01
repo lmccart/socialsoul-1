@@ -88,7 +88,7 @@ body {
   padding-left: 20px !important;
 }
 
-.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, .button.remove {
+.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, #update_exit_text, .button.remove {
   background: rgb(41, 41, 41);
   color: white;
 }

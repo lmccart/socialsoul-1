@@ -75,6 +75,9 @@ window.onload = function() {
 	  case 'updated_hash_tag':
         $("#time_status").html('<span class="highlight">Successfuly updated hash tag.</span>')
 	  	break;
+	  case 'updated_exit_text':
+        $("#time_status").html('<span class="highlight">Successfuly updated exit text.</span>')
+	  	break;
     }
 
     // means there was an update worth calling
@@ -113,6 +116,10 @@ window.onload = function() {
 
     if (!$('#hash_tag').is(':focus')) {
       $('#hash_tag').val(data.hash_tag || '');
+    }
+
+    if (!$('#exit_text').is(':focus')) {
+      $('#exit_text').val(data.exit_text || '');
     }
 
     $('#restart').click(function(e){
@@ -213,6 +220,12 @@ window.onload = function() {
   $('#update_hash_tag').click(function (e) {
 	  var tag = $("#hash_tag").val().trim();
 	  socket.emit('controller', { action: 'update_hash_tag', hashTag: tag});
+  });
+
+  $('#update_exit_text').click(function (e) {
+	  console.log('updating exit text');
+	  var exitText = $("#exit_text").val().trim();
+	  socket.emit('controller', { action: 'update_exit_text', exitText: exitText});
   });
 
   $("#upload_mentors").click(function (e) {

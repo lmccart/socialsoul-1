@@ -25,11 +25,13 @@ var verbose = false;
 var END_TWEET_TEMPLATE_FILE = path.join(__dirname, 'data', 'end-tweet-template.mustache')
   , endTweetTemplate
   , HASH_TAG_FILE = path.join(__dirname, 'data', 'hashtag.txt')
-  , hashTag;
+  , hashTag
+  , EXIT_TEXT_FILE = path.join(__dirname, 'data', 'exittext.txt');
 
 // initial load
 loadEndTweetTemplate();
 loadHashTag();
+loadExitText();
 
 // load word lists and regex
 var url_regex = /(https?:\/\/[^\s]+)/g;
@@ -87,7 +89,8 @@ module.exports = function(config, io, callback) {
           serverTime: Date.now(),
           reason: { code: reasonCode, data: reasonData},
           end_tweet_template: endTweetTemplate,
-		  hash_tag: hashTag
+		  hash_tag: hashTag,
+		  exit_text: exitText
         });
       });
     };
@@ -192,7 +195,7 @@ module.exports = function(config, io, callback) {
       });
     };
 
-	controller.updateHashTag = function (t, callback) {
+	controller.updateHashTag = function (t) {
 		fs.writeFile(HASH_TAG_FILE, t, 'utf8', function (err) {
 			if (!err) {
 				try {
@@ -201,6 +204,19 @@ module.exports = function(config, io, callback) {
 					err = err0;
 				}
 				controller.sync('updated_hash_tag');
+			}
+		});
+	}
+
+	controller.updateExitText = function (t) {
+		fs.writeFile(EXIT_TEXT_FILE, t, 'utf8', function (err) {
+			if (!err) {
+				try {
+					loadExitText();
+				} catch (err0) {
+					err = err0;
+				}
+				controller.sync('updated_exit_text');
 			}
 		});
 	}
@@ -542,5 +558,11 @@ function loadEndTweetTemplate() {
 function loadHashTag() {
 	fs.readFile(HASH_TAG_FILE, 'utf8', function (err, template) {
 		hashTag = template;
+	});
+}
+
+function loadExitText() {
+	fs.readFile(EXIT_TEXT_FILE, 'utf8', function (err, text) {
+		exitText = text;
 	});
 }

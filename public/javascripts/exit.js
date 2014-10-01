@@ -13,6 +13,7 @@ window.onload = function() {
 
   socket.on('sync', function (data) {
     console.log(data);
+	$('#subtitle').html(data.exit_text || '');
   });
 
   // new user available
