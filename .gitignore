@@ -4,7 +4,6 @@ config.js
 assets/
 logs/*.log
 public/phantomjs/render/*
-sound/
 *.app
 data/config.js
 data/end-tweet-template.mustache
