@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+
+for {set i 0} {$i < 5} {incr i 1} {
+  spawn ssh -o "StrictHostKeyChecking no" socialsoul@socialsoul${i}.local
+  expect "assword:"
+  send "soulmate\r"
+  expect "$ " 
+  send "sudo reboot\r" 
+  expect "$ " 
+  send "exit\r"
+}
+
+
+spawn ssh -o "StrictHostKeyChecking no" socialsoulserver@socialsoulserver.local
+expect "assword:"
+send "soulmate\r"
+expect "$ " 
+send "sudo reboot\r" 
+expect "$ " 
+send "exit\r"
