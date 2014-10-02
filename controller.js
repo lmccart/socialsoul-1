@@ -275,6 +275,11 @@ module.exports = function(config, io, callback) {
 
     function handleTimeline(dir, data, opts, is_new) {
 
+	if (!data[0]) {
+		if (opts.cb) return opts.cb();
+		return;
+	}
+
       controller.error = null; 
 
       // insert text in db
