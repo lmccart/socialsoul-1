@@ -263,6 +263,7 @@ module.exports = function(config, io, callback) {
               } else if (err.statusCode === 401) {
                 io.sockets.emit('error', {msg: 'User '+opts.user+' is protected. Please try another user.'});
               }
+              if (opts.cb) opts.cb();
             } else {
               handleTimeline(dir, data, opts, true);
             }
