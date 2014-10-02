@@ -489,7 +489,7 @@ module.exports = function(config, io, callback) {
         else getPerson({user:highKey, is_mentor:true, get_media:true}); 
         
         if (send_tweet) {
-        setTimeout(function(){ sendEndTweet(user, highKey); }, controller.run_time); 
+			setTimeout(function(){ sendEndTweet(user, highKey); }, controller.run_time); 
         }
       });
     }
@@ -537,6 +537,7 @@ module.exports = function(config, io, callback) {
     }
 
     function sendEndTweet(user, mate) {
+      console.log('sending end tweet');
       var status = mustache.render(endTweetTemplate, {user: '@' + user, mate: '@' + mate});
       // uncomment this next line to enable tweeting
       // after uncommenting it, be sure to restart 
