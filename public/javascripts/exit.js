@@ -7,7 +7,7 @@ setInterval(swapExit, 3000);
 window.onload = function() {
 
   var host = 'http://' + window.location.hostname + ':3030';
-  var socket = io.connect(host); 
+  window.socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });
 

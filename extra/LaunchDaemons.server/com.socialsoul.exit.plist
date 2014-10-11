@@ -4,13 +4,15 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.tabalive</string>
+    <string>com.socialsoul.exit</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+	<true/>
     <key>ProgramArguments</key>
     <array>
         <string>osascript</string>
-        <string>/Users/socialsoul/Desktop/keep-tab-alive.scpt</string>
+        <string>/Users/socialsoulserver/Desktop/start-social-soul-exit.scpt</string>
     </array>
-    <key>StartInterval</key>
-    <integer>5</integer> <!-- every 5 seconds -->
 </dict>
 </plist>

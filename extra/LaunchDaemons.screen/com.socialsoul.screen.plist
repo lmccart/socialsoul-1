@@ -4,18 +4,15 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.socialsoul.exit</string>
+    <string>com.socialsoul.screen</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
-    <dict>
-        <key>SuccessfulExit</key>
-        <false/>
-    </dict>
+	<true/>
     <key>ProgramArguments</key>
     <array>
         <string>osascript</string>
-        <string>/Users/socialsoulserver/Desktop/start-social-soul-exit.scpt</string>
+        <string>/Users/socialsoul/Desktop/start-social-soul-screen.scpt</string>
     </array>
 </dict>
 </plist>

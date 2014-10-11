@@ -1,4 +1,4 @@
-var count, counter, socket;
+var count, counter;
 
 var syncState = {
 	mentors: []
@@ -17,7 +17,7 @@ window.onload = function() {
   // socket stuff
 
   var host = 'http://' + window.location.hostname + ':3030';
-  socket = io.connect(host); 
+  window.socket = io.connect(host); 
   
   socket.emit('send', { message: 'hello from frontend' });
   socket.emit('controller', { action: 'update' });
