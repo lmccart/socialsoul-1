@@ -4,6 +4,10 @@ var syncState = {
 	mentors: []
 };
 
+function recordEvent(html) {
+	$("#events").prepend("<div>" + html + "</div>");
+}
+
 
 window.onload = function() {
 
@@ -58,38 +62,28 @@ window.onload = function() {
       $('#time_status').html('<span class="highlight">Ready for next visitor!</span>');
     }
 
-    var orig = $('#time_status').html();
     switch(data.reason.code) {
       case 'added_mentor':
-        $("#time_status").html('<span class="highlight">Mentor <em>' + data.reason.data + '</em> added to database.</span>')
+        recordEvent('<span class="highlight">Mentor <em>' + data.reason.data + '</em> added to database.</span>')
         break;
       case 'removed_mentor':
-        $("#time_status").html('<span class="highlight">Mentor <em>' + data.reason.data + '</em> removed from database.</span>')
+        recordEvent('<span class="highlight">Mentor <em>' + data.reason.data + '</em> removed from database.</span>')
         break;
       case 'rebuilt_db':
-        $("#time_status").html('<span class="highlight">People database has been rebuilt.</span>')
+        recordEvent('<span class="highlight">People database has been rebuilt.</span>')
         break;
       case 'updated_end_tweet_template':
-        $("#time_status").html('<span class="highlight">Successfuly updated end tweet template.</span>')
+        recordEvent('<span class="highlight">Successfuly updated end tweet template.</span>')
         break;
 	  case 'updated_hash_tag':
-        $("#time_status").html('<span class="highlight">Successfuly updated hash tag.</span>')
+        recordEvent('<span class="highlight">Successfuly updated hash tag.</span>')
 	  	break;
 	  case 'updated_exit_text':
-        $("#time_status").html('<span class="highlight">Successfuly updated exit text.</span>')
+        recordEvent('<span class="highlight">Successfuly updated exit text.</span>')
 	  	break;
 	  case 'updated_twitter_creds':
-        $("#time_status").html('<span class="highlight">Successfuly updated twitter credentials.</span>')
+        recordEvent('<span class="highlight">Successfuly updated twitter credentials.</span>')
 		break;
-    }
-
-    // means there was an update worth calling
-    // the attention of the user to
-    if (data.reason.code) {
-      $('html, body').animate({
-        scrollTop: $("html").offset().top
-      });
-      setTimeout(function () { $('#time_status').html(orig); }, 10000);
     }
 
     $('#error_status').html('');
@@ -97,8 +91,8 @@ window.onload = function() {
     $('#users').empty();
     for (var i=data.users.length; i>0; i--) {
       var k = (i === data.users.length) ? 0 : i;
-      var str = "<li><span id='"+data.users[k]+"' class='button trigger'>"+data.users[k]+"</span>";
-      if (k !== 0) str += "<span id='"+data.users[k]+"' class='button remove'>x</span>";
+      var str = "<li><button id='"+data.users[k]+"' class='button trigger btn'>"+data.users[k]+"</button>";
+      if (k !== 0) str += "<button id='"+data.users[k]+"' class='button remove btn'>x</button>";
       str += "</li>";
       $('#users').append(str);
     }
@@ -335,16 +329,7 @@ function handleMentorsUpload(input) {
 				}
 			});
 
-			setTimeout(function () {
-				var old = $("#time_status").html();
-				$("#time_status").html("<span class='highlight'>Mentors uploaded.</span>");
-				$('html, body').animate({
-					scrollTop: $("html").offset().top
-				});
-				setTimeout(function () {
-					$("#time_status").html(old);
-				}, 2000);
-			}, 1000);
+			recordEvent("<span class='highlight'>Mentors uploaded.</span>");
 		}
 		reader.readAsText(file);
 	}

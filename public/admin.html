@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>social soul controller</title>
-    <link rel='stylesheet' href='/stylesheets/controller.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/stylesheets/admin.css' />
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
     <script type='text/javascript' src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
     <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
@@ -11,87 +12,107 @@
     <script type='text/javascript' src='javascripts/controller-app.js'></script>
   </head>
   <body>
-    <div id="controller">
-      <div style="font-size:1.5em">Social Soul Controller</div>
-      <div id="status">
-        <div id="error_status" class="error"></div>
-        <div id="user_status"></div>
-        <div id="time_status"><span class="error">Not connected to server.</span></div>
-      </div>
-      <div>
-        <ul id="users">
-        </ul>
-      </div>
+    <div id="controller" class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Social Soul Admin</h1>
+				<div id="status">
+					<div id="error_status" class="error"></div>
+					<div id="user_status"></div>
+					<div id="time_status"><span class="error">Not connected to server.</span></div>
+				</div>
+			</div>
+		</div>
 
-      <div>
-		<label for="user">Add Users</label>
-        <input id="user" name="user" placeholder="Add Users" /> 
-        <span id='queue_user' class='button'>add user</span>
-	  </div>
+		<div class="row">
+		<div class="col-md-4">
+			<ul id="events">
+			</ul>
+		</div>
+		<div class="actions col-md-4">
+			<div>
+				<label for="user">Add Users</label>
+				<input id="user" class="form-control" name="user" placeholder="Add Users" /> 
+				<button type="button" id='queue_user' class="btn">add user</button>
+			</div>
 
-      <div class="ui-front">
-		<label for="mentor">Add/Remove Mentors</label>
-		<input id="mentor" name="mentor" placeholder="Add/Remove Mentors"/> 
-        <span id='mentor_button' class='button'>add mentor</span>
-	  </div>
+			<div>
+				<label for="mentor">Add/Remove Mentors</label>
+				<input id="mentor" class="form-control" name="mentor" placeholder="Start typing..."/> 
+				<button type="button" id='mentor_button' class="btn">add mentor</button>
+			</div>
 
-	  <div>
-		  <label for="hash_tag">Hash Tag</label>
-		  <input id="hash_tag" placeholder="Hash Tag" />
-		  <span id="update_hash_tag" class="button">update hash tag</span>
-	  </div>
+			<div>
+				<label for="hash_tag">Hash Tag</label>
+				<input id="hash_tag" class="form-control" placeholder="Hash Tag" />
+				<button type="button" id="update_hash_tag" class="btn">update hash tag</button>
+			</div>
 
-	  <div>
-		  <label for="end_tweet_template">Soulmate Tweet Template</label>
-		  <textarea rows=4 cols=20 id="end_tweet_template"> </textarea>
-		  <div id="end_tweet_template_error" class="error"></div>
-		  <span id="update_end_tweet_template" class="button">update end tweet template</span>
-	  </div>
+			<div>
+				<label for="end_tweet_template">End Tweet Template</label>
+				<div>
+					<textarea class="form-control" rows=4 cols=50 id="end_tweet_template"> </textarea>
+				</div>
+				<div id="end_tweet_template_error" class="error"></div>
+				<button type="button" id="update_end_tweet_template" class="btn">update end tweet template</button>
+			</div>
 
-      <div>
-		  <label for="exit_text">Exit Screen Subtitle</label>
-          <textarea rows=4 cols=20 id="exit_text"> </textarea>
-		  <span id="update_exit_text" class="button">update exit screen subtitle</span>
-      </div>
+			<div>
+				<label for="exit_text">Exit Screen Subtitle</label>
+				<div>
+					<textarea class="form-control" rows=4 cols=50 id="exit_text"> </textarea>
+				</div>
+				<button type="button" id="update_exit_text" class="btn">update exit screen subtitle</button>
+			</div>
 
-      <div>
-		  <p><strong>Twitter Credentials</strong></p>
+			<div>
+				<h2>Twitter Credentials</h2>
 
-		  <label for="consumer_key">Consumer Key</label>
-		  <input id="consumer_key" type="text" />
+				<div>
+					<label for="consumer_key">Consumer Key</label>
+					<input class="form-control" id="consumer_key" />
+				</div>
 
-		  <label for="consumer_secret">Consumer Secret</label>
-		  <input id="consumer_secret" />
+				<div>
+					<label for="consumer_secret">Consumer Secret</label>
+					<input class="form-control" id="consumer_secret" />
+				</div>
 
-		  <label for="access_token_key">Access Token Key</label>
-		  <input id="access_token_key" />
+				<div>
+					<label for="access_token_key">Access Token Key</label>
+					<input class="form-control" id="access_token_key" />
+				</div>
 
-		  <label for="access_token_secret">Access Token Secret</label>
-		  <input id="access_token_secret" />
+				<div>
+					<label for="access_token_secret">Access Token Secret</label>
+					<input class="form-control" id="access_token_secret" />
+				</div>
 
-		  <span id="update_twitter_creds" class="button">update twitter credentials</span>
-      </div>
-    </div>
+				<button type="button" id="update_twitter_creds" class="btn">update twitter credentials</button>
+			</div>
+		</div>
 
+		<div class="col-md-4">
+			<button type="button" class="btn" id="download_mentors">
+				<a href='/mentors.txt' download>
+					download mentors
+				</a>
+			</button>
 
-    <div id="overlay"></div>
+			<button type="button" class="btn" id="upload_mentors">upload mentors</button>
 
-    <div id="restart_dialog" class="dialog" >
-      Are you sure you want to restart?
-    </div>
+			<button type="button" class="btn" id="restart">restart</button>
+		</div>
+	</div>
+
+	<div id="overlay"></div>
+
+	<div id="restart_dialog" class="dialog" >
+	Are you sure you want to restart?
+	</div>
 
 	<div id="update_end_tweet_template_result" class="dialog">
 	</div>
-
-	<div class="button" id="download_mentors">
-		<a href='/mentors.txt' download>
-			download mentors
-		</a>
-	</div>
-
-	<span class="button" id="upload_mentors">upload mentors</span>
-
-    <div class="button" id="restart">restart</div>
 
 	<div><input type="file" id="upload_mentors_file" onchange="handleMentorsUpload(this);" /></div>
   </body>
