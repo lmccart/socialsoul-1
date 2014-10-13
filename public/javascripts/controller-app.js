@@ -44,6 +44,7 @@ window.onload = function() {
       $('#error_status').html(data.msg);
       $('#user_status').html('');
       $('#time_status').html('');
+	  recordEvent(data.msg);
     } else {
       displayDisconnect();
     }
