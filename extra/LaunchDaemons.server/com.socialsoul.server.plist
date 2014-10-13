@@ -10,8 +10,7 @@
     <true/>
     <key>ProgramArguments</key>
     <array>
-		<string>/usr/local/bin/forever</string>
-		<string>/socialsoul/app.js</string>
+		<string>/socialsoul/start.sh</string>
     </array>
     <key>WorkingDirectory</key>
     <string>/socialsoul</string>
