@@ -320,6 +320,12 @@ function handleMentorsUpload(input) {
 				}
 			});
 
+			if (newMentors.length > 0) {
+				// if we're actually doing something, then rebuild the DB, so we don't
+				// have old people from previous uses
+				socket.emit('controller', {action: 'build_db'});
+			}
+
 			// what remains in newMentors is what should be added
 			newMentors.forEach(function (mentor) {
 				mentor = mentor.trim();
