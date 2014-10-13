@@ -10,5 +10,6 @@ data/end-tweet-template.mustache
 public/mentors.txt
 data/hashtag.txt
 data/exittext.txt
+data/twitter-creds.json
 *.swp
 *.swo

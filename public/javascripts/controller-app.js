@@ -78,6 +78,9 @@ window.onload = function() {
 	  case 'updated_exit_text':
         $("#time_status").html('<span class="highlight">Successfuly updated exit text.</span>')
 	  	break;
+	  case 'updated_twitter_creds':
+        $("#time_status").html('<span class="highlight">Successfuly updated twitter credentials.</span>')
+		break;
     }
 
     // means there was an update worth calling
@@ -120,6 +123,22 @@ window.onload = function() {
 
     if (!$('#exit_text').is(':focus')) {
       $('#exit_text').val(data.exit_text || '');
+    }
+
+    if (!$('#consumer_key').is(':focus')) {
+      $('#consumer_key').val(data.twitter_creds.consumer_key || '');
+    }
+
+    if (!$('#consumer_secret').is(':focus')) {
+      $('#consumer_secret').val(data.twitter_creds.consumer_secret || '');
+    }
+
+    if (!$('#access_token_key').is(':focus')) {
+      $('#access_token_key').val(data.twitter_creds.access_token_key || '');
+    }
+
+    if (!$('#access_token_secret').is(':focus')) {
+      $('#access_token_secret').val(data.twitter_creds.access_token_secret || '');
     }
 
     $('#restart').click(function(e){
@@ -232,15 +251,27 @@ window.onload = function() {
 	  $("#upload_mentors_file").click();
   });
 
+  $("#update_twitter_creds").click(function (e) {
+	  socket.emit('controller', {
+		  action: 'update_twitter_creds',
+		  creds: {
+			consumer_key: $("#consumer_key").val(),
+			consumer_secret: $("#consumer_secret").val(),
+			access_token_key: $("#access_token_key").val(),
+			access_token_secret: $("#access_token_secret").val()
+		  }
+	  });
+  });
+
   // build db
   var command = window.location.search.substring(1);
   if (command == 'build_db') {
     socket.emit('controller', {action: 'build_db'});
-    setTimeout(function(){window.location = '/';}, 1000);
+    setTimeout(function(){window.location = window.location.pathname;}, 1000);
   }  // test algo
   else if (command == 'test_algo') {
     socket.emit('controller', {action: 'test_algo'});
-    setTimeout(function(){window.location = '/';}, 1000);
+    setTimeout(function(){window.location = window.location.pathname;}, 1000);
   }
 
 }
@@ -297,6 +328,17 @@ function handleMentorsUpload(input) {
 					socket.emit('controller', { action: 'add_mentor', user: mentor });
 				}
 			});
+
+			setTimeout(function () {
+				var old = $("#time_status").html();
+				$("#time_status").html("<span class='highlight'>Mentors uploaded.</span>");
+				$('html, body').animate({
+					scrollTop: $("html").offset().top
+				});
+				setTimeout(function () {
+					$("#time_status").html(old);
+				}, 2000);
+			}, 1000);
 		}
 		reader.readAsText(file);
 	}

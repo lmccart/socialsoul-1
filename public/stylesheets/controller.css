@@ -78,9 +78,13 @@ body {
   display: none;
 }
 
-#user, #mentor, #hash_tag {
+#user, #mentor, #hash_tag, #consumer_key, #consumer_secret, #access_token_key, #access_token_secret {
   margin: 0 15px 15px 0;
   padding: 13px 9px 10px 9px;
+}
+
+#end_tweet_template, #exit_text {
+  margin: 0 15px 15px 0;
 }
 
 .trigger, input {
@@ -88,7 +92,7 @@ body {
   padding-left: 20px !important;
 }
 
-.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, #update_exit_text, .button.remove {
+.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, #update_exit_text, #update_twitter_creds, .button.remove {
   background: rgb(41, 41, 41);
   color: white;
 }
@@ -165,4 +169,8 @@ ul {
 
 #upload_mentors_file {
 	display: none;
+}
+
+label {
+	float: left;
 }

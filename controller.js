@@ -1,7 +1,7 @@
 
 var _ = require('underscore')
   , domain = require('domain')
-  , twitter = require('ntwitter')
+  , ntwitter = require('ntwitter')
   , request = require('request')
   , fs = require('fs-extra')
   , _ = require('underscore')
@@ -26,12 +26,15 @@ var END_TWEET_TEMPLATE_FILE = path.join(__dirname, 'data', 'end-tweet-template.m
   , endTweetTemplate
   , HASH_TAG_FILE = path.join(__dirname, 'data', 'hashtag.txt')
   , hashTag
-  , EXIT_TEXT_FILE = path.join(__dirname, 'data', 'exittext.txt');
+  , EXIT_TEXT_FILE = path.join(__dirname, 'data', 'exittext.txt')
+  , twitter, twitterCreds
+  , TWITTER_CREDS_FILE = path.join(__dirname, 'data', 'twitter-creds.json');
 
 // initial load
 loadEndTweetTemplate();
 loadHashTag();
 loadExitText();
+loadTwitterCreds();
 
 // load word lists and regex
 var url_regex = /(https?:\/\/[^\s]+)/g;
@@ -69,9 +72,7 @@ module.exports = function(config, io, callback) {
     };
 
 
-    var twit = new twitter(config.creds);
-
-    twit.stream('statuses/filter', {track: '#' + hashTag}, function(stream) {
+    twitter.stream('statuses/filter', {track: '#' + hashTag}, function(stream) {
       stream.on('data', function (data) {
         controller.queueUser(data.user.screen_name);
         controller.sync();
@@ -90,7 +91,8 @@ module.exports = function(config, io, callback) {
           reason: { code: reasonCode, data: reasonData},
           end_tweet_template: endTweetTemplate,
 		  hash_tag: hashTag,
-		  exit_text: exitText
+		  exit_text: exitText,
+		  twitter_creds: twitterCreds
         });
       });
     };
@@ -221,6 +223,20 @@ module.exports = function(config, io, callback) {
 		});
 	}
 
+	controller.updateTwitterCreds = function (c) {
+		if (!c) return;
+		fs.writeFile(TWITTER_CREDS_FILE, JSON.stringify(c, null, 4), 'utf8', function (err) {
+			if (!err) {
+				try {
+					loadTwitterCreds();
+				} catch (err0) {
+					err = err0;
+				}
+				controller.sync('updated_twitter_creds');
+			}
+		});
+	};
+
     controller.addMentor = function (user) {
       controller.storage.addMentor(user, function (err) {
 		  if (err) {
@@ -254,7 +270,7 @@ module.exports = function(config, io, callback) {
         if (data) {
           handleTimeline(dir, data, opts);
         } else {
-          twit.getUserTimeline({screen_name:opts.user, count:200}, function(err, data) {
+          twitter.getUserTimeline({screen_name:opts.user, count:200}, function(err, data) {
             // render controller once user status is known
             if (err) {
               console.log(err);
@@ -325,7 +341,7 @@ module.exports = function(config, io, callback) {
           fs.readJson(dir+'friends.json', function(err, friends_data) {
             if (friends_data) handleFriends(dir, friends_data, opts);
             else {
-              twit.getFriendsList({screen_name:opts.user, count:200}, function(err, friends_data) { 
+              twitter.getFriendsList({screen_name:opts.user, count:200}, function(err, friends_data) { 
                 if (err) console.log(err);
                 else {
                   handleFriends(dir, friends_data, opts, true);
@@ -548,7 +564,7 @@ module.exports = function(config, io, callback) {
       // uncomment this next line to enable tweeting
       // after uncommenting it, be sure to restart 
       // from the controller app
-      twit.updateStatus(status, function(err) { console.log(err); });
+      twitter.updateStatus(status, function(err) { console.log(err); });
     }
 
 
@@ -562,6 +578,14 @@ function loadEndTweetTemplate() {
 
 function loadHashTag() {
 	hashTag = fs.readFileSync(HASH_TAG_FILE, 'utf8');
+}
+
+function loadTwitterCreds() {
+	console.log('loading twitter credentials');
+	var json = fs.readFileSync(TWITTER_CREDS_FILE, 'utf8');
+	twitterCreds = JSON.parse(json);
+	console.log('set twitter credentials to %s', json);
+	twitter = new ntwitter(twitterCreds);
 }
 
 function loadExitText() {

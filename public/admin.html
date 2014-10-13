@@ -24,29 +24,52 @@
       </div>
 
       <div>
+		<label for="user">Add Users</label>
         <input id="user" name="user" placeholder="Add Users" /> 
         <span id='queue_user' class='button'>add user</span>
 	  </div>
 
       <div class="ui-front">
+		<label for="mentor">Add/Remove Mentors</label>
 		<input id="mentor" name="mentor" placeholder="Add/Remove Mentors"/> 
         <span id='mentor_button' class='button'>add mentor</span>
 	  </div>
 
 	  <div>
+		  <label for="hash_tag">Hash Tag</label>
 		  <input id="hash_tag" placeholder="Hash Tag" />
 		  <span id="update_hash_tag" class="button">update hash tag</span>
 	  </div>
 
 	  <div>
+		  <label for="end_tweet_template">Soulmate Tweet Template</label>
 		  <textarea rows=4 cols=20 id="end_tweet_template"> </textarea>
 		  <div id="end_tweet_template_error" class="error"></div>
 		  <span id="update_end_tweet_template" class="button">update end tweet template</span>
 	  </div>
 
       <div>
+		  <label for="exit_text">Exit Screen Subtitle</label>
           <textarea rows=4 cols=20 id="exit_text"> </textarea>
 		  <span id="update_exit_text" class="button">update exit screen subtitle</span>
+      </div>
+
+      <div>
+		  <p><strong>Twitter Credentials</strong></p>
+
+		  <label for="consumer_key">Consumer Key</label>
+		  <input id="consumer_key" type="text" />
+
+		  <label for="consumer_secret">Consumer Secret</label>
+		  <input id="consumer_secret" />
+
+		  <label for="access_token_key">Access Token Key</label>
+		  <input id="access_token_key" />
+
+		  <label for="access_token_secret">Access Token Secret</label>
+		  <input id="access_token_secret" />
+
+		  <span id="update_twitter_creds" class="button">update twitter credentials</span>
       </div>
     </div>
 

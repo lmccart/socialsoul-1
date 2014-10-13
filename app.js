@@ -88,6 +88,9 @@ require('./controller')(config, io, function (controller) {
 	} else if (data.action == 'update_exit_text') {
 		console.log('updating exit text to %s', data.exitText);
 		controller.updateExitText(data.exitText);
+	} else if (data.action == 'update_twitter_creds') {
+		console.log('updating twitter credentials');
+		controller.updateTwitterCreds(data.creds);
 	}
   });
 
