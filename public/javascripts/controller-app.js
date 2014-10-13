@@ -1,5 +1,3 @@
-window.SOCIAL_SOUL = true;
-
 var count, counter;
 
 var syncState = {

@@ -1,5 +1,4 @@
 // main just handles the routing of socket.io messages
-window.SOCIAL_SOUL = true;
 
 function addMirroring() {
   if (screenId%4 == 0) {

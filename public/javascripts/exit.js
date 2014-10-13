@@ -1,5 +1,4 @@
 // main just handles the routing of socket.io messages
-window.SOCIAL_SOUL = true;
 
 var showing_user = false;
 var playlistDuration = getPlaylistDuration();
