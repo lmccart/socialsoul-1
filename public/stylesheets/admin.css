@@ -25,6 +25,10 @@ button.trigger {
 	text-decoration: none;
 }
 
+#download_mentors a:hover {
+	color: black;
+}
+
 .actions>div {
 	margin: 30px;
 }
