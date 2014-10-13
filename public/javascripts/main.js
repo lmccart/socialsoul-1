@@ -25,7 +25,7 @@ window.onload = function() {
   var host = 'http://' + window.location.hostname + ':3030';
   window.socket = io.connect(host); 
   
-  socket.emit('send', { message: 'hello from frontend ' + window.location.toString() });
+  socket.emit('send', { message: 'hello from frontend: ' + window.location.toString() });
 
   socket.on('sync', function (data) {
     ServerTime.init(data.serverTime);
