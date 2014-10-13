@@ -298,7 +298,7 @@ function handleMentorsUpload(input) {
 		var reader = new FileReader();
 		reader.onerror = function (err) { console.log(err); }
 		reader.onload = function (e) {
-			var newMentors = _.uniq(e.target.result.split("\n"));
+			var newMentors = _.uniq(e.target.result.split(/\n+|\r+/));
 
 			// remove redundant entries in newMentors
 			// and remove existing members that are not in newMentors
