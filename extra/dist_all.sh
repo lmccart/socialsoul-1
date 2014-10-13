@@ -10,7 +10,7 @@ ssh -o "StrictHostKeyChecking no" $LOGIN < systemsettings.sh
 ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl unload -w /Library/LaunchDaemons/*"
 ssh -o "StrictHostKeyChecking no" $LOGIN "sudo rm /Library/LaunchDaemons/*"
 scp -o "StrictHostKeyChecking no" LaunchDaemons.server/* "$LOGIN:/Library/LaunchDaemons"
-scp -o "StrictHostKeyChecking no" "start-social-soul-exit.scpt" "$LOGIN:/Users/socialsoulserver/Desktop/start-social-soul-exit.scpt"
+scp -o "StrictHostKeyChecking no" Desktop.server/* "$LOGIN:/Users/socialsoulserver/Desktop"
 ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl load -w /Library/LaunchDaemons/*"
 
 # Client setup
@@ -21,6 +21,6 @@ for i in {0..4} ; do
 	ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl unload -w /Library/LaunchDaemons/*"
 	ssh -o "StrictHostKeyChecking no" $LOGIN "sudo rm /Library/LaunchDaemons/*"
 	scp -o "StrictHostKeyChecking no" LaunchDaemons.screen/* "$LOGIN:/Library/LaunchDaemons"
-	scp -o "StrictHostKeyChecking no" "start-social-soul-screen.scpt" "$LOGIN:/Users/socialsoul/Desktop/start-social-soul-screen.scpt"
+	scp -o "StrictHostKeyChecking no" Desktop.screen/* "$LOGIN:/Users/socialsoul/Desktop"
 	ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl load -w /Library/LaunchDaemons/*"
 done
