@@ -5,7 +5,7 @@ var syncState = {
 };
 
 function recordEvent(html) {
-	$("#events").prepend("<div>" + html + "</div>");
+	$("#events").prepend("<li>" + html + "</li>");
 }
 
 
@@ -64,25 +64,25 @@ window.onload = function() {
 
     switch(data.reason.code) {
       case 'added_mentor':
-        recordEvent('<span class="highlight">Mentor <em>' + data.reason.data + '</em> added to database.</span>')
+        recordEvent('Mentor <em>' + data.reason.data + '</em> added to database.')
         break;
       case 'removed_mentor':
-        recordEvent('<span class="highlight">Mentor <em>' + data.reason.data + '</em> removed from database.</span>')
+        recordEvent('Mentor <em>' + data.reason.data + '</em> removed from database.')
         break;
       case 'rebuilt_db':
-        recordEvent('<span class="highlight">People database has been rebuilt.</span>')
+        recordEvent('People database has been rebuilt.')
         break;
       case 'updated_end_tweet_template':
-        recordEvent('<span class="highlight">Successfuly updated end tweet template.</span>')
+        recordEvent('Successfuly updated end tweet template.')
         break;
 	  case 'updated_hash_tag':
-        recordEvent('<span class="highlight">Successfuly updated hash tag.</span>')
+        recordEvent('Successfuly updated hash tag.')
 	  	break;
 	  case 'updated_exit_text':
-        recordEvent('<span class="highlight">Successfuly updated exit text.</span>')
+        recordEvent('Successfuly updated exit text.')
 	  	break;
 	  case 'updated_twitter_creds':
-        recordEvent('<span class="highlight">Successfuly updated twitter credentials.</span>')
+        recordEvent('Successfuly updated twitter credentials.')
 		break;
     }
 
@@ -329,7 +329,7 @@ function handleMentorsUpload(input) {
 				}
 			});
 
-			recordEvent("<span class='highlight'>Mentors uploaded.</span>");
+			recordEvent("Mentors uploaded.");
 		}
 		reader.readAsText(file);
 	}

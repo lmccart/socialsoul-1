@@ -8,7 +8,7 @@ body {
   width: 300px;
 }
 
-ul {
+ul, ol {
 	list-style: none;
 }
 
@@ -96,4 +96,16 @@ button.trigger {
 /* make annoying autocomplete status from jquery UI go away */
 .ui-helper-hidden-accessible {
   display: none;
+}
+
+.highlight {
+  color: #ff5;
+}
+
+.error {
+  color: #f55;
+}
+
+#events :first-child {
+  color: #ff5;
 }
