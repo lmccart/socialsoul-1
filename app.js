@@ -21,7 +21,7 @@ app.use(app.router);
 
 
 function restartClients(cb) {
-  var restart_file = './extra/start_all.exp';
+  var restart_file = './extra/reboot_all.exp';
   exec(restart_file, // command line argument directly in string
     function (error, stdout, stderr) {      // one easy function to capture data/errors
       console.log('stdout: ' + stdout);
