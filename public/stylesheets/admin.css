@@ -62,6 +62,11 @@ button.trigger {
   text-align: left;
 }
 
+#control_panel>div {
+	text-align: right;
+	margin-bottom: 10px;
+}
+
 .ui-button {
 
   margin: 0.5em 1.1em 0.5em 0 !important;
