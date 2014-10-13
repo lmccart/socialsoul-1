@@ -83,3 +83,8 @@ button.trigger {
   margin: 0 1.5em;
   padding: 12px 0;
 }
+
+/* make annoying autocomplete status from jquery UI go away */
+.ui-helper-hidden-accessible {
+  display: none;
+}
