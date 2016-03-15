@@ -281,7 +281,12 @@ module.exports = function(config, io, callback) {
               }
               if (opts.cb) opts.cb();
             } else {
-              handleTimeline(dir, data, opts, true);
+              if (data.length < 10) { 
+                io.sockets.emit('error', {msg: 'User '+opts.user+' does not have enough Tweets.'});
+              } else {
+                //console.log('length ='+data.length);
+                handleTimeline(dir, data, opts, true);
+              }
             }
 
           });

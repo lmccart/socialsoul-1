@@ -25,7 +25,9 @@ module.exports = function() {
         callback(error);
         return;
       }
-      callback(null, scrapeImages(response, timeline));
+      try {
+        callback(null, scrapeImages(response, timeline));
+      } catch (e) { callback(null); }
     });
 
     return;
