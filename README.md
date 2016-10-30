@@ -22,10 +22,12 @@ http://www.mongodb.org/
 0. install forever `[sudo] npm install forever -g`
 0. install node modules `cd /socialsoul && npm install`
 0. check out the modified version of the twitter module `git checkout HEAD node_modules/ntwitter/lib/twitter.js`
+0. copy data/config-sample.js to data/config.js
+0. copy data/twitter-creds-sample.json to ata/twitter-creds.json
 
 ### to run
 0. open terminal and start mongo `mongod`
-0. open a new terminal tab and start nginx `nginx`
+0. open a new terminal tab and start nginx `nginx` (`nginx -s stop` to stop)
 0. nginx will return immediately, then start node `forever start app.js`
 
 ### endpoints
