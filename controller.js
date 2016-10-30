@@ -589,7 +589,7 @@ function loadTwitterCreds() {
 	console.log('loading twitter credentials');
 	var json = fs.readFileSync(TWITTER_CREDS_FILE, 'utf8');
 	twitterCreds = JSON.parse(json);
-	console.log('set twitter credentials to %s', json);
+	console.log('set twitter credentials');
 	twitter = new ntwitter(twitterCreds);
 }
 
