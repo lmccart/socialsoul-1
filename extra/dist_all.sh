@@ -24,10 +24,11 @@ for i in {0..5} ; do
 	# ssh -o "StrictHostKeyChecking no" $LOGIN < systemsettings.sh
 	# ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl unload -w /Library/LaunchDaemons || true"
 	# ssh -o "StrictHostKeyChecking no" $LOGIN "sudo rm -rf /Library/LaunchDaemons /Users/socialsoul/Desktop"
+	ssh -o "StrictHostKeyChecking no" $LOGIN "sudo rm -rf /Users/socialsoul/Desktop/*"
 	# rsync --delete -r -e ssh LaunchDaemons.screen "$LOGIN:/tmp/"
-	rsync --delete -r -e ssh Desktop.screen "$LOGIN:/tmp/"
+	rsync --delete -r -e ssh "Desktop.screen/" "$LOGIN:/Users/socialsoul/Desktop"
 	# ssh -o "StrictHostKeyChecking no" $LOGIN "sudo mv /tmp/LaunchDaemons.screen /Library/LaunchDaemons"
 	# ssh -o "StrictHostKeyChecking no" $LOGIN "sudo chown -R root /Library/LaunchDaemons"
-	ssh -o "StrictHostKeyChecking no" $LOGIN "mv /tmp/Desktop.screen /Users/socialsoul/Desktop"
+	# ssh -o "StrictHostKeyChecking no" $LOGIN "mv /tmp/Desktop.screen/* /Users/socialsoul/Desktop"
 	# ssh -o "StrictHostKeyChecking no" $LOGIN "sudo launchctl load -w /Library/LaunchDaemons"
 done
