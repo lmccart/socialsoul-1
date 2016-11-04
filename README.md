@@ -36,9 +36,9 @@ http://www.mongodb.org/
 1. load each launchdaemon `launchctl load ***`
 2. distribute ssh keys: run `extra/dist_ssh.sh`
 3. distribute desktop items, copy and load LaunchDaemons, set system config options: run `extra/dist_all.sh`
-4. reboot all computers: `extra/reboot_all.sh`
+4. reboot all computers: `extra/reboot_all.exp`
 
-### to run
+### to run manually (dev)
 0. open terminal and start mongo `mongod`
 0. open a new terminal tab and start nginx `nginx` (`nginx -s stop` to stop)
 0. nginx will return immediately, then start node `forever start app.js`
@@ -46,14 +46,14 @@ http://www.mongodb.org/
 
 ### endpoints
 
-* ```/screen.html?id``` -- view for screen (id = int or "exit")
+* `/screen.html?id` -- view for screen (id = int or "exit")
 	e.g. `/screen.html?0`, `/screen.html?1`, `/screen.html?exit`
-* ```/index.html``` -- BA controller page, where users can select
+* `/index.html` -- BA controller page, where users can select
 	which twitter handle will be matched up next.
 * `/admin.html` -- controller page with the same functionality as index.html,
 	and several additional administrative features
-* ```/index.html?build_db``` -- rebuild the cached mentor db / data
-* ```/index.html?test_algo``` -- test the secret algorithm
+* `/index.html?build_db` -- rebuild the cached mentor db / data
+* `/index.html?test_algo` -- test the secret algorithm
 
 
 
