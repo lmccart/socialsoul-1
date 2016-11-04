@@ -13,6 +13,7 @@ http://www.mongodb.org/
 
 ### setup
 
+0. [install nodejs](https://nodejs.org/)
 0. [install git](http://git-scm.com/downloads)
 0. clone this repository `cd / && git clone git@github.com:lmccart/socialsoul.git` (if you want to keep it somewhere else, you might need to configure the directory permissions properly for nginx to work)
 0. [install brew](http://brew.sh/) `ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"`
