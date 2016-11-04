@@ -2,13 +2,13 @@
 
 # distribute SSH keys to the server so password-based SSH login is no longer needed
 
-spawn ssh-copy-id -o "StrictHostKeyChecking no" -i /Users/Michael/.ssh/id_rsa.pub "socialsoulserver@socialsoulserver.local"
+spawn ssh-copy-id -o "StrictHostKeyChecking no" -i ~/.ssh/id_rsa.pub "socialsoul@socialsoulserver.local"
 expect "assword"
 send "soulmate\r"
 send "exit\r"
 
-for {set i 0} {$i < 5} {incr i 1} {
-	spawn ssh-copy-id -o "StrictHostKeyChecking no" -i /Users/Michael/.ssh/id_rsa.pub "socialsoul@socialsoul${i}.local"
+for {set i 0} {$i <= 5} {incr i 1} {
+	spawn ssh-copy-id -o "StrictHostKeyChecking no" -i ~/.ssh/id_rsa.pub "socialsoul@socialsoul${i}.local"
 	expect "assword"
 	send "soulmate\r"
 	send "exit\r"

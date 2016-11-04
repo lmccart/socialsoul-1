@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
 
-for {set i 0} {$i < 5} {incr i 1} {
+for {set i 0} {$i <= 5} {incr i 1} {
   spawn ssh -o "StrictHostKeyChecking no" socialsoul@socialsoul${i}.local
   expect "assword:"
   send "soulmate\r"
@@ -12,10 +12,10 @@ for {set i 0} {$i < 5} {incr i 1} {
 }
 
 
-spawn ssh -o "StrictHostKeyChecking no" socialsoulserver@socialsoulserver.local
+spawn ssh -o "StrictHostKeyChecking no" socialsoul@socialsoulserver.local
 expect "assword:"
 send "soulmate\r"
 expect "$ " 
-send "osascript ~/socialsoul/extra/start-social-soul-exit.scpt &\r" 
+send "osascript ~/Documents/socialsoul/extra/start-social-soul-exit.scpt &\r" 
 expect "$ " 
 send "exit\r"
