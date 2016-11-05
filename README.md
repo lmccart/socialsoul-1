@@ -28,10 +28,11 @@ http://www.mongodb.org/
 0. install forever `[sudo] npm install forever -g`
 0. install node modules `cd /Users/socialsoul/Documents/socialsoul && npm install`
 0. check out the modified version of the twitter module `git checkout HEAD node_modules/ntwitter/lib/twitter.js`
-0. copy data/config-sample.js to data/config.js
-0. copy data/twitter-creds-sample.json to data/twitter-creds.json
+0. `cp data/config-sample.js data/config.js`
+0. `cp data/twitter-creds-sample.json data/twitter-creds.json`
 
 ### server/automation setup
+0. Turn on screen sharing, file sharing, and remote login for all computers. Name each according to naming above.
 0. copy extra/LaunchDaemons to /Library/LaunchDaemons
 1. load each launchdaemon `launchctl load ***`
 2. distribute ssh keys: run `extra/dist_ssh.sh`
