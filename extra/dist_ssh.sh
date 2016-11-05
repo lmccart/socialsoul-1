@@ -1,29 +1,33 @@
 #!/usr/bin/env bash
 
-# generate ssh key on server
-# (only once)
-ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
+# This script should be run only once. If it's run multiple times,
+# it will just add multiple entries to ~/.ssh/authorized_keys
+# When you run this script you will need to type the password 6 times.
 
-SSH_KEY=`cat ~/.ssh/id_rsa.pub`
+# private key (to be generated or re-used)
+SERVER_USER=`whoami`
+SSH_FILE="/Users/$SERVER_USER/.ssh/id_rsa"
+
+# generate ssh key on server if it doesn't exist
+if [ ! -s "$SSH_FILE" ]; then
+	ssh-keygen -f "$SSH_FILE" -t rsa -N ''
+fi
+
+SSH_KEY=`cat $SSH_FILE.pub`
 
 for ID in $(seq 0 5)
 do
-	USER=socialsoul
-	SERVER="socialsoul$ID.local"
-	AT="$USER@$SERVER"
+	CLIENT_USER="socialsoul"
+	CLIENT_ADDRESS="socialsoul$ID.local"
+	AT="$CLIENT_USER@$CLIENT_ADDRESS"
 
-	echo $AT
+	echo "Connecting to $AT"
 
-	# generate ssh key on remote client & create ~/.ssh directory
-	# (only once)
-	ssh -t $AT "ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''"
-
-	# remove authorized_keys
-	# (only once)
-	ssh $AT "rm ~/.ssh/authorized_keys"
+	# create ~/.ssh folder if it doesn't exist
+	echo "Creating ~/.ssh folder on $CLIENT_ADDRESS"
+	ssh $AT "mkdir -p ~/.ssh/"
 
 	# write ssh key to authorized keys
-	# (only once)
-	# smarter version would check that the file exists & the key is not already present
+	echo "Copying ssh key to ~/.ssh/authorized_keys"
 	ssh -t $AT "echo \"$SSH_KEY\" >> ~/.ssh/authorized_keys"
 done

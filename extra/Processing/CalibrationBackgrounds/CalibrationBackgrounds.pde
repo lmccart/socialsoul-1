@@ -1,17 +1,13 @@
-PFont font;
+PFont smallFont;
+PFont bigFont;
 
 void setup() {
   size(1920, 1080);
-  font = createFont("Helvetica", height, true);
-  textFont(font);
+  bigFont = createFont("Helvetica", height, true);
+  smallFont = createFont("Helvetica", height/10, true);
   textAlign(CENTER, CENTER);
   
-  for(int k = 0; k < 12; k++) {
-    String id = str(k);
-    while(id.length() < 2) {
-      id = "0" + id;
-    }
-    
+  for(int k = 0; k < 12; k++) {    
     strokeWeight(1);
     noStroke();
     fill(255);
@@ -60,7 +56,11 @@ void setup() {
     
     fill(0);
     stroke(255);
-    text(id, width / 2, height / 2);
+    textFont(bigFont);
+    text(str(k), width / 2, height / 2);
+    
+    textFont(smallFont);
+    text("socialsoul" + str(k/2) + ".local", width / 2, height / 10);
     
     stroke(0, 128.);
     line(0, 0, width, height);
@@ -79,6 +79,6 @@ void setup() {
       ellipse(offset, height - offset, s, s);
     }
     
-    saveFrame("background-" + id + ".png"); 
+    saveFrame("background-" + str(k) + ".png"); 
   }
 }

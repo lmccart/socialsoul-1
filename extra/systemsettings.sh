@@ -1,12 +1,12 @@
 #!/bin/bash -ex
 
-sudo systemsetup -setusingnetworktime on
-sudo systemsetup -setrestartfreeze on
-sudo systemsetup -setrestartpowerfailure on
+# sudo systemsetup -setusingnetworktime on
+# sudo systemsetup -setrestartfreeze on
+# sudo systemsetup -setrestartpowerfailure on
 
-sudo systemsetup -setsleep Never
-sudo systemsetup -setcomputersleep Never
-sudo systemsetup -setdisplaysleep Never
+# sudo systemsetup -setsleep Never
+# sudo systemsetup -setcomputersleep Never
+# sudo systemsetup -setdisplaysleep Never
 
 # configure poweron/shutdown schedule
 # sudo pmset repeat cancel

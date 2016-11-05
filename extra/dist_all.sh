@@ -18,19 +18,19 @@ cd $(dirname $0)
 # ssh $LOGIN "sudo launchctl load -w /Library/LaunchDaemons"
 
 # Client setup
-for ID in $(seq 1 6)
+for ID in $(seq 0 5)
 do
-	USER="socialsoul"
-	SERVER="socialsoul$ID.local"
-	AT="$USER@$SERVER"
+	CLIENT_USER="socialsoul"
+	CLIENT_ADDRESS="socialsoul$ID.local"
+	AT="$CLIENT_USER@$CLIENT_ADDRESS"
 
-	LAUNCHAGENT="com.socialsoul.screen.plist"
+	LAUNCH_AGENT="com.socialsoul.screen.plist"
 
-	echo $AT
+	echo "Connectin to $AT"
 
 	ssh $AT < systemsettings.sh
 
-	# unload and delete all LaunchAgents
+	# unload the LaunchAgent, return true even if it doesn't exist 
 	ssh $AT "sudo launchctl unload -w ~/Library/LaunchAgents/$LAUNCHAGENT || true"
 
 	# delete LaunchAgent and any files on the Desktop
