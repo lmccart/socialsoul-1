@@ -1,9 +1,23 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
 
-# restart script for use from computers with passwordless SSH
+for ID in $(seq 0 5)
+do
+	USER=socialsoul
+	SERVER="socialsoul$ID.local"
+	AT="$USER@$SERVER"
 
-ssh -o "StrictHostKeyChecking no" "socialsoul@socialsoulserver.local" "sudo reboot"
+	echo $AT
+	
+	# just connect
+	# ssh $AT
 
-for i in {0..5}; do
-  ssh -o "StrictHostKeyChecking no" "socialsoul@socialsoul${i}.local" "sudo reboot"
+	# edit sudoers to allow calling reboot, shutdown, etc. without a password
+	# you need to run this by hand after connecting (above), i don't know how to execute it via ssh
+	# (only once). do not uncomment the next line!
+	# sudo bash -c 'echo "ALL ALL=(ALL) NOPASSWD: ALL" | (EDITOR="tee -a" visudo)'
+
+	# do not reopen windows on reboot and restart
+	ssh -tt $AT "killall 'Google Chrome' ; \
+		defaults write -g ApplePersistence -bool no ; \
+		sudo reboot" &
 done
