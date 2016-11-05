@@ -13,7 +13,7 @@ var playlist = [
 		duration: 16,
 		user: 'subject',
 		soundtrack: function() {
-			if (sounds.mix) {
+			if (screenId == 0 && sounds.mix) {
 				sounds.mix.volume(1);
 				sounds.mix.play();
 			}

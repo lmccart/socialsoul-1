@@ -13,5 +13,5 @@
 # sudo pmset repeat wakeorpoweron MTWRF "09:00:00" shutdown MTWRFSU "22:00:00"
 
 # configure volume
-# sudo osascript -e 'set volume alert volume 0'
-# sudo osascript -e 'set volume output volume 100'
+osascript -e 'set volume alert volume 0'
+osascript -e 'set volume output volume 100'
