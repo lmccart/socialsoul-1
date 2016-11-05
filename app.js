@@ -53,6 +53,8 @@ require('./controller')(config, io, function (controller) {
   });
 
   socket.on('controller', function(data, callback) {
+    console.log("controller")
+    console.log(data)
     if (data.action === 'update') {
       controller.sync();
     } else if (data.action === 'queue_user') {
@@ -61,6 +63,9 @@ require('./controller')(config, io, function (controller) {
     } else if (data.action === 'remove') {
       controller.removeUser(data.user);
       controller.sync();
+    } else if (data.action === 'test_user') {
+      console.log('testing user '+data.user);
+      controller.testPerson(data.user);
     } else if (data.action === 'trigger') {
       controller.trigger(data.user);
       controller.sync();

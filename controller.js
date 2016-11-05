@@ -258,6 +258,27 @@ module.exports = function(config, io, callback) {
       });
     };
 
+    controller.testPerson = function(user) {
+      twitter.getUserTimeline({screen_name:user, count:200}, function(err, data) {
+        if (err) {
+          console.log(err);
+          if (err.statusCode === 404) {
+            io.sockets.emit('error', {type: 'twitter', msg: 'User '+user+' does not exist.'});
+          } else if (err.statusCode === 401) {
+            io.sockets.emit('error', {type: 'twitter', msg: 'User '+user+' is protected. Please try another user.'});
+          }
+        } else {
+          if (data.length < 10) { 
+            io.sockets.emit('error', {type: 'twitter', msg: 'User '+user+' does not have enough Tweets.'});
+          } else {
+            io.sockets.emit('user_approved', { user:user });
+          }
+        }
+
+      });
+    };
+
+
     // opts -- user, get_media, send_tweet, is_mentor, cb, init
     function getPerson(opts) {
 
