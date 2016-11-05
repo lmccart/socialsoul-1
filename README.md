@@ -32,6 +32,7 @@ http://www.mongodb.org/
 0. `cp data/twitter-creds-sample.json data/twitter-creds.json`
 
 ### server/automation setup
+0. Turn on screen sharing, file sharing, and remote login for all computers. Name each according to naming above.
 0. copy extra/LaunchDaemons to /Library/LaunchDaemons
 1. load each launchdaemon `launchctl load ***`
 2. distribute ssh keys: run `extra/dist_ssh.sh`
