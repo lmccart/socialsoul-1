@@ -94,8 +94,8 @@ window.onload = function() {
     $('#users').empty();
     for (var i=data.users.length; i>0; i--) {
       var k = (i === data.users.length) ? 0 : i;
-      var str = "<li><button id='"+data.users[k]+"' class='button trigger btn'>"+data.users[k]+"</button>";
-      if (k !== 0) str += "<button id='"+data.users[k]+"' class='button remove btn'>x</button>";
+      var str = "<li><button id='"+data.users[k]+"' class='trigger btn'>"+data.users[k]+"</button>";
+      if (k !== 0) str += "<button id='"+data.users[k]+"' class='remove btn'>x</button>";
       str += "</li>";
       $('#users').append(str);
     }
