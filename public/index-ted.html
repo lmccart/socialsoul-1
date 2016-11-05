@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>social soul controller</title>
+    <link rel='stylesheet' href='/stylesheets/controller.css' />
+    <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
+    <script type='text/javascript' src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <script type='text/javascript' src='../javascripts/libs/socket.io.min.js'></script>
+    <script type='text/javascript' src='javascripts/settings.js'></script>
+    <script type='text/javascript' src='javascripts/admin.js'></script>
+  </head>
+  <body>
+    <div id="controller">
+      <div style="font-size:1.5em">Social Soul Controller</div>
+      <div id="status">
+        <div id="error_status" class="error"></div>
+        <div id="user_status"></div>
+        <div id="time_status"><span class="error">Not connected to server.</span></div>
+      </div>
+      <div>
+        <ul id="users">
+        </ul>
+      </div>
+
+      <div>
+        <input id="user" name="user" autocomplete="off" autocorrect="off" autocapitalize="off" /> 
+        <span id='queue_user' class='button'>add</span>
+      </div>
+    </div>
+
+
+    <div id="overlay"></div>
+
+    <div id="restart_dialog" class="dialog" >
+      Are you sure you want to restart?
+    </div>
+
+    <div class="button" id="restart">restart</div>
+  </body>
+</html>

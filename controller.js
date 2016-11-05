@@ -59,7 +59,7 @@ var requests = [];
 module.exports = function(config, io, callback) {
   require('./storage')(function (storage) {
 
-    var default_user = 'Random speaker';
+    var default_user = 'RANDOMIZE';
 
     var controller = {
       io: io,
@@ -71,13 +71,12 @@ module.exports = function(config, io, callback) {
       error: null // for status ping
     };
 
-
-    twitter.stream('statuses/filter', {track: '#' + hashTag}, function(stream) {
-      stream.on('data', function (data) {
-        controller.queueUser(data.user.screen_name);
-        controller.sync();
-      });
-    });
+    // twitter.stream('statuses/filter', {track: '#' + hashTag}, function(stream) {
+    //   stream.on('data', function (data) {
+    //     controller.queueUser(data.user.screen_name);
+    //     controller.sync();
+    //   });
+    // });
 
     controller.sync = function(reasonCode, reasonData) {
       controller.storage.allMentors(function (err, mentors) {

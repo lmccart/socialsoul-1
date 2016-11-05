@@ -28,7 +28,7 @@ body {
   height: 100px;
 }
 
-.button, .ui-button {
+.btn, .ui-button {
   font: 25px 'AppleSDGothicNeo-Thin', sans-serif;
   border: 1px dotted white;
   color: black;
@@ -92,12 +92,12 @@ body {
   padding-left: 20px !important;
 }
 
-.button.active, .button.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, #update_exit_text, #update_twitter_creds, .button.remove {
+.btn.active, .btn.hover, #queue_user, #mentor_button, #update_end_tweet_template, #update_hash_tag, #update_exit_text, #update_twitter_creds, .btn.remove {
   background: rgb(41, 41, 41);
   color: white;
 }
 
-.button.remove {
+.btn.remove {
   padding: 12px 15px 9px 15px;
 }
 
