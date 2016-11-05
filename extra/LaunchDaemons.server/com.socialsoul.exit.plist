@@ -12,7 +12,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>osascript</string>
-        <string>/Users/socialsoulserver/Desktop/start-social-soul-exit.scpt</string>
+        <string>/Users/socialsoul/Desktop/start-social-soul-exit.scpt</string>
     </array>
 </dict>
 </plist>

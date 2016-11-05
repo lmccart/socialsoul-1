@@ -10,9 +10,9 @@
     <true/>
     <key>ProgramArguments</key>
     <array>
-		<string>/socialsoul/start.sh</string>
+		<string>/Users/socialsoul/Documents/socialsoul/start.sh</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/socialsoul</string>
+    <string>/Users/socialsoul/Documents/socialsoul</string>
   </dict>
 </plist>
