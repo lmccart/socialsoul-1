@@ -65,19 +65,19 @@ var ServerTime = (function() {
 var fonts = [
   // google open fonts
   "Arvo",
-  "BenchNine-Light",
+  "BenchNine",
   "Bitter",
   "Droid Serif",
   "Inconsolata",
-  "Kreon-Light",
-  "Lato-Light",
+  "Kreon",
+  "Lato",
   "Lora",
   "Montserrat",
-  "OpenSans-CondensedLight",
-  "Oswald-Light",
+  "OpenSans",
+  "Oswald",
   "Playfair Display",
-  "RobotoSlab-Light",
-  "Signika-Light",
+  "RobotoSlab",
+  "Signika",
 
   // built in fonts
   "AppleGothic",
