@@ -25,21 +25,15 @@ do
 	AT="$CLIENT_USER@$CLIENT_ADDRESS"
 
 	LAUNCH_AGENT="com.socialsoul.screen.plist"
-
-	echo "Connectin to $AT"
+	START_SCRIPT="start-social-soul-screen.scpt"
 
 	ssh $AT < systemsettings.sh
 
 	# unload the LaunchAgent, return true even if it doesn't exist 
-	ssh $AT "sudo launchctl unload -w ~/Library/LaunchAgents/$LAUNCHAGENT || true"
+	ssh $AT "launchctl unload -w ~/Library/LaunchAgents/$LAUNCH_AGENT || true"
 
-	# delete LaunchAgent and any files on the Desktop
-	ssh $AT "sudo rm -rf ~/Library/LaunchAgents/$LAUNCHAGENT ~/Desktop/*"
+	rsync -a "LaunchAgents.screen/$LAUNCH_AGENT" "$AT:~/Library/LaunchAgents/"
+	rsync -a "Desktop.screen/$START_SCRIPT" "$AT:~/Desktop/"
 
-	rsync --delete -r -e ssh "LaunchDaemons.screen" "$LOGIN:/tmp/"
-	rsync --delete -r -e ssh "Desktop.screen" "$LOGIN:/tmp/"
-	ssh $AT "sudo mv /tmp/LaunchDaemons.screen /Library/LaunchDaemons"
-	ssh $AT "sudo chown -R root /Library/LaunchDaemons"
-	ssh $AT "mv /tmp/Desktop.screen/* /Users/socialsoul/Desktop"
-	ssh $AT "sudo launchctl load -w /Library/LaunchDaemons"
+	ssh $AT "launchctl load -w ~/Library/LaunchAgents/$LAUNCH_AGENT"
 done

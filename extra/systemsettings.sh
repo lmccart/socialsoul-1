@@ -15,5 +15,3 @@
 # configure volume
 # sudo osascript -e 'set volume alert volume 0'
 # sudo osascript -e 'set volume output volume 100'
-
-echo "Finished systemsettings.sh"
