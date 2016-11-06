@@ -9,8 +9,9 @@ SERVER_USER=`whoami`
 SSH_FILE="/Users/$SERVER_USER/.ssh/id_rsa"
 
 # generate ssh key on server if it doesn't exist
-if [ ! -s "$SSH_FILE" ]; then
-	ssh-keygen -f "$SSH_FILE" -t rsa -N ''
+if [ ! -e "$SSH_FILE" ]; then
+	echo "Couldn't find $SSH_FILE you should generate an ssh key first."
+	# ssh-keygen -f "$SSH_FILE" -t rsa -N ''
 fi
 
 SSH_KEY=`cat $SSH_FILE.pub`
