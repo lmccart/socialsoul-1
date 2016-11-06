@@ -5,6 +5,21 @@ $(window).ready(function() {
   $('#overlay').hide();
   $('#enter').hide();
 
+  $('input').bind('keypress', function(e) {
+    if(e.which === 13) {
+      document.activeElement.blur();
+    }
+  });
+  function isTextInput(node) {
+    return ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1;
+  }
+
+  document.addEventListener('touchstart', function(e) {
+    if (!isTextInput(e.target) && isTextInput(document.activeElement)) {
+      document.activeElement.blur();
+    }
+  }, false);
+
   var host = 'http://' + window.location.hostname + ':3030';
   window.socket = io.connect(host); 
   
