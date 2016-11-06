@@ -14,8 +14,10 @@ var playlist = [
 		user: 'subject',
 		soundtrack: function() {
 			if (screenId == 0 && sounds.mix) {
-				sounds.mix.volume(1);
-				sounds.mix.play();
+				setTimeout(function () {
+					sounds.mix.volume(1);
+					sounds.mix.play();
+				}, 0);
 			}
 		},
 		callback: function() {
