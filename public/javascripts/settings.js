@@ -18,7 +18,7 @@ var playlist = [
 					sounds.mix.stop();
 					sounds.mix.volume(1);
 					sounds.mix.play();
-				}, 0);
+				}, 1060); // based on delay for screech
 			}
 		},
 		callback: function() {
