@@ -25,7 +25,6 @@ do
 	AT="$CLIENT_USER@$CLIENT_ADDRESS"
 
 	LAUNCH_AGENT="com.socialsoul.screen.plist"
-	START_SCRIPT="start-social-soul-screen.scpt"
 
 	ssh $AT < systemsettings.sh
 
@@ -33,7 +32,7 @@ do
 	ssh $AT "launchctl unload -w ~/Library/LaunchAgents/$LAUNCH_AGENT || true"
 
 	rsync -a "LaunchAgents.screen/$LAUNCH_AGENT" "$AT:~/Library/LaunchAgents/"
-	rsync -a "Desktop.screen/$START_SCRIPT" "$AT:~/Desktop/"
+	rsync -a "Desktop.screen/" "$AT:~/Desktop/"
 
 	ssh $AT "launchctl load -w ~/Library/LaunchAgents/$LAUNCH_AGENT"
 done
