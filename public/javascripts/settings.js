@@ -15,6 +15,7 @@ var playlist = [
 		soundtrack: function() {
 			if (screenId == 0 && sounds.mix) {
 				setTimeout(function () {
+					sounds.mix.stop();
 					sounds.mix.volume(1);
 					sounds.mix.play();
 				}, 0);
