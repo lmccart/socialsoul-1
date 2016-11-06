@@ -9,8 +9,6 @@ do
 	echo $AT
 
 	# kill chrome
-	ssh $AT "killall 'Google Chrome'"
-
-	# disable chrome auto-update
-	defaults write com.google.Keystone.Agent checkInterval 0
+	ssh $AT "killall 'Google Chrome' && defaults write com.google.Keystone.Agent checkInterval 0" &
+	
 done
