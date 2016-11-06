@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>social soul controller</title>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0; minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0 minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel='stylesheet' href='/stylesheets/index.css' />
     <script type='text/javascript' src='javascripts/libs/jquery-1.11.0.js'></script>
@@ -17,12 +17,12 @@
       <h2>Please enter your twitter username</h2>
 
       <div id="status">
-        <div id="error_status" class="error"></div>
+        <div id="error"></div>
         
       </div>
 
       <div>
-        <input id="user" name="user" autocomplete="off" autocorrect="off" autocapitalize="off" >
+        <input id="user" name="user" autocomplete="off" autocorrect="off" autocapitalize="off"  value="@">
 
         <div id="buttons">
           <button id="submit">SUBMIT</button>
@@ -35,6 +35,7 @@
 
     <div id="overlay">
       <div id="time_status"></div>
+      <div id="error_status"></div>
     </div>
 
 
