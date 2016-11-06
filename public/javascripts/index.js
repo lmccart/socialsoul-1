@@ -14,6 +14,9 @@ $(window).ready(function() {
   socket.on('user_approved', function (data) {
     displayEnter();
     socket.emit('controller', { action:'trigger', user:data.user });
+    $('#buttons').show();
+    $('#user').val('@');
+
   });
 
   socket.on('trigger', function (data) {
@@ -38,6 +41,8 @@ $(window).ready(function() {
     } else {
       $('#user_status').html('');
       $('#overlay').hide();
+      $('#buttons').show();
+      $('#user').html('@');
     }
 
     $('#submit').click(function() {
@@ -75,7 +80,8 @@ $(window).ready(function() {
       $('#buttons').show();
       return;
     } else {
-      $('#time_status').html(Math.round(count));
+      $('#time_status').html(Math.round(count)).show();
+      $('#error_status').hide();
     }
   }
 
@@ -85,21 +91,24 @@ $(window).ready(function() {
   }
   
   function displayCountdown(remaining) {
-    $('#error_status').html('');
-    $('#time_status').html(count);
+    $('#error').html('');
+    $('#error_status').hide();
+    $('#time_status').html(count).show();
     $('#overlay').show();
   }
 
   function displayTwitterError(msg) {
     $('#buttons').show();
-    $('#error_status').html(msg);
+    $('#error').html(msg);
   }
 
   function displayError(msg) {
-    // var error = 'ERROR';
-    // if (msg) error += ' '+msg;
-    // $('#time_status').html(error);
-    // $('#overlay').show();
+    clearInterval(counter);
+    var error = 'ERROR';
+    if (msg) error += ' '+msg;
+    $('#error_status').html('SORRY, PLEASE TRY AGAIN LATER').show();
+    $('#time_status').hide();
+    $('#overlay').show();
   }
 
 
