@@ -53,7 +53,7 @@ var playlist = [
 		user: 'subject',
 		soundtrack: function() { },
 		callback: function() {
-			if(screenId == 6 || screenId == 8) {
+			if(screenId == 6) { // || screenId == 8) {
 				TTS.init(users.subject.tweets);
 			}
 		}
@@ -73,7 +73,7 @@ var playlist = [
 		user: 'mentor',
 		soundtrack: function() { },
 		callback: function() {
-			if(screenId == 2 || screenId == 4 || screenId == 6 || screenId == 8) {
+			if(screenId == 2 || screenId == 4 || screenId == 6) { // || screenId == 8) {
 				TTS.init(users.mentor.tweets);
 			}
 		}
@@ -90,7 +90,7 @@ var playlist = [
 		user: 'mentor',
 		soundtrack: function() { },
 		callback: function() {
-			if(screenId == 4 || screenId == 8) {
+			if(screenId == 4) { // || screenId == 8) {
 				TTS.stop();
 			}
 		}
