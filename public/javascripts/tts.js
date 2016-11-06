@@ -1,3 +1,7 @@
+speechSynthesis.onvoiceschanged = function() {
+    var voices = this.getVoices();
+};
+
 function once(func) {
     var run = false;
     return function() {
@@ -40,8 +44,9 @@ var Speech = (function() {
       var speakOnce = once(function() {
         // console.log('speak');
         // wait to assign the voice until it's ready
-        if(settings.voice != undefined) {
+        if(settings.voice) {
           msg.voice = _.findWhere(voices, {name: settings.voice});
+          msg.lang = msg.voice.lang;
         }
         speechSynthesis.speak(msg);
       });
@@ -72,16 +77,17 @@ var Speech = (function() {
 
 var TTS = (function() {
 
-  var goodVoices = [
-    "Alex", // alex
-    "Agnes", // agnes
-    "Bruce", // bruce
-    "Fred", // fred
-    "Kathy", // kathy
-    "Ralph", // ralph
-    "Vicki", // vicki
-    "Victoria" // victoria
-  ];
+  // var goodVoices = [
+  //   "Alex", // alex
+  //   "Agnes", // agnes
+  //   "Bruce", // bruce
+  //   "Fred", // fred
+  //   "Kathy", // kathy
+  //   "Ralph", // ralph
+  //   "Vicki", // vicki
+  //   "Victoria" // victoria
+  // ];
+  var goodVoices = [ "Melina" ];
 
   var module = {
     tweets: [],
