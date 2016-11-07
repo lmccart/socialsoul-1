@@ -32,8 +32,6 @@ do
 
 	ssh $AT < systemsettings.sh
 
-	ssh $AT "sudo systemsetup -gettimezone"
-
 	# unload the LaunchAgent, return true even if it doesn't exist 
 	ssh $AT "launchctl unload -w ~/Library/LaunchAgents/$LAUNCH_AGENT || true"
 
