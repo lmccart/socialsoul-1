@@ -12,3 +12,6 @@ do
 	ssh $AT "killall 'Google Chrome' && defaults write com.google.Keystone.Agent checkInterval 0" &
 	
 done
+
+# restart on server
+killall 'Google Chrome' && defaults write com.google.Keystone.Agent checkInterval 0

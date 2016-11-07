@@ -9,7 +9,8 @@ do
 	echo $AT
 	
 	# do not reopen windows on restart
-	ssh -tt $AT "killall 'Google Chrome' ; \
-		defaults write -g ApplePersistence -bool no ; \
-		sudo reboot" &
+	ssh -tt $AT "killall 'Google Chrome' ; defaults write -g ApplePersistence -bool no ; sudo reboot" &
 done
+
+# reboot server
+killall 'Google Chrome' ; defaults write -g ApplePersistence -bool no ; sudo reboot
