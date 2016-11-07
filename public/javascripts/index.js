@@ -76,6 +76,10 @@ $(window).ready(function() {
     socket.emit('controller', { action:'trigger', user:e.target.id });
   });
 
+  $('#error_status').click(function() {
+    location.reload();
+  });
+
 
   function startTimer(val) {
     clearInterval(counter);
@@ -120,7 +124,7 @@ $(window).ready(function() {
     clearInterval(counter);
     var error = 'ERROR';
     if (msg) error += ' '+msg;
-    $('#error_status').html('SORRY, PLEASE TRY AGAIN LATER').show();
+    $('#error_status').html('SORRY, PLEASE TRY AGAIN LATER<br><span style="font-size:6vmin;">(TAP TO REFRESH)</span>').show();
     $('#time_status').hide();
     $('#overlay').show();
   }
