@@ -55,7 +55,7 @@ window.onload = function() {
   // update controller
   socket.on('sync', function (data) {
     console.log(data);
-	syncState = data;
+	  syncState = data;
     if (data.cur_user) {
       $('#user_status').html('Currently playing with '+data.cur_user);    
       $('#time_status').html('Time remaining: <span id="cur_time">'+Math.round(data.remaining/1000)+'</span>');
@@ -138,18 +138,6 @@ window.onload = function() {
       $('#access_token_secret').val(data.twitter_creds.access_token_secret || '');
     }
 
-    $('#restart').click(function(e){
-      dialog(
-        "#restart_dialog",
-        function() {
-          console.log('restart');
-          socket.emit('controller', { action: 'restart' });
-          displayDisconnect();
-        },
-        function() { /* NO-OP placeholder */ }
-      );
-    });
-
     if (data.mentors) {
       $("#mentor").autocomplete({
         source: data.mentors,
@@ -159,6 +147,30 @@ window.onload = function() {
       });
     }
 
+  });
+
+  $('#restart').click(function(e){
+    dialog(
+      "#restart_dialog",
+      function() {
+        console.log('restart');
+        socket.emit('controller', { action: 'restart' });
+        displayDisconnect();
+      },
+      function() { /* NO-OP placeholder */ }
+    );
+  });
+  
+  $('#restart_chrome').click(function(e){
+    dialog(
+      "#restart_dialog",
+      function() {
+        console.log('restart');
+        socket.emit('controller', { action: 'restart_chrome' });
+        displayDisconnect();
+      },
+      function() { /* NO-OP placeholder */ }
+    );
   });
   
   $(".dialog").dialog({

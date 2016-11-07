@@ -10,13 +10,18 @@ $(window).ready(function() {
       document.activeElement.blur();
     }
   });
+
   function isTextInput(node) {
     return ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1;
   }
 
-  document.addEventListener('touchstart', function(e) {
-    if (!isTextInput(e.target) && isTextInput(document.activeElement)) {
-      document.activeElement.blur();
+  function isButton(node) {
+    return ['BUTTON'].indexOf(node.nodeName) !== -1;
+  }
+
+  document.addEventListener('touchend', function(e) {
+    if (!isTextInput(e.target) && !isButton(e.target) && isTextInput(document.activeElement)) {
+      $('input').blur();
     }
   }, false);
 
@@ -27,14 +32,7 @@ $(window).ready(function() {
   socket.emit('controller', { action: 'update' });
 
   socket.on('user_approved', function (data) {
-    displayEnter();
-    socket.emit('controller', { action:'trigger', user:data.user });
-    $('#buttons').show();
-    $('#user').val('@');
-
-  });
-
-  socket.on('trigger', function (data) {
+    console.log('approved')
     displayEnter();
   });
 
@@ -49,7 +47,7 @@ $(window).ready(function() {
 
   // update controller
   socket.on('sync', function (data) {
-    console.log(data);
+    console.log('sync '+data.cur_user);
     if (data.cur_user && data.remaining) {
       startTimer(data.remaining/1000);
       displayCountdown(data.remaining/1000);
@@ -60,22 +58,22 @@ $(window).ready(function() {
       $('#user').html('@');
     }
 
-    $('#submit').click(function() {
+  });
+
+  $('#submit').click(function() {
+    var user = $('#user').val();
+    user = user.replace('@', ''); // strip @ symbol
+    if (user.length > 0) {
       $('#buttons').hide();
-      var user = $('#user').val();
       user = user.replace(/\s/g, ''); // strip white space
-      user = user.replace('@', ''); // strip @ symbol
       socket.emit('controller', { action:'test_user', user:user });
-    });
+    }
+  });
 
 
-    $('#RANDOMIZE').click(function(e) {
-      $('#buttons').hide();
-      displayEnter();
-      socket.emit('controller', { action:'trigger', user:e.target.id });
-    });
-
-
+  $('#RANDOMIZE').click(function(e) {
+    displayEnter();
+    socket.emit('controller', { action:'trigger', user:e.target.id });
   });
 
 
@@ -101,8 +99,9 @@ $(window).ready(function() {
   }
 
   function displayEnter() {
-    $('#enter').show(0).delay(1000).hide(0);
-    setTimeout(displayCountdown, 3000);
+    $('#enter').show(0).delay(4000).hide(0);
+    $('#buttons').show();
+    $('#user').val('@');
   }
   
   function displayCountdown(remaining) {

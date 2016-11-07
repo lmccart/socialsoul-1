@@ -272,6 +272,8 @@ module.exports = function(config, io, callback) {
             io.sockets.emit('error', {type: 'twitter', msg: 'User '+user+' does not have enough Tweets.'});
           } else {
             io.sockets.emit('user_approved', { user:user });
+            controller.trigger(user);
+            controller.sync();
           }
         }
 
