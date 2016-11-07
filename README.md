@@ -32,21 +32,21 @@ http://www.mongodb.org/
 0. `cp data/twitter-creds-sample.json data/twitter-creds.json`
 
 ### server/automation setup
-0. Turn on screen sharing, file sharing, and remote login for all computers. Name each according to naming above.
-0. copy extra/LaunchDaemons to /Library/LaunchDaemons
-1. load each launchdaemon `launchctl load ***`
-2. distribute ssh keys: run `extra/dist_ssh.sh`
-3. distribute desktop items, copy and load LaunchDaemons, set system config options: run `extra/dist_all.sh`
-4. reboot all computers: `extra/reboot_all.exp`
+0. turn on screen sharing, file sharing, and remote login for all computers. name each according to naming above.
+0. `cp extra/Desktop.server/* /Users/socialsoul/Desktop/`
+0. `cp extra/LaunchAgents.server/* /Users/socialsoul/Library/LaunchAgents/`
+0. load each launchdaemon: `launchctl load ***`
+0. distribute ssh keys: run `extra/dist_ssh.sh`
+0. distribute desktop items, copy and load LaunchAgents, set system config options: run `extra/dist_all.sh`
+0. reboot all computers: `extra/reboot_all.exp`
 
 ### to run manually (dev)
 0. open terminal and start mongo `mongod`
 0. open a new terminal tab and start nginx `nginx` (`nginx -s stop` to stop)
-0. nginx will return immediately, then start node `forever start app.js`
+0. nginx will return immediately, then start node `node app.js`
 
 
 ### endpoints
-
 * `/screen.html?id` -- view for screen (id = int or "exit")
 	e.g. `/screen.html?0`, `/screen.html?1`, `/screen.html?exit`
 * `/index.html` -- BA controller page, where users can select
@@ -55,7 +55,6 @@ http://www.mongodb.org/
 	and several additional administrative features
 * `/index.html?build_db` -- rebuild the cached mentor db / data
 * `/index.html?test_algo` -- test the secret algorithm
-
 
 
 ### messages (from server)

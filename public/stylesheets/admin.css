@@ -120,3 +120,7 @@ li, ul {
   padding: 0;
   margin: 0;
 }
+
+#restart_chrome, #restart {
+  background: red !important;
+}
