@@ -19,3 +19,6 @@ do
 	echo "Then enter the password."
 	echo "Then press CTRL-D to exit the ssh connection and move onto the next client."
 done
+
+echo "Finally, paste the following line on the server:"
+echo "sudo bash -c 'echo \"ALL ALL=(ALL) NOPASSWD: ALL\" | (EDITOR=\"tee -a\" visudo)'"
