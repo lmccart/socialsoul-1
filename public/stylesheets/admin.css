@@ -22,6 +22,14 @@ ul, ol {
   color: black;
 }
 
+button {
+  color: black;
+}
+
+button:hover, a:hover {
+  color: white !important;
+}
+
 #users button:hover {
   color: white;
 }
@@ -31,13 +39,10 @@ button.trigger {
 }
 
 #download_mentors a {
-	color: white;
+	color: black;
 	text-decoration: none;
 }
 
-#download_mentors a:hover {
-	color: black;
-}
 
 .actions>div {
 	margin: 30px;
@@ -88,6 +93,10 @@ button.trigger {
 .ui-dialog-content {
   margin: 0 1.5em;
   padding: 12px 0;
+}
+
+.ui-dialog button {
+  color: black !important;
 }
 
 /* make annoying autocomplete status from jquery UI go away */

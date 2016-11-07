@@ -33,6 +33,19 @@ function restartClients(cb) {
   });
 }
 
+function restartChrome(cb) {
+  var restart_file = './extra/restart_chrome.sh';
+  exec(restart_file, // command line argument directly in string
+    function (error, stdout, stderr) {      // one easy function to capture data/errors
+      console.log('stdout: ' + stdout);
+      console.log('stderr: ' + stderr);
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      if (cb) cb();
+  });
+}
+
 var io = require('socket.io').listen(app.get('port'));
 io.set('log level', 1);
 
@@ -75,6 +88,9 @@ require('./controller')(config, io, function (controller) {
     } else if (data.action === 'restart') {
       console.log('RESTARTING SERVER');
       restartClients(function() {process.exit(1);});
+    }  else if (data.action === 'restart_chrome') {
+      console.log('RESTARTING CHROME');
+      restartChrome(function() {process.exit(1);});
     } else if (data.action === 'test_algo') {
       console.log('testing secret algorithm');
       controller.testAlgo();

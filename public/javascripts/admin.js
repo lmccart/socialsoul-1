@@ -167,7 +167,6 @@ window.onload = function() {
       function() {
         console.log('restart');
         socket.emit('controller', { action: 'restart_chrome' });
-        displayDisconnect();
       },
       function() { /* NO-OP placeholder */ }
     );
