@@ -5,12 +5,12 @@ cd $(dirname $0)
 addLine () {
 	LINE=$1
 	FILE=$2
-	grep -q -F "$LINE" "$FILE" || echo "$LINE" >> "$FILE"
+	grep -q -F "$LINE" $FILE || echo "$LINE" >> $FILE
 }
 
 # add these lines to ~/.ssh/ssh_config if they are not present 
-addLine "StrictHostKeyChecking no" "~/.ssh/ssh_config"
-addLine "CheckHostIP no" "~/.ssh/ssh_config"
+addLine "StrictHostKeyChecking no" ~/.ssh/ssh_config
+addLine "CheckHostIP no" ~/.ssh/ssh_config
 
 # Server setup
 # this is useful once everything is configured, to avoid letting changes persist
