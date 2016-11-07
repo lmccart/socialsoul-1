@@ -2,6 +2,10 @@
 
 cd $(dirname $0)
 
+# add this line to ~/.ssh/ssh_config if it's not present 
+KEY_CHECKING="StrictHostKeyChecking no"
+grep -q -F "$KEY_CHECKING" ~/.ssh/ssh_config || echo "$KEY_CHECKING" >> ~/.ssh/ssh_config
+
 # Server setup
 # this is useful once everything is configured, to avoid letting changes persist
 # SERVER="socialsoulserver.local"
@@ -27,6 +31,8 @@ do
 	LAUNCH_AGENT="com.socialsoul.screen.plist"
 
 	ssh $AT < systemsettings.sh
+
+	ssh $AT "sudo systemsetup -gettimezone"
 
 	# unload the LaunchAgent, return true even if it doesn't exist 
 	ssh $AT "launchctl unload -w ~/Library/LaunchAgents/$LAUNCH_AGENT || true"
