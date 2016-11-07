@@ -10,7 +10,7 @@
 
 # configure poweron/shutdown schedule
 sudo pmset repeat cancel # clear all scheduled events
-sudo pmset repeat wakeorpoweron MTWRFSU "9:00:00" shutdown MTWRFSU "23:00:00"
+sudo pmset repeat wakeorpoweron MTWRFSU "09:00:00" shutdown MTWRFSU "23:00:00"
 
 # configure volume
 osascript -e 'set volume alert volume 0'
