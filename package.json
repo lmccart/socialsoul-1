@@ -6,18 +6,18 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.4.8",
-    "ejs": "*",
-    "ntwitter": "~0.5.0",
-    "socket.io": "~0.9.16",
-    "underscore": "~1.5.2",
-    "mongodb": "~1.3.23",
-	"mustache": "*",
-    "request": "~2.33.0",
-    "natural": "~0.1.26",
-    "fs-extra": "~0.8.1",
-    "async": "~0.2.10",
-    "mmmagic": "~0.3.6",
-    "cheerio": "~0.13.1"
+    "async": "^0.2.10",
+    "cheerio": "^0.13.1",
+    "ejs": "^2.5.7",
+    "express": "^3.4.8",
+    "fs-extra": "^0.8.1",
+    "mmmagic": "^0.3.16",
+    "mongodb": "^1.3.23",
+    "mustache": "^2.3.0",
+    "natural": "^0.1.29",
+    "request": "^2.33.0",
+    "socket.io": "^0.9.19",
+    "twitter": "^1.7.1",
+    "underscore": "^1.5.2"
   }
 }

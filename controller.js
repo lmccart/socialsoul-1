@@ -1,7 +1,7 @@
 
 var _ = require('underscore')
   , domain = require('domain')
-  , ntwitter = require('ntwitter')
+  , Twitter = require('twitter')
   , request = require('request')
   , fs = require('fs-extra')
   , _ = require('underscore')
@@ -56,7 +56,7 @@ var assets_root = __dirname +'/public/assets/';
 var requests = [];
 
 
-module.exports = function(config, io, callback) {
+module.exports = function(io, callback) {
   require('./storage')(function (storage) {
 
     var default_user = 'RANDOMIZE';
@@ -259,7 +259,7 @@ module.exports = function(config, io, callback) {
     };
 
     controller.testPerson = function(user) {
-      twitter.getUserTimeline({screen_name:user, count:200}, function(err, data) {
+      twitter.get('statuses/user_timeline', {screen_name:user, count:200}, function(err, data) {
         if (err) {
           console.log(err);
           if (err.statusCode === 404) {
@@ -292,7 +292,7 @@ module.exports = function(config, io, callback) {
         if (data) {
           handleTimeline(dir, data, opts);
         } else {
-          twitter.getUserTimeline({screen_name:opts.user, count:200}, function(err, data) {
+          twitter.get('statuses/user_timeline', {screen_name:opts.user, count:200}, function(err, data) {
             // render controller once user status is known
             if (err) {
               console.log(err);
@@ -318,10 +318,10 @@ module.exports = function(config, io, callback) {
 
     function handleTimeline(dir, data, opts, is_new) {
 
-	if (!data[0]) {
-		if (opts.cb) return opts.cb();
-		return;
-	}
+    	if (!data[0]) {
+    		if (opts.cb) return opts.cb();
+    		return;
+    	}
 
       controller.error = null; 
 
@@ -368,7 +368,7 @@ module.exports = function(config, io, callback) {
           fs.readJson(dir+'friends.json', function(err, friends_data) {
             if (friends_data) handleFriends(dir, friends_data, opts);
             else {
-              twitter.getFriendsList({screen_name:opts.user, count:200}, function(err, friends_data) { 
+              twitter.get('followers/list', {screen_name:opts.user, count:200}, function(err, friends_data) { 
                 if (err) console.log(err);
                 else {
                   handleFriends(dir, friends_data, opts, true);
@@ -591,7 +591,7 @@ module.exports = function(config, io, callback) {
       // uncomment this next line to enable tweeting
       // after uncommenting it, be sure to restart 
       // from the controller app
-      twitter.updateStatus(status, function(err) { console.log(err); });
+      twitter.post('statuses/update', {status: status}, function(err) { console.log(err); });
     }
 
 
@@ -612,7 +612,7 @@ function loadTwitterCreds() {
 	var json = fs.readFileSync(TWITTER_CREDS_FILE, 'utf8');
 	twitterCreds = JSON.parse(json);
 	console.log('set twitter credentials');
-	twitter = new ntwitter(twitterCreds);
+	twitter = new Twitter(twitterCreds);
 }
 
 function loadExitText() {

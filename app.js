@@ -4,7 +4,6 @@
  */
 
 var express = require('express')
-  , config = require('./data/config')
   , util = require('util')
   , exec = require('child_process').exec
   , fs = require('fs');
@@ -49,7 +48,7 @@ function restartChrome(cb) {
 var io = require('socket.io').listen(app.get('port'));
 io.set('log level', 1);
 
-require('./controller')(config, io, function (controller) {
+require('./controller')(io, function (controller) {
 
   // // development only
   // if ('development' == app.get('env')) {
